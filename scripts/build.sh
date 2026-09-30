@@ -53,6 +53,19 @@ else
     echo "WARN: no vendor/src — zeek/ghidra/grassmarlin etc. will be skipped."
 fi
 
+# 3b. Stamp the release identity into the image: read by the manifest hook and
+#     available as /etc/snapshot-release on live and installed systems.
+mkdir -p config/includes.chroot/etc
+cat > config/includes.chroot/etc/snapshot-release <<REL
+SNAPSHOT_VERSION="${SNAPSHOT_VERSION:-0.0.0}"
+SNAPSHOT_ARCH="${SNAPSHOT_ARCH}"
+SNAPSHOT_DIST="${SNAPSHOT_DIST}"
+SNAPSHOT_DEBIAN_PIN="${SNAPSHOT_DEBIAN_PIN}"
+SNAPSHOT_SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH}"
+SNAPSHOT_GIT="${SNAPSHOT_GIT:-$(git rev-parse --short HEAD 2>/dev/null || echo unknown)}"
+REL
+echo "release identity: $(tr '\n' ' ' < config/includes.chroot/etc/snapshot-release)"
+
 # 4. Configure and build.
 lb clean || true            # keeps cache/ so a rerun does not refetch the snapshot
 mkdir -p build

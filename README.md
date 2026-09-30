@@ -17,11 +17,33 @@ See the full design in `docs/` and the approved plan referenced there.
 - `scripts/` — `fetch-vendor.sh` (online), `build.sh`, `verify-repro.sh`, `make-update-usb.sh`.
 - `docker/` — pinned build container.
 
+## Download
+Prebuilt images are on the [releases page](https://github.com/Blackbird-Cyber/SnapshOT/releases).
+Current release: **v0.1.0**, Debian trixie pinned to snapshot.debian.org
+`20260901T022952Z`.
+
+| Image | For | Boot | Size | SHA-256 |
+|---|---|---|---|---|
+| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso) | x86-64 laptops | BIOS + UEFI | AMD64_SIZE | `AMD64_SHA` |
+| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware | UEFI | 1.63 GiB | `cb848f4c53e9079f4b7a4dd31f8f371d5dce1fb31ff385505c60ed84ea7e43ab` |
+
+- The arm64 image does not boot Apple Silicon hardware directly; run it in a VM.
+- Write the amd64 image to USB with `dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync`
+  or Ventoy. Verify with `shasum -a 256 <file>` against the table or the release's
+  `SHA256SUMS`.
+- Live session: user `snapshot`, password `live`. Install from the desktop icon
+  (Calamares, offline, LUKS2).
+- v0.1.0 omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN);
+  run `scripts/fetch-vendor.sh` before building to include it.
+
 ## Build (on Debian trixie, or via docker/)
 ```
-scripts/fetch-vendor.sh        # once, online: build wheelhouse + fetch source tools
-sudo scripts/build.sh          # produces snapshot-*.iso
-scripts/verify-repro.sh        # optional: build twice, compare sha256
+scripts/fetch-vendor.sh                        # once, online: build wheelhouse + fetch source tools
+sudo scripts/build.sh                          # produces snapshot-amd64.hybrid.iso
+SNAPSHOT_ARCH=arm64 sudo scripts/build.sh      # arm64 (UEFI only), on an arm64 host
+docker/build-in-docker.sh                      # same, inside the pinned container (macOS too)
+scripts/verify-repro.sh                        # optional: build twice, compare sha256
+scripts/release.sh v0.1.0 --prerelease         # publish ISOs as a GitHub release (needs gh)
 ```
 
 ## Status

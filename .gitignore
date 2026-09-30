@@ -33,9 +33,15 @@ vendor/src/*/
 config/includes.chroot/usr/local/share/snapshot/wheelhouse/
 config/includes.chroot/usr/local/share/snapshot/src/
 config/includes.chroot/usr/local/share/snapshot/requirements.txt
+config/includes.chroot/etc/snapshot-release
 
 # private / unfree ingest (never committed)
 private/
 
 # macOS
 .DS_Store
+
+# release artifacts (built ISOs, checksums, split parts)
+SHA256SUMS
+*.sha256
+*.iso.part-*

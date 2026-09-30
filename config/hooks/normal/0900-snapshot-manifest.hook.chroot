@@ -4,7 +4,9 @@ set -e
 OUT=/usr/share/snapshot/reference/BUILD-MANIFEST.txt
 mkdir -p "$(dirname "$OUT")"
 {
+    [ -f /etc/snapshot-release ] && . /etc/snapshot-release
     echo "SnapshOT build manifest"
+    echo "version: ${SNAPSHOT_VERSION:-unknown} ${SNAPSHOT_ARCH:-unknown} git:${SNAPSHOT_GIT:-unknown}"
     echo "debian_snapshot: ${SNAPSHOT_DEBIAN_PIN:-unknown}"
     echo "source_date_epoch: ${SOURCE_DATE_EPOCH:-unknown}"
     echo "kernel: $(ls /boot/vmlinuz-* 2>/dev/null | sed 's#.*/vmlinuz-##' | tr '\n' ' ')"

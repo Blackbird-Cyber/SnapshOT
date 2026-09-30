@@ -23,6 +23,7 @@ CACHE_VOLUME="${SNAPSHOT_CACHE_VOLUME:-snapshot-build-cache-${ARCH}}"
 docker build --platform "$PLATFORM" -t "snapshot-builder:${ARCH}" "$ROOT/docker"
 docker run --rm --privileged --platform "$PLATFORM" \
     -e SNAPSHOT_ARCH="$ARCH" \
+    -e SNAPSHOT_GIT="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)" \
     -v "$ROOT":/snapshot \
     -v "$CACHE_VOLUME":/build/cache \
     "snapshot-builder:${ARCH}" -lc '

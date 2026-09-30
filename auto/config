@@ -35,7 +35,7 @@ lb config noauto \
 	--backports false \
 	--apt-indices false \
 	--apt-recommends false \
-	--apt-options "--yes -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=false" \
+	--apt-options "--yes -o Acquire::Retries=5 -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=false" \
 	--binary-images iso-hybrid \
 	--bootloaders "${BOOTLOADERS}" \
 	--debian-installer none \
@@ -49,5 +49,5 @@ lb config noauto \
 	--iso-volume "SnapshOT ${SNAPSHOT_DIST} ${ARCH}" \
 	--iso-preparer "SnapshOT build; https://snapshot.debian.org/archive/debian/${SNAPSHOT_DEBIAN_PIN}/" \
 	--iso-publisher "Blackbird Cyber" \
-	--bootappend-live "boot=live components username=snapshot hostname=snapshot noeject" \
+	--bootappend-live "boot=live components quiet splash username=snapshot hostname=snapshot noeject" \
 	"${@}"
