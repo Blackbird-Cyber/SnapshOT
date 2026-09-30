@@ -25,3 +25,6 @@ python3
 python3-pip
 python3-venv
 pipx
+# live-config creates the live user through user-setup, which it only recommends;
+# this image installs no recommends, so list it explicitly.
+user-setup
