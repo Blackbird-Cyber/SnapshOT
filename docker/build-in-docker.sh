@@ -1,8 +1,39 @@
 #!/usr/bin/env bash
-# Build SnapshOT inside the pinned container. live-build needs privileges, so this
-# runs the container --privileged with the repo bind-mounted.
+# Build SnapshOT inside the pinned container. live-build needs privileges, so
+# this runs the container --privileged.
+#
+# The tree is copied into the container's own filesystem before building:
+# live-build creates device nodes and a full chroot, which do not work on a bind
+# mount from macOS and are slow on any bind mount. A named volume keeps
+# live-build's apt cache across runs so a failed build does not refetch the
+# snapshot. The ISO and build log are copied back to the repo root.
+#
+#   docker/build-in-docker.sh                      # amd64 (default)
+#   SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64 (UEFI only)
+#
+# The container platform follows the target architecture, so the build is
+# native when host and target match and emulated otherwise. On Apple Silicon the
+# arm64 build is native; the amd64 build runs under emulation and takes hours.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-docker build -t snapshot-builder "$ROOT/docker"
-docker run --rm --privileged -v "$ROOT":/snapshot snapshot-builder \
-    -lc "cd /snapshot && scripts/build.sh"
+ARCH="${SNAPSHOT_ARCH:-amd64}"
+PLATFORM="${SNAPSHOT_DOCKER_PLATFORM:-linux/${ARCH}}"
+CACHE_VOLUME="${SNAPSHOT_CACHE_VOLUME:-snapshot-build-cache-${ARCH}}"
+
+docker build --platform "$PLATFORM" -t "snapshot-builder:${ARCH}" "$ROOT/docker"
+docker run --rm --privileged --platform "$PLATFORM" \
+    -e SNAPSHOT_ARCH="$ARCH" \
+    -v "$ROOT":/snapshot \
+    -v "$CACHE_VOLUME":/build/cache \
+    "snapshot-builder:${ARCH}" -lc '
+        set -euo pipefail
+        rsync -a --exclude /.git --exclude /chroot --exclude /binary --exclude /.build \
+              --exclude /cache --exclude /build --exclude "/*.iso" /snapshot/ /build/
+        cd /build && mkdir -p build
+        status=0
+        scripts/build.sh || status=$?
+        mkdir -p /snapshot/build
+        cp -f /build/build/build.log /snapshot/build/ 2>/dev/null || true
+        cp -f /build/*.iso /snapshot/ 2>/dev/null || true
+        exit $status
+    '

@@ -2,7 +2,13 @@
 
 ## Requirements
 A Debian trixie host (or the `docker/` container) with `live-build`, `dpkg-dev`,
-`debhelper`, `xorriso`, `squashfs-tools`, `pip-tools`. live-build runs as root.
+`debhelper`, `xorriso`, `squashfs-tools`, and `pipx` (`pipx install pip-tools`
+for the vendor step; trixie has no pip-tools package). live-build runs as root.
+
+The container path works on macOS too: `docker/build-in-docker.sh` copies the
+tree into the container, builds there (live-build cannot build a chroot on a
+bind mount), keeps the apt cache in a named volume, and copies the ISO and log
+back out. On Apple Silicon it runs under amd64 emulation and takes hours.
 
 ## One-time, online
 1. Set the pin in `config/snapshot.env` (`SNAPSHOT_DEBIAN_PIN` + matching

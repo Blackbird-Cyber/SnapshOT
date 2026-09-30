@@ -8,6 +8,7 @@ config/common
 config/source
 chroot/
 binary/
+cache/
 *.iso
 *.img
 *.log

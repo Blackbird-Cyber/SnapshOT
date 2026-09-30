@@ -1,6 +1,7 @@
-# Calamares offline installer (branding provided by calamares-settings-snapshot)
+# Offline installer (Calamares) with LUKS2 + LVM, plus the bootloader packages
+# Calamares installs onto the target disk. amd64 gets BIOS + UEFI GRUB; arm64 is
+# UEFI only.
 calamares
-calamares-settings-debian
 squashfs-tools
 cryptsetup
 cryptsetup-initramfs
@@ -9,5 +10,10 @@ dosfstools
 e2fsprogs
 gdisk
 parted
+#if ARCHITECTURES amd64
 grub-efi-amd64
 grub-pc-bin
+#endif
+#if ARCHITECTURES arm64
+grub-efi-arm64
+#endif

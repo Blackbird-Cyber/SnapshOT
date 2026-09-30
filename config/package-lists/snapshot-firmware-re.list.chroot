@@ -1,8 +1,7 @@
 # Firmware, hardware, and reverse engineering. (ghidra is not in Debian; it is
-# vendored in the source layer.)
+# vendored in the source layer. radare2 and rizin are not in trixie either;
+# rizin ships upstream .debs, so add it via vendor/sources.lock if needed.)
 binwalk
-radare2
-rizin
 qemu-system-x86
 qemu-utils
 qemu-system-arm

@@ -1,9 +1,11 @@
-# Laptop hardware enablement (Wi-Fi, GPU, microcode)
+# Firmware for field laptops (non-free-firmware). CPU microcode is amd64-only.
 firmware-linux
 firmware-linux-nonfree
 firmware-iwlwifi
 firmware-realtek
 firmware-atheros
 firmware-misc-nonfree
+#if ARCHITECTURES amd64
 intel-microcode
 amd64-microcode
+#endif

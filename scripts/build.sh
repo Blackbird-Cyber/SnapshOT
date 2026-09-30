@@ -14,7 +14,8 @@ cd "$ROOT"
 . config/snapshot.env
 export SOURCE_DATE_EPOCH="${SNAPSHOT_SOURCE_DATE_EPOCH}"
 export SNAPSHOT_DEBIAN_PIN
-echo "SnapshOT: debian-pin=${SNAPSHOT_DEBIAN_PIN} SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}"
+export SNAPSHOT_ARCH="${SNAPSHOT_ARCH:-amd64}"
+echo "SnapshOT: arch=${SNAPSHOT_ARCH} debian-pin=${SNAPSHOT_DEBIAN_PIN} SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}"
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
 need lb; need dpkg-buildpackage
@@ -53,7 +54,8 @@ else
 fi
 
 # 4. Configure and build.
-lb clean --purge || true
+lb clean || true            # keeps cache/ so a rerun does not refetch the snapshot
+mkdir -p build
 auto/config
 auto/build
 

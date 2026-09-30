@@ -9,7 +9,6 @@ Rules-Requires-Root: no
 Package: calamares-settings-snapshot
 Architecture: all
 Depends: ${misc:Depends}, calamares, cryptsetup, cryptsetup-initramfs
-Recommends: calamares-settings-debian
 Conflicts: calamares-settings-debian
 Replaces: calamares-settings-debian
 Description: SnapshOT Calamares installer settings and branding

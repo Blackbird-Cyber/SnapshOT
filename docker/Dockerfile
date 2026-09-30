@@ -6,11 +6,11 @@ FROM debian:trixie-slim
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
         live-build debootstrap \
-        dpkg-dev debhelper \
+        dpkg-dev debhelper build-essential \
         xorriso squashfs-tools \
-        python3 python3-pip pip-tools \
+        python3 python3-pip pipx \
         aptly diffoscope \
-        ca-certificates git sudo faketime \
+        ca-certificates git sudo faketime rsync \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /snapshot

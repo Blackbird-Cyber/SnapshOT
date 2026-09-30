@@ -3,10 +3,22 @@
 # Runs `lb config` with snapshot-pinned mirrors and the SnapshOT ISO identity.
 # Reproducibility depends on the pin in config/snapshot.env plus SOURCE_DATE_EPOCH,
 # which scripts/build.sh exports before calling `lb build`.
+#
+# SNAPSHOT_ARCH selects the target: amd64 (default; BIOS + UEFI) or arm64 (UEFI
+# only; for arm64 VMs such as UTM/Parallels/VMware Fusion on Apple Silicon, and
+# UEFI arm64 hardware). Build on a host of the same architecture;
+# docker/build-in-docker.sh picks the matching container platform.
 set -e
 
 # Load the reproducibility pin.
 . "$(dirname "$0")/../config/snapshot.env"
+
+ARCH="${SNAPSHOT_ARCH:-amd64}"
+case "$ARCH" in
+	amd64) BOOTLOADERS="grub-efi grub-pc" ;;
+	arm64) BOOTLOADERS="grub-efi" ;;
+	*) echo "auto/config: unsupported SNAPSHOT_ARCH='$ARCH' (use amd64 or arm64)" >&2; exit 1 ;;
+esac
 
 lb config noauto \
 	--mode debian \
@@ -25,16 +37,16 @@ lb config noauto \
 	--apt-recommends false \
 	--apt-options "--yes -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=false" \
 	--binary-images iso-hybrid \
-	--bootloaders "grub-efi grub-pc" \
+	--bootloaders "${BOOTLOADERS}" \
 	--debian-installer none \
 	--memtest none \
 	--firmware-chroot true \
 	--firmware-binary true \
-	--architectures amd64 \
-	--linux-flavours amd64 \
+	--architectures "${ARCH}" \
+	--linux-flavours "${ARCH}" \
 	--iso-application "SnapshOT" \
 	--image-name "snapshot" \
-	--iso-volume "SnapshOT ${SNAPSHOT_DIST}" \
+	--iso-volume "SnapshOT ${SNAPSHOT_DIST} ${ARCH}" \
 	--iso-preparer "SnapshOT build; https://snapshot.debian.org/archive/debian/${SNAPSHOT_DEBIAN_PIN}/" \
 	--iso-publisher "Blackbird Cyber" \
 	--bootappend-live "boot=live components username=snapshot hostname=snapshot noeject" \

@@ -1,6 +1,6 @@
-# Wireless survey and software-defined radio.
+# Wireless survey and software-defined radio. (kismet is not in trixie:
+# upstream apt repo only, not pinned here.)
 aircrack-ng
-kismet
 rtl-sdr
 hackrf
 gnuradio
