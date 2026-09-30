@@ -24,8 +24,8 @@ Current release: **v0.1.0**, Debian trixie pinned to snapshot.debian.org
 
 | Image | For | Boot | Size | SHA-256 |
 |---|---|---|---|---|
-| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso) | x86-64 laptops | BIOS + UEFI | 1.61 GiB | `5fac8faa21c135a43ebd3d85e067ad2ceaa3571ef608cbad5386deecbec306aa` |
-| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware | UEFI | 1.63 GiB | `85e57578692ebc753ad0cc5a2c777d7690253296daad7e5aaea0e7a5983949f2` |
+| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso) | x86-64 laptops | BIOS + UEFI | 1.61 GiB | `35d5da86cf245e90416014062bf83542e4a523ac64578016cac5a9ea21fc7c14` |
+| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware | UEFI | 1.63 GiB | `66c81e0fb7f4ebf11a09ea749cb74581c692c39d63cc171b7aa3f7041f15f244` |
 
 - The arm64 image does not boot Apple Silicon hardware directly; run it in a VM.
 - Write the amd64 image to USB with `dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync`
