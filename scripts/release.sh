@@ -51,9 +51,25 @@ NOTES="SnapshOT ${TAG#v}: Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org 
 - Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS.
 - This build omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN): run scripts/fetch-vendor.sh before a build to include it."
 
-if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
-    gh release upload "$TAG" "${ASSETS[@]}" --repo "$REPO" --clobber
-else
-    gh release create "$TAG" "${ASSETS[@]}" --repo "$REPO" --title "SnapshOT ${TAG#v}" --notes "$NOTES" "$@"
+# Create the release as a draft, upload one asset at a time with retries (a
+# 1.7 GiB POST over a flaky link fails easily), verify every asset's size, then
+# publish. Re-running after a failure resumes into the same draft.
+if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+    gh release create "$TAG" --repo "$REPO" --draft --title "SnapshOT ${TAG#v}" --notes "$NOTES" "$@"
 fi
+for a in "${ASSETS[@]}"; do
+    for try in 1 2 3 4 5; do
+        if gh release upload "$TAG" "$a" --repo "$REPO" --clobber; then break; fi
+        echo "upload of $a failed (attempt $try); retrying in 30s" >&2; sleep 30
+        [ "$try" = 5 ] && { echo "giving up on $a" >&2; exit 1; }
+    done
+done
+ok=1
+for a in "${ASSETS[@]}"; do
+    local_size=$(stat -f%z "$a" 2>/dev/null || stat -c%s "$a")
+    remote_size=$(gh release view "$TAG" --repo "$REPO" --json assets --jq ".assets[] | select(.name==\"$(basename "$a")\") | .size")
+    if [ "$local_size" = "$remote_size" ]; then echo "verified $a ($local_size bytes)"; else echo "SIZE MISMATCH $a: local $local_size remote ${remote_size:-missing}" >&2; ok=0; fi
+done
+[ "$ok" = 1 ] || { echo "not publishing: asset verification failed" >&2; exit 1; }
+gh release edit "$TAG" --repo "$REPO" --draft=false
 echo "release: https://github.com/$REPO/releases/tag/$TAG"
