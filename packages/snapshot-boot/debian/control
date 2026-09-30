@@ -1,0 +1,15 @@
+Source: snapshot-boot
+Section: admin
+Priority: optional
+Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: snapshot-boot
+Architecture: all
+Depends: ${misc:Depends}, plymouth, plymouth-themes
+Recommends: grub2-common
+Description: SnapshOT GRUB and Plymouth boot branding
+ GRUB menu theme and a Plymouth boot-splash theme for SnapshOT, using the
+ SnapshOT lockup and splash from Blackbird Cyber.

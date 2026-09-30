@@ -1,0 +1,13 @@
+# Calamares offline installer (branding provided by calamares-settings-snapshot)
+calamares
+calamares-settings-debian
+squashfs-tools
+cryptsetup
+cryptsetup-initramfs
+lvm2
+dosfstools
+e2fsprogs
+gdisk
+parted
+grub-efi-amd64
+grub-pc-bin

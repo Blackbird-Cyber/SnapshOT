@@ -1,0 +1,27 @@
+# SnapshOT base system (beyond live-build defaults)
+sudo
+locales
+console-setup
+bash-completion
+curl
+wget
+ca-certificates
+gnupg
+git
+vim
+nano
+less
+tmux
+htop
+tree
+jq
+unzip
+zip
+p7zip-full
+rsync
+pciutils
+usbutils
+python3
+python3-pip
+python3-venv
+pipx

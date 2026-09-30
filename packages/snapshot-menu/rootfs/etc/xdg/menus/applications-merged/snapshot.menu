@@ -1,0 +1,40 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+<Menu>
+  <Name>Applications</Name>
+  <Menu>
+    <Name>SnapshOT</Name>
+    <Directory>snapshot.directory</Directory>
+
+    <Menu>
+      <Name>SnapshOT-Discovery</Name>
+      <Directory>snapshot-discovery.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Discovery</Category></And></Include>
+    </Menu>
+    <Menu>
+      <Name>SnapshOT-Traffic</Name>
+      <Directory>snapshot-traffic.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Traffic</Category></And></Include>
+    </Menu>
+    <Menu>
+      <Name>SnapshOT-Protocols</Name>
+      <Directory>snapshot-protocols.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Protocols</Category></And></Include>
+    </Menu>
+    <Menu>
+      <Name>SnapshOT-Firmware</Name>
+      <Directory>snapshot-firmware.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Firmware</Category></And></Include>
+    </Menu>
+    <Menu>
+      <Name>SnapshOT-Wireless</Name>
+      <Directory>snapshot-wireless.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Wireless</Category></And></Include>
+    </Menu>
+    <Menu>
+      <Name>SnapshOT-Reporting</Name>
+      <Directory>snapshot-reporting.directory</Directory>
+      <Include><And><Category>X-SnapshOT-Reporting</Category></And></Include>
+    </Menu>
+  </Menu>
+</Menu>

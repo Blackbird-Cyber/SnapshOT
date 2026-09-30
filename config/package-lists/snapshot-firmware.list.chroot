@@ -1,0 +1,9 @@
+# Laptop hardware enablement (Wi-Fi, GPU, microcode)
+firmware-linux
+firmware-linux-nonfree
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-misc-nonfree
+intel-microcode
+amd64-microcode

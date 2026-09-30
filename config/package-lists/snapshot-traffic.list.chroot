@@ -1,0 +1,5 @@
+# Traffic capture and offline analysis. (arkime is vendored; not in Debian.)
+tcpreplay
+suricata
+python3-scapy
+tcpflow

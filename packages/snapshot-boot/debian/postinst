@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ]; then
+    if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+        plymouth-set-default-theme -R snapshot 2>/dev/null || \
+        plymouth-set-default-theme snapshot 2>/dev/null || true
+    fi
+fi
+#DEBHELPER#
+exit 0

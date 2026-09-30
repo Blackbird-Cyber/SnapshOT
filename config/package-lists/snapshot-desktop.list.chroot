@@ -1,0 +1,15 @@
+# Xfce desktop + display manager (light, Kali-style)
+xorg
+xfce4
+xfce4-goodies
+xfce4-terminal
+lightdm
+lightdm-gtk-greeter
+network-manager-gnome
+xdg-utils
+policykit-1
+thunar
+thunar-archive-plugin
+file-roller
+mousepad
+ristretto

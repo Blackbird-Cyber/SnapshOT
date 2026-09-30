@@ -1,0 +1,21 @@
+#!/bin/sh
+# Record what went into this image, for the release manifest and evidence trail.
+set -e
+OUT=/usr/share/snapshot/reference/BUILD-MANIFEST.txt
+mkdir -p "$(dirname "$OUT")"
+{
+    echo "SnapshOT build manifest"
+    echo "debian_snapshot: ${SNAPSHOT_DEBIAN_PIN:-unknown}"
+    echo "source_date_epoch: ${SOURCE_DATE_EPOCH:-unknown}"
+    echo "kernel: $(ls /boot/vmlinuz-* 2>/dev/null | sed 's#.*/vmlinuz-##' | tr '\n' ' ')"
+    echo
+    echo "== dpkg packages =="
+    dpkg-query -W -f='${Package} ${Version}\n' 2>/dev/null | sort
+    echo
+    echo "== venv (ICS python) =="
+    [ -x /opt/snapshot/venv/bin/pip ] && /opt/snapshot/venv/bin/pip freeze 2>/dev/null | sort || echo "(none)"
+    echo
+    echo "== vendored tools =="
+    ls -1 /opt/snapshot 2>/dev/null || echo "(none)"
+} > "$OUT"
+echo "SnapshOT: wrote $OUT"

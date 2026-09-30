@@ -1,0 +1,42 @@
+# SnapshOT live ISO boot menu (overrides live-build's live-theme/theme.txt).
+# Selected by /boot/grub/theme.cfg when ../splash.png exists. Same layout as the
+# installed-system theme in packages/snapshot-boot: splash behind, menu below
+# the lockup. Signal red #F1000E, light #F4F5F6, ink #0A0B0C.
+desktop-image: "../splash.png"
+desktop-image-scale-method: "crop"
+desktop-image-h-align: "center"
+desktop-image-v-align: "center"
+desktop-color: "#0A0B0C"
+title-text: ""
+title-font: "Unifont Regular 16"
+message-font: "Unifont Regular 16"
+terminal-font: "Unifont Regular 16"
+
++ boot_menu {
+    left = 32%
+    top = 66%
+    width = 36%
+    height = 24%
+    item_font = "Unifont Regular 16"
+    item_color = "#F4F5F6"
+    selected_item_color = "#F1000E"
+    item_height = 28
+    item_padding = 4
+    item_spacing = 6
+    icon_width = 0
+    icon_height = 0
+    item_icon_space = 0
+    scrollbar = false
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 25%
+    top = 93%
+    width = 50%
+    height = 4
+    show_text = false
+    fg_color = "#F1000E"
+    bg_color = "#2A2C2F"
+    border_color = "#2A2C2F"
+}

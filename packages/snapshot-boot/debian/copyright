@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: snapshot-boot
+
+Files: *
+Copyright: 2026 Blackbird Cyber
+License: GPL-3.0+
+ Placeholder. Final license set in Phase 6.

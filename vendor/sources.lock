@@ -1,0 +1,75 @@
+# SnapshOT source/binary artifact lock.
+# Non-apt, non-pip tools vendored as pinned artifacts. scripts/fetch-vendor.sh
+# downloads each, verifies sha256, and stores it under vendor/src/<name>/.
+# Hook 0200 installs them into the image offline.
+#
+# Format (one record per stanza):
+#   name:    <short id>
+#   kind:    tarball | zip | deb | git-archive
+#   url:     <download url>
+#   sha256:  <hex digest>   # TODO(release): fill real digests via fetch-vendor.sh --update-hashes
+#   version: <human version/commit>
+#   notes:   <what/why, and menu category>
+
+name: zeek
+kind: tarball
+url: TODO
+sha256: TODO
+version: TODO
+notes: Network security monitor with built-in Modbus/DNP3 analyzers. Not in Debian. Discovery.
+
+name: icsnpp
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: CISA ICSNPP extended ICS protocol parsers for Zeek. Installed as Zeek plugins. Discovery.
+
+name: grassmarlin
+kind: zip
+url: TODO
+sha256: TODO
+version: TODO
+notes: Passive ICS network/topology mapper (Java). Discovery.
+
+name: redpoint-nse
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: Digital Bond Redpoint ICS NSE scripts for nmap. Copied into /usr/share/nmap/scripts. Discovery.
+
+name: plcscan
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: PLC discovery scanner. Protocol tools.
+
+name: s7scan
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: Siemens S7 network scanner. Protocol tools.
+
+name: ghidra
+kind: zip
+url: TODO
+sha256: TODO
+version: TODO
+notes: NSA reverse-engineering suite (Java). Not in Debian. Firmware/Hardware.
+
+name: firmware-mod-kit
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: Firmware extraction/rebuild helpers. Firmware/Hardware.
+
+name: exploitdb
+kind: git-archive
+url: TODO
+sha256: TODO
+version: TODO
+notes: Exploit-DB + searchsploit database. Installed as offline reference data.

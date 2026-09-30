@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OPC UA client
+Exec=opcua-client
+Terminal=true
+Categories=X-SnapshOT-Protocols;
+Comment=Graphical OPC UA client
+Icon=utilities-terminal

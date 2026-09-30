@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=gqrx (SDR)
+Exec=gqrx
+Terminal=true
+Categories=X-SnapshOT-Wireless;
+Comment=SDR receiver
+Icon=utilities-terminal

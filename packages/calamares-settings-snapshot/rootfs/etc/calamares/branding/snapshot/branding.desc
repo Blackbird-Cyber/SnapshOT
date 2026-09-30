@@ -1,0 +1,36 @@
+---
+# SnapshOT Calamares branding. Palette: ink #0A0B0C, signal red #F1000E,
+# light #F4F5F6. Assets come from branding/ at the repo root.
+componentName: snapshot
+
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 960px,640px
+windowPlacement: center
+
+strings:
+    productName:         SnapshOT
+    shortProductName:    SnapshOT
+    version:             0.1
+    shortVersion:        0.1
+    versionedName:       SnapshOT 0.1
+    shortVersionedName:  SnapshOT 0.1
+    bootloaderEntryName: SnapshOT
+    # TODO(release): real product and support URLs.
+    productUrl:          "https://example.invalid/snapshot"
+    supportUrl:          "https://example.invalid/snapshot"
+
+images:
+    productLogo:    "logo.svg"
+    productIcon:    "icon.svg"
+    productWelcome: "welcome.png"
+
+slideshow: "show.qml"
+slideshowAPI: 1
+
+style:
+    sidebarBackground:    "#0A0B0C"
+    sidebarText:          "#F4F5F6"
+    sidebarTextSelect:    "#F4F5F6"
+    sidebarTextHighlight: "#F1000E"

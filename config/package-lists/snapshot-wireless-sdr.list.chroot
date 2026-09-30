@@ -1,0 +1,9 @@
+# Wireless survey and software-defined radio.
+aircrack-ng
+kismet
+rtl-sdr
+hackrf
+gnuradio
+gqrx-sdr
+gr-osmosdr
+soapysdr-tools

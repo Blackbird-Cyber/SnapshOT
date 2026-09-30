@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=tshark (capture)
+Exec=xfce4-terminal -e 'tshark'
+Terminal=true
+Categories=X-SnapshOT-Discovery;
+Comment=Live capture with ICS dissectors
+Icon=utilities-terminal

@@ -1,0 +1,41 @@
+#!/bin/sh
+# SnapshOT live-build configuration.
+# Runs `lb config` with snapshot-pinned mirrors and the SnapshOT ISO identity.
+# Reproducibility depends on the pin in config/snapshot.env plus SOURCE_DATE_EPOCH,
+# which scripts/build.sh exports before calling `lb build`.
+set -e
+
+# Load the reproducibility pin.
+. "$(dirname "$0")/../config/snapshot.env"
+
+lb config noauto \
+	--mode debian \
+	--distribution "${SNAPSHOT_DIST}" \
+	--archive-areas "main contrib non-free non-free-firmware" \
+	--parent-archive-areas "main contrib non-free non-free-firmware" \
+	--mirror-bootstrap "${SNAPSHOT_MIRROR_DEBIAN}" \
+	--mirror-chroot "${SNAPSHOT_MIRROR_DEBIAN}" \
+	--mirror-chroot-security "${SNAPSHOT_MIRROR_SECURITY}" \
+	--mirror-binary "${SNAPSHOT_MIRROR_DEBIAN}" \
+	--mirror-binary-security "${SNAPSHOT_MIRROR_SECURITY}" \
+	--security true \
+	--updates true \
+	--backports false \
+	--apt-indices false \
+	--apt-recommends false \
+	--apt-options "--yes -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=false" \
+	--binary-images iso-hybrid \
+	--bootloaders "grub-efi grub-pc" \
+	--debian-installer none \
+	--memtest none \
+	--firmware-chroot true \
+	--firmware-binary true \
+	--architectures amd64 \
+	--linux-flavours amd64 \
+	--iso-application "SnapshOT" \
+	--image-name "snapshot" \
+	--iso-volume "SnapshOT ${SNAPSHOT_DIST}" \
+	--iso-preparer "SnapshOT build; https://snapshot.debian.org/archive/debian/${SNAPSHOT_DEBIAN_PIN}/" \
+	--iso-publisher "Blackbird Cyber" \
+	--bootappend-live "boot=live components username=snapshot hostname=snapshot noeject" \
+	"${@}"

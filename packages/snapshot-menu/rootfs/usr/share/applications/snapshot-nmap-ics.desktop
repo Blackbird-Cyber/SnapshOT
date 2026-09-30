@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=nmap ICS scripts
+Exec=xfce4-terminal -e 'bash -lc "nmap --script-help \"*modbus*,*s7*,*enip*,*bacnet*\"; exec bash"'
+Terminal=true
+Categories=X-SnapshOT-Discovery;
+Comment=nmap ICS NSE help (run scans deliberately)
+Icon=utilities-terminal

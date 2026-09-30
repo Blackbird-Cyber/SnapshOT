@@ -1,0 +1,4 @@
+#!/bin/sh
+# Thin wrapper so `lb build` output is teed to a log.
+set -e
+lb build noauto "${@}" 2>&1 | tee build/build.log

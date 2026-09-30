@@ -1,0 +1,14 @@
+# Discovery — passive-first, careful active. (zeek is not in Debian; it is built
+# in the source layer. GRASSMARLIN and Redpoint NSE are also source layer.)
+wireshark
+tshark
+termshark
+tcpdump
+ntopng
+p0f
+nmap
+netdiscover
+arp-scan
+fping
+nbtscan
+avahi-utils

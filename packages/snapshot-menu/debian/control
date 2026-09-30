@@ -1,0 +1,15 @@
+Source: snapshot-menu
+Section: x11
+Priority: optional
+Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: snapshot-menu
+Architecture: all
+Depends: ${misc:Depends}
+Description: SnapshOT categorized tool menu
+ An XDG menu that groups SnapshOT tools by engagement phase (Discovery, Traffic
+ Analysis, Protocol Tools, Firmware/Hardware, Wireless/SDR, Reporting), in the
+ style of the Kali tools menu.

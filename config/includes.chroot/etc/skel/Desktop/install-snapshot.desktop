@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Install SnapshOT
+Exec=pkexec calamares
+Icon=/etc/calamares/branding/snapshot/icon.svg
+Terminal=false
+Categories=System;

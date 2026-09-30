@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=plcscan
+Exec=xfce4-terminal -e 'bash -lc "/opt/snapshot/plcscan/plcscan.py -h 2>/dev/null; exec bash"'
+Terminal=true
+Categories=X-SnapshOT-Protocols;
+Comment=PLC discovery scanner
+Icon=utilities-terminal

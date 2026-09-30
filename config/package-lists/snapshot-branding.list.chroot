@@ -1,0 +1,5 @@
+# SnapshOT branding packages (built from packages/ into config/packages.chroot)
+snapshot-themes
+snapshot-boot
+snapshot-menu
+calamares-settings-snapshot

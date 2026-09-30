@@ -1,0 +1,18 @@
+Source: calamares-settings-snapshot
+Section: admin
+Priority: optional
+Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: calamares-settings-snapshot
+Architecture: all
+Depends: ${misc:Depends}, calamares, cryptsetup, cryptsetup-initramfs
+Recommends: calamares-settings-debian
+Conflicts: calamares-settings-debian
+Replaces: calamares-settings-debian
+Description: SnapshOT Calamares installer settings and branding
+ Offline installer configuration for SnapshOT: copies the live squashfs to disk
+ with no network, sets up LUKS2 full-disk encryption, and applies SnapshOT
+ installer branding. Overrides calamares-settings-debian.

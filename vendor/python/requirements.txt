@@ -1,0 +1,11 @@
+# GENERATED — do not edit by hand.
+# Produced by scripts/fetch-vendor.sh via pip-compile --generate-hashes.
+# This placeholder exists so the tree is complete; the first `fetch-vendor.sh`
+# run overwrites it with fully hash-pinned entries, e.g.:
+#
+# pymodbus==3.11.3 \
+#     --hash=sha256:<hash>
+# ...
+#
+# The ISO build (hook 0100) refuses to proceed if this file still contains this
+# placeholder marker: PLACEHOLDER-UNPINNED

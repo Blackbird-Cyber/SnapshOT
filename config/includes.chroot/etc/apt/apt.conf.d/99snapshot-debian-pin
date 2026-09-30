@@ -1,0 +1,3 @@
+// SnapshOT: snapshot Release files carry an expired Valid-Until by design.
+Acquire::Check-Valid-Until "false";
+APT::Install-Recommends "false";

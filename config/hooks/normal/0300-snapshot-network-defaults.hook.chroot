@@ -1,0 +1,32 @@
+#!/bin/sh
+# Quiet on the wire: the laptop must not announce itself or send unsolicited
+# traffic onto a plant network. Operators bring interfaces up deliberately.
+set -e
+
+# Mask chatty/auto services (files may not all exist; ignore failures).
+for unit in avahi-daemon.service avahi-daemon.socket systemd-timesyncd.service \
+             modemmanager.service; do
+    systemctl mask "$unit" 2>/dev/null || true
+done
+
+# Disable LLMNR and mDNS in systemd-resolved.
+mkdir -p /etc/systemd/resolved.conf.d
+cat > /etc/systemd/resolved.conf.d/snapshot-quiet.conf <<'RES'
+[Resolve]
+LLMNR=no
+MulticastDNS=no
+RES
+
+# NetworkManager: no connectivity checks, no auto-connect to wired by default.
+mkdir -p /etc/NetworkManager/conf.d
+cat > /etc/NetworkManager/conf.d/snapshot-quiet.conf <<'NM'
+[main]
+# Do not create an automatic wired connection profile.
+no-auto-default=*
+
+[connectivity]
+# Never phone home to check for internet connectivity.
+enabled=false
+NM
+
+echo "SnapshOT: quiet-on-the-wire defaults applied."

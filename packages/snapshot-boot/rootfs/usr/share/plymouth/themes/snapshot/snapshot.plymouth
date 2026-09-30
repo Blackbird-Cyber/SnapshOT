@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=SnapshOT
+Description=SnapshOT boot splash: ink background, centred lockup, passphrase prompt
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/snapshot
+ScriptFile=/usr/share/plymouth/themes/snapshot/snapshot.script

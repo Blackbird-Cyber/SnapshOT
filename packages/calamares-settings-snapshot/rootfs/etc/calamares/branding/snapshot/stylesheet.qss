@@ -1,0 +1,60 @@
+/* SnapshOT installer theme.
+   ink #0A0B0C, panel #141517, edge #2A2C2F, light #F4F5F6, muted #8A8D91,
+   signal red #F1000E. Loaded automatically by Calamares from the branding dir. */
+
+#mainApp, #sidebarApp, #sidebarMenuApp {
+    background-color: #0A0B0C;
+    color: #F4F5F6;
+}
+QWidget {
+    background-color: #0A0B0C;
+    color: #F4F5F6;
+    selection-background-color: #F1000E;
+    selection-color: #F4F5F6;
+}
+QLabel { background: transparent; }
+
+QPushButton {
+    background-color: #141517;
+    color: #F4F5F6;
+    border: 1px solid #2A2C2F;
+    border-radius: 2px;
+    padding: 6px 14px;
+    min-width: 72px;
+}
+QPushButton:hover   { border-color: #F1000E; }
+QPushButton:pressed { background-color: #F1000E; color: #F4F5F6; }
+QPushButton:default { border-color: #F1000E; }
+QPushButton:disabled { color: #8A8D91; border-color: #1F2124; }
+
+QLineEdit, QComboBox, QSpinBox, QListView, QTreeView, QTableView, QPlainTextEdit, QTextEdit {
+    background-color: #141517;
+    color: #F4F5F6;
+    border: 1px solid #2A2C2F;
+    border-radius: 2px;
+    padding: 3px;
+}
+QLineEdit:focus, QComboBox:focus { border-color: #F1000E; }
+QComboBox QAbstractItemView {
+    background-color: #141517;
+    color: #F4F5F6;
+    selection-background-color: #F1000E;
+}
+QListView::item:selected, QTreeView::item:selected { background-color: #F1000E; color: #F4F5F6; }
+
+QProgressBar {
+    background-color: #141517;
+    border: 1px solid #2A2C2F;
+    border-radius: 2px;
+    text-align: center;
+    color: #F4F5F6;
+}
+QProgressBar::chunk { background-color: #F1000E; }
+
+QCheckBox, QRadioButton { background: transparent; }
+QScrollBar:vertical { background: #0A0B0C; width: 10px; }
+QScrollBar::handle:vertical { background: #2A2C2F; border-radius: 3px; min-height: 24px; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QToolTip { background-color: #141517; color: #F4F5F6; border: 1px solid #2A2C2F; }
+
+#debugButton, #aboutButton { color: #8A8D91; }

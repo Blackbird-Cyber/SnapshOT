@@ -1,0 +1,17 @@
+# Firmware, hardware, and reverse engineering. (ghidra is not in Debian; it is
+# vendored in the source layer.)
+binwalk
+radare2
+rizin
+qemu-system-x86
+qemu-utils
+qemu-system-arm
+minicom
+picocom
+screen
+tio
+sigrok-cli
+pulseview
+flashrom
+openocd
+sdcc

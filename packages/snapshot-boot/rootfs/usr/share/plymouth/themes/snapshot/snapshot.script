@@ -1,0 +1,86 @@
+# SnapshOT Plymouth theme (script plugin).
+# Ink background, the SnapshOT lockup centred, a short signal-red rule under it,
+# and text prompts for the LUKS passphrase, questions, and boot messages.
+# Palette: ink #0A0B0C, signal red #F1000E, light #F4F5F6.
+
+Window.SetBackgroundTopColor(0.039, 0.043, 0.047);
+Window.SetBackgroundBottomColor(0.039, 0.043, 0.047);
+
+screen.x = Window.GetX();
+screen.y = Window.GetY();
+screen.w = Window.GetWidth();
+screen.h = Window.GetHeight();
+
+# ---- lockup: 38% of the screen width, a little above centre -----------------
+lockup.src = Image("lockup.png");
+lockup.w = Math.Int(screen.w * 0.38);
+lockup.h = Math.Int(lockup.src.GetHeight() * lockup.w / lockup.src.GetWidth());
+lockup.image = lockup.src.Scale(lockup.w, lockup.h);
+lockup.sprite = Sprite(lockup.image);
+lockup.x = screen.x + (screen.w - lockup.w) / 2;
+lockup.y = screen.y + (screen.h - lockup.h) / 2 - lockup.h * 0.4;
+lockup.sprite.SetPosition(lockup.x, lockup.y, 10);
+
+# ---- signal-red rule under the lockup ---------------------------------------
+rule.w = Math.Int(screen.w * 0.05);
+rule.h = Math.Int(screen.h / 400) + 1;
+rule.image = Image("rule.png").Scale(rule.w, rule.h);
+rule.sprite = Sprite(rule.image);
+rule.y = lockup.y + lockup.h + Math.Int(lockup.h * 0.5);
+rule.sprite.SetPosition(screen.x + (screen.w - rule.w) / 2, rule.y, 10);
+
+# ---- text rows --------------------------------------------------------------
+probe = Image.Text("Xg", 1, 1, 1);
+text.line = Math.Int(probe.GetHeight() * 1.6);
+text.y = rule.y + text.line * 2;
+
+fun CentredText(str, r, g, b, y) {
+    img = Image.Text(str, r, g, b);
+    spr = Sprite(img);
+    spr.SetPosition(screen.x + (screen.w - img.GetWidth()) / 2, y, 20);
+    return spr;
+}
+
+# Passphrase prompt (LUKS unlock). Bullets are drawn in signal red.
+fun DisplayPasswordCallback(prompt_text, bullet_count) {
+    prompt.sprite = NULL;
+    bullets.sprite = NULL;
+    if (prompt_text == "")
+        prompt_text = "Enter passphrase";
+    prompt.sprite = CentredText(prompt_text, 0.957, 0.961, 0.965, text.y);
+    dots = "";
+    for (i = 0; i < bullet_count; i++)
+        dots += "* ";
+    if (dots == "")
+        dots = " ";
+    bullets.sprite = CentredText(dots, 0.945, 0.0, 0.055, text.y + text.line);
+}
+Plymouth.SetDisplayPasswordFunction(DisplayPasswordCallback);
+
+fun DisplayQuestionCallback(prompt_text, entry) {
+    prompt.sprite = NULL;
+    bullets.sprite = NULL;
+    prompt.sprite = CentredText(prompt_text, 0.957, 0.961, 0.965, text.y);
+    bullets.sprite = CentredText(entry, 0.957, 0.961, 0.965, text.y + text.line);
+}
+Plymouth.SetDisplayQuestionFunction(DisplayQuestionCallback);
+
+fun DisplayNormalCallback() {
+    prompt.sprite = NULL;
+    bullets.sprite = NULL;
+}
+Plymouth.SetDisplayNormalFunction(DisplayNormalCallback);
+
+# Status messages (fsck, etc.) sit low on the screen in a muted grey.
+fun MessageCallback(str) {
+    message.sprite = NULL;
+    message.sprite = CentredText(str, 0.54, 0.55, 0.57, screen.y + Math.Int(screen.h * 0.9));
+}
+Plymouth.SetMessageFunction(MessageCallback);
+
+fun QuitCallback() {
+    prompt.sprite = NULL;
+    bullets.sprite = NULL;
+    message.sprite = NULL;
+}
+Plymouth.SetQuitFunction(QuitCallback);

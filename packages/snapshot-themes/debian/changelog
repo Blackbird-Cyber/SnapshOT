@@ -1,0 +1,5 @@
+snapshot-themes (0.1.0) unstable; urgency=low
+
+  * Initial packaging: wallpaper, Xfce skel defaults, greeter background.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Mon, 29 Sep 2026 00:00:00 +0000

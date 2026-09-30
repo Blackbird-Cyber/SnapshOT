@@ -1,0 +1,40 @@
+# live-build working + output
+.build/
+build/
+config/binary
+config/bootstrap
+config/chroot
+config/common
+config/source
+chroot/
+binary/
+*.iso
+*.img
+*.log
+
+# built branding packages
+config/packages.chroot/*.deb
+packages/*.deb
+packages/*.buildinfo
+packages/*.changes
+packages/*/debian/.debhelper/
+packages/*/debian/files
+packages/*/debian/snapshot-*/
+packages/*/debian/calamares-settings-snapshot/
+packages/*/obj-*/
+
+# fetched vendor artifacts (reproduced from vendor/*.in + *.lock, not committed)
+vendor/python/wheelhouse/
+vendor/src/*/
+!vendor/src/.gitkeep
+
+# staged copies
+config/includes.chroot/usr/local/share/snapshot/wheelhouse/
+config/includes.chroot/usr/local/share/snapshot/src/
+config/includes.chroot/usr/local/share/snapshot/requirements.txt
+
+# private / unfree ingest (never committed)
+private/
+
+# macOS
+.DS_Store

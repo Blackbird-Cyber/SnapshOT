@@ -1,0 +1,8 @@
+#!/bin/sh
+# Refresh desktop/menu/icon caches so the SnapshOT menu and .desktop entries show.
+set -e
+update-desktop-database -q /usr/share/applications 2>/dev/null || true
+[ -x /usr/bin/update-menus ] && update-menus 2>/dev/null || true
+for d in /usr/share/icons/*; do
+    [ -d "$d" ] && gtk-update-icon-cache -f -q "$d" 2>/dev/null || true
+done

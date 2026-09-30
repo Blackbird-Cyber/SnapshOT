@@ -1,0 +1,5 @@
+calamares-settings-snapshot (0.1.0) unstable; urgency=low
+
+  * Initial packaging: offline sequence, LUKS2 partitioning, SnapshOT branding.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Mon, 29 Sep 2026 00:00:00 +0000

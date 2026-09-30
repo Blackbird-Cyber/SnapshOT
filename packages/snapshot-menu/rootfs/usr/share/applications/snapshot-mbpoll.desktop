@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=mbpoll (Modbus)
+Exec=xfce4-terminal -e 'bash -lc "mbpoll --help; exec bash"'
+Terminal=true
+Categories=X-SnapshOT-Protocols;
+Comment=Modbus master CLI
+Icon=utilities-terminal
