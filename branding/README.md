@@ -46,6 +46,7 @@ image resampled to 16:9 HD.
 | GRUB theme background (installed) | `packages/snapshot-boot/rootfs/boot/grub/themes/snapshot/background.png` | `splash/snapshot-splash-1920x1080.png` |
 | Live ISO boot menu background | `config/bootloaders/grub-pc/splash.png` | `splash/snapshot-splash-1920x1080.png` |
 | Wallpaper + LightDM | `packages/snapshot-themes/rootfs/usr/share/backgrounds/snapshot/snapshot-default.png` | `splash/snapshot-splash-1920x1080.png` |
+| xfdesktop default backdrop (diverted) | `packages/snapshot-themes/rootfs/usr/share/backgrounds/xfce/xfce-x.svg` | same PNG, base64-embedded in an SVG wrapper |
 | App icon (hicolor) | `packages/snapshot-themes/rootfs/usr/share/icons/hicolor/*/apps/snapshot.*` | `exports/favicon/`, `exports/snapshot-icon-red-on-black.svg` |
 | Calamares logo / icon / welcome | `packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/{logo.svg,icon.svg,welcome.png}` | mark-red-transparent, icon-red-on-black, lockup-red-transparent |
 

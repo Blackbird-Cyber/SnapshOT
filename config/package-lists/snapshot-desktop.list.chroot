@@ -14,3 +14,5 @@ thunar-archive-plugin
 file-roller
 mousepad
 ristretto
+# GdkPixbuf SVG loader (only a recommend of GTK): SVG icons and backdrops render blank without it.
+librsvg2-common

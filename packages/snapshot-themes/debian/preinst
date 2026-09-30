@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+# xfdesktop keys wallpaper settings by monitor name and falls back to its
+# compiled-in default backdrop for any monitor without one. Divert that file so
+# the fallback is the SnapshOT wallpaper (shipped by this package at that path).
+DIV=/usr/share/backgrounds/xfce/xfce-x.svg
+case "$1" in
+    install|upgrade)
+        dpkg-divert --package snapshot-themes --add --rename --divert "$DIV.distrib" "$DIV"
+        ;;
+esac
+#DEBHELPER#
+exit 0

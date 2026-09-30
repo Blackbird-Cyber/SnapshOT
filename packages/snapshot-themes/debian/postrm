@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+DIV=/usr/share/backgrounds/xfce/xfce-x.svg
+case "$1" in
+    remove|abort-install|disappear)
+        dpkg-divert --package snapshot-themes --remove --rename --divert "$DIV.distrib" "$DIV"
+        ;;
+esac
+#DEBHELPER#
+exit 0
