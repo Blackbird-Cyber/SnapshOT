@@ -50,7 +50,8 @@ image resampled to 16:9 HD.
 | App icon (hicolor) | `packages/snapshot-themes/rootfs/usr/share/icons/hicolor/*/apps/snapshot.*` | `exports/favicon/`, `exports/snapshot-icon-red-on-black.svg` |
 | Whisker menu button (panel) | `packages/snapshot-themes/rootfs/usr/share/icons/hicolor/scalable/apps/snapshot-panel-menu.svg` | `exports/snapshot-mark-red-transparent.svg` |
 | Greeter user avatar (`default-user-image = #snapshot`) | the hicolor `snapshot` app icon above (referenced by name) | `exports/favicon/`, `exports/snapshot-icon-red-on-black.svg` |
-| Calamares logo / icon / welcome | `packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/{logo.svg,icon.svg,welcome.png}` | mark-red-transparent, icon-red-on-black, lockup-red-transparent |
+| Calamares logo / icon / slideshow | `packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/{logo.svg,icon.svg,welcome.png}` | mark-red-transparent, icon-red-on-black, lockup-red-transparent |
+| Calamares welcome banner | `packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/banner.png` | welcome.png scaled to 520 px wide (`sips -Z 520`) |
 
 Committed assets are fixed files so the build stays reproducible. If an asset
 changes, update it here first, then copy it to the slots above.
