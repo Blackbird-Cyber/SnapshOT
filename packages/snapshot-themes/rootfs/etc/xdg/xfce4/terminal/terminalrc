@@ -1,0 +1,12 @@
+[Configuration]
+FontUseSystem=TRUE
+ColorUseTheme=FALSE
+ColorForeground=#F4F5F6
+ColorBackground=#0A0B0C
+ColorCursor=#F1000E
+ColorBold=#FFFFFF
+ColorPalette=#0A0B0C;#F1000E;#5EBDAB;#FEA44C;#49AEE6;#9755B3;#47D4B9;#E6E6E6;#8A8D91;#FF3B45;#47D4B9;#FF8A18;#277FFF;#962AC3;#05A1F7;#FFFFFF
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+BackgroundDarkness=0.92
+ScrollingLines=50000
+MiscCursorBlinks=TRUE

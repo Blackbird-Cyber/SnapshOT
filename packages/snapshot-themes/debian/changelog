@@ -1,3 +1,25 @@
+snapshot-themes (0.2.0) unstable; urgency=low
+
+  * Ship the SnapshOT-Dark GTK/xfwm4 theme, vendored from Kali's Kali-Red-Dark
+    (GPL-3.0+) with trademark logo assets stripped and the accent recoloured to
+    the SnapshOT brand red (#f1000e). See scripts/import-theme.sh and
+    THEME-ORIGIN.md.
+  * Add system-wide Xfce defaults under /etc/xdg: single top panel with a Whisker
+    menu, xsettings (SnapshOT-Dark + Papirus-Dark + Cantarell/Fira Code), xfwm4,
+    desktop icons, power-manager, screensaver, terminal, whisker defaults and
+    keyboard shortcuts.
+  * Add dark Qt defaults (qt5ct/qt6ct, Fusion + SnapshOT-Dark colour scheme).
+  * Ship the Whisker button icon (snapshot-panel-menu) in the hicolor theme.
+  * Rewrite the LightDM greeter config for the dark theme.
+  * Depend on papirus-icon-theme, fonts-firacode and fonts-cantarell; drop the
+    dead Recommends.
+  * Diverts generalised to a FILES_TO_DIVERT list (panel, xsettings, keyboard
+    shortcuts, whisker defaults, plus the existing wallpaper divert).
+  * Drop the ineffective etc/skel xfce4-desktop.xml (xfdesktop keys backdrops by
+    monitor name; the xfce-x.svg divert sets the wallpaper).
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Wed, 01 Oct 2026 00:00:00 +0000
+
 snapshot-themes (0.1.0) unstable; urgency=low
 
   * Initial packaging: wallpaper, Xfce skel defaults, greeter background.

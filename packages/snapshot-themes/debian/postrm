@@ -1,9 +1,19 @@
 #!/bin/sh
 set -e
-DIV=/usr/share/backgrounds/xfce/xfce-x.svg
+# Mirror of preinst: remove the diverts so the owning packages' files come back.
+FILES_TO_DIVERT="\
+/usr/share/backgrounds/xfce/xfce-x.svg \
+/etc/xdg/xfce4/panel/default.xml \
+/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml \
+/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml \
+/etc/xdg/xfce4/whiskermenu/defaults.rc"
+
 case "$1" in
     remove|abort-install|disappear)
-        dpkg-divert --package snapshot-themes --remove --rename --divert "$DIV.distrib" "$DIV"
+        for f in $FILES_TO_DIVERT; do
+            dpkg-divert --package snapshot-themes --remove --rename \
+                --divert "$f.distrib" "$f"
+        done
         ;;
 esac
 #DEBHELPER#

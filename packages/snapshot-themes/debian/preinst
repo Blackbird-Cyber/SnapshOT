@@ -1,12 +1,29 @@
 #!/bin/sh
 set -e
-# xfdesktop keys wallpaper settings by monitor name and falls back to its
-# compiled-in default backdrop for any monitor without one. Divert that file so
-# the fallback is the SnapshOT wallpaper (shipped by this package at that path).
-DIV=/usr/share/backgrounds/xfce/xfce-x.svg
+# Files owned by other packages that SnapshOT replaces. We dpkg-divert each so the
+# owning package's copy is renamed to <file>.distrib and this package's copy wins,
+# the way Kali's kali-themes does it. This works in either install order.
+#
+#   xfce-x.svg             xfdesktop's compiled-in fallback backdrop -> SnapshOT
+#                          wallpaper (keys backdrops by monitor name, so this is
+#                          what actually sets the live wallpaper)
+#   panel/default.xml      xfce4-panel      -> SnapshOT single top panel
+#   xsettings.xml          libxfce4ui-common-> SnapshOT theme/icons/fonts
+#   xfce4-keyboard-shortcuts.xml  libxfce4ui-common -> SnapshOT shortcuts
+#   whiskermenu/defaults.rc xfce4-whiskermenu-plugin -> SnapshOT whisker defaults
+FILES_TO_DIVERT="\
+/usr/share/backgrounds/xfce/xfce-x.svg \
+/etc/xdg/xfce4/panel/default.xml \
+/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml \
+/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml \
+/etc/xdg/xfce4/whiskermenu/defaults.rc"
+
 case "$1" in
     install|upgrade)
-        dpkg-divert --package snapshot-themes --add --rename --divert "$DIV.distrib" "$DIV"
+        for f in $FILES_TO_DIVERT; do
+            dpkg-divert --package snapshot-themes --add --rename \
+                --divert "$f.distrib" "$f"
+        done
         ;;
 esac
 #DEBHELPER#
