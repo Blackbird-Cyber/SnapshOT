@@ -8,7 +8,7 @@ set -e
 #                          wallpaper (keys backdrops by monitor name, so this is
 #                          what actually sets the live wallpaper)
 #   panel/default.xml      xfce4-panel      -> SnapshOT single top panel
-#   xsettings.xml          libxfce4ui-common-> SnapshOT theme/icons/fonts
+#   xsettings.xml          xfce4-settings   -> SnapshOT theme/icons/fonts
 #   xfce4-keyboard-shortcuts.xml  libxfce4ui-common -> SnapshOT shortcuts
 #   xfce4-power-manager.xml xfce4-power-manager -> SnapshOT power/lid defaults
 #   whiskermenu/defaults.rc xfce4-whiskermenu-plugin -> SnapshOT whisker defaults

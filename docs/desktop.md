@@ -47,7 +47,7 @@ either install order.
 
 - `/usr/share/backgrounds/xfce/xfce-x.svg` — xfdesktop (wallpaper fallback)
 - `/etc/xdg/xfce4/panel/default.xml` — xfce4-panel
-- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml` — libxfce4ui-common
+- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml` — xfce4-settings
 - `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml` — libxfce4ui-common
 - `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml` — xfce4-power-manager
 - `/etc/xdg/xfce4/whiskermenu/defaults.rc` — xfce4-whiskermenu-plugin
