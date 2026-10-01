@@ -1,59 +1,211 @@
-# SnapshOT
+<p align="center">
+  <img src="branding/exports/snapshot-lockup-on-black.png" width="520" alt="SnapshOT">
+</p>
 
-A Blackbird Cyber product: an offline, reproducible Debian image for OT/ICS
-reconnaissance and client engagements. Built like Kali (Debian `live-build`), but pinned to a single
-`snapshot.debian.org` timestamp so every build is repeatable, and installable at
-an air-gapped site with no network. Full-disk LUKS2 encryption via the installer.
-Wipe and re-image between clients.
+<p align="center">
+  An offline, reproducible Debian image for OT/ICS assessment and client engagements, by Blackbird Cyber.
+</p>
 
-See the full design in `docs/` and the approved plan referenced there.
+<!-- Static badges: the repository is private, so shields.io cannot read its
+     releases. Once it is public, the release badge can become
+     https://img.shields.io/github/v/release/Blackbird-Cyber/SnapshOT?include_prereleases
+     scripts/release.sh rewrites the release badge, the pin badge and the download links. -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Debian-13_trixie-A81D33?logo=debian&amp;logoColor=white" alt="Debian 13 trixie">
+  <img src="https://img.shields.io/badge/Calamares-3.3-2A2C2F" alt="Calamares 3.3">
+  <img src="https://img.shields.io/badge/Xfce-4.20-2A2C2F?logo=xfce&amp;logoColor=white" alt="Xfce 4.20">
+  <img src="https://img.shields.io/badge/encryption-LUKS2-2A2C2F" alt="LUKS2">
+  <img src="https://img.shields.io/badge/snapshot_pin-2026--09--01-2A2C2F" alt="snapshot.debian.org pin">
+  <img src="https://img.shields.io/badge/arch-amd64_%7C_arm64-2A2C2F" alt="amd64 | arm64">
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/pre--release-v0.1.0-F1000E" alt="release"></a>
+</p>
 
-## Layout
-- `auto/`, `config/` — live-build project (snapshot pin, package lists, hooks, includes).
-- `packages/` — SnapshOT branding packages: `snapshot-themes`, `snapshot-boot`,
-  `snapshot-menu`, `calamares-settings-snapshot`.
-- `branding/` — SnapshOT brand assets (source of truth; packages carry copies).
-- `vendor/` — pinned inputs for non-apt software (Python wheelhouse, source tools).
-- `scripts/` — `fetch-vendor.sh` (online), `build.sh`, `verify-repro.sh`, `make-update-usb.sh`.
-- `docker/` — pinned build container.
+SnapshOT is a Debian 13 (trixie) live image built with `live-build`, in the way Kali
+is built, but pinned to a single snapshot.debian.org timestamp so that every build of a
+release resolves the same packages. It boots to an Xfce desktop with OT/ICS discovery,
+traffic, protocol, firmware, radio and reporting tools, and installs to disk with LUKS2
+encryption without any network. Between clients the laptop is wiped and re-imaged.
 
 ## Download
-Prebuilt images are on the [releases page](https://github.com/Blackbird-Cyber/SnapshOT/releases).
-Current release: **v0.1.0**, Debian trixie pinned to snapshot.debian.org
-`20260901T022952Z`.
 
-| Image | For | Boot | Size | SHA-256 |
+<p align="center">
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso"><img src="https://img.shields.io/badge/Download-amd64_ISO-F1000E?style=for-the-badge&amp;logo=debian&amp;logoColor=white" alt="Download the amd64 ISO"></a>
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso"><img src="https://img.shields.io/badge/Download-arm64_ISO-F1000E?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Download the arm64 ISO"></a>
+</p>
+
+<!-- release-table:start -->
+**v0.1.0** (pre-release): Debian trixie pinned to snapshot.debian.org `20260901T022952Z`.
+
+| Image | Hardware | Boot | Size | SHA-256 |
 |---|---|---|---|---|
-| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso) | x86-64 laptops | BIOS + UEFI | 1.61 GiB | `35d5da86cf245e90416014062bf83542e4a523ac64578016cac5a9ea21fc7c14` |
-| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware | UEFI | 1.63 GiB | `66c81e0fb7f4ebf11a09ea749cb74581c692c39d63cc171b7aa3f7041f15f244` |
+| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso) | x86-64 laptops and VMs | BIOS + UEFI | 1.61 GiB | `35d5da86cf245e90416014062bf83542e4a523ac64578016cac5a9ea21fc7c14` |
+| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-arm64.hybrid.iso) | arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware | UEFI | 1.63 GiB | `66c81e0fb7f4ebf11a09ea749cb74581c692c39d63cc171b7aa3f7041f15f244` |
 
-- The arm64 image does not boot Apple Silicon hardware directly; run it in a VM.
-- Write the amd64 image to USB with `dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync`
-  or Ventoy. Verify with `shasum -a 256 <file>` against the table or the release's
-  `SHA256SUMS`.
-- Live session: user `snapshot`, password `live`. Install from the desktop icon
-  (Calamares, offline, LUKS2).
-- v0.1.0 omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN);
-  run `scripts/fetch-vendor.sh` before building to include it.
+Checksums: [`SHA256SUMS`](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/SHA256SUMS)
+<!-- release-table:end -->
 
-## Build (on Debian trixie, or via docker/)
-```
-scripts/fetch-vendor.sh                        # once, online: build wheelhouse + fetch source tools
-sudo scripts/build.sh                          # produces snapshot-amd64.hybrid.iso
-SNAPSHOT_ARCH=arm64 sudo scripts/build.sh      # arm64 (UEFI only), on an arm64 host
-docker/build-in-docker.sh                      # same, inside the pinned container (macOS too)
-scripts/verify-repro.sh                        # optional: build twice, compare sha256
-scripts/release.sh v0.1.0 --prerelease         # publish ISOs as a GitHub release (needs gh)
+All releases are on the [releases page](https://github.com/Blackbird-Cyber/SnapshOT/releases).
+Read [Status and known issues](#status-and-known-issues) before installing v0.1.0.
+
+### Verify the download
+
+Compare the hash with the table or with `SHA256SUMS` from the same release:
+
+```sh
+sha256sum -c --ignore-missing SHA256SUMS            # Linux, next to the downloaded ISO
+shasum -a 256 snapshot-amd64.hybrid.iso             # macOS
+certutil -hashfile snapshot-amd64.hybrid.iso SHA256 # Windows
 ```
 
-## Status
-Scaffold complete and branded. Before a first real build: set the snapshot pin
-in `config/snapshot.env`, fill `vendor/sources.lock` URLs/hashes, and replace the
-`example.invalid` product/support URLs and maintainer address in `packages/`.
-This tree is authored on macOS; builds run on a Debian host.
+GitHub limits a release asset to 2 GiB. An image larger than that is published as
+`snapshot-<arch>.hybrid.iso.part-aa`, `.part-ab`, ...; join the parts in order, then
+verify the joined file (`SHA256SUMS` always lists the whole ISO):
 
-## Scope note
-SnapshOT is a defensive/assessment platform for authorized OT engagements. The
-default image is OT-focused and passive-first; a general IT/exploitation toolset
-is an opt-in overlay, not part of the standard image. Commercial and vendor tools
-are never committed here.
+```sh
+cat snapshot-amd64.hybrid.iso.part-* > snapshot-amd64.hybrid.iso
+```
+
+On Windows: `copy /b snapshot-amd64.hybrid.iso.part-aa + snapshot-amd64.hybrid.iso.part-ab snapshot-amd64.hybrid.iso`.
+
+### Write to USB or run in a VM
+
+- **Linux:** `sudo dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync status=progress`
+  (`/dev/sdX` is the whole stick, not a partition; everything on it is lost).
+- **macOS:** `diskutil unmountDisk /dev/diskN`, then
+  `sudo dd if=snapshot-amd64.hybrid.iso of=/dev/rdiskN bs=4m`.
+- **balenaEtcher** works as is. **Rufus**: when it asks, choose **DD Image** mode, not
+  ISO mode. **Ventoy**: copy the ISO onto the Ventoy stick.
+- **VMs:** enable UEFI firmware, give the VM 4 GB of RAM and a 20 GB disk. Use the
+  arm64 image for UTM, Parallels or VMware Fusion on Apple Silicon; it does not boot an
+  Apple Silicon Mac directly. To test the offline install, remove the VM's network
+  adapter.
+
+## Live session and install
+
+The live session logs in automatically as user `snapshot`; the password `live` is only
+needed to unlock the screen (`sudo` and the installer do not ask for it in the live
+session).
+
+**Install SnapshOT** on the desktop starts Calamares, which copies the live system to
+disk and uses no network. Choose **Erase disk** and **Encrypt system**:
+
+- Layout: EFI system partition (UEFI), a 1 GiB unencrypted `/boot`, and the root
+  filesystem (ext4 by default) inside LUKS2. Swap is optional and off by default.
+- First boot: the SnapshOT GRUB menu, then the boot splash asks for the disk passphrase
+  once, then the LightDM login.
+- Administration: the account created in the installer is in group `sudo`, with its
+  password; root stays locked. The password is remembered for 60 minutes across
+  terminals.
+- The installer removes the live-session packages (`live-boot`, `live-config`,
+  `user-setup`) and Calamares itself; the installed desktop has no Install icon.
+
+The details, the module configuration and the QA checklist are in
+[docs/offline-install.md](docs/offline-install.md). The layout and the removals above
+come with the next image; see [Status and known issues](#status-and-known-issues).
+
+## What's inside
+
+- **Base:** Debian 13 trixie, Linux 6.12, Xfce 4.20 with LightDM, NetworkManager.
+  Installed with no recommended packages. Shell tools: `git`, `vim`, `nano`, `tmux`,
+  `htop`, `jq`, `curl`, `wget`, `rsync`, `tree`, `p7zip-full`, `python3` with `pip`,
+  `venv` and `pipx`.
+- **Firmware:** `firmware-linux`, `firmware-linux-nonfree`, `firmware-iwlwifi`,
+  `firmware-realtek`, `firmware-atheros`, `firmware-misc-nonfree`; Intel and AMD CPU
+  microcode on amd64.
+- **Desktop:** v0.1.0 ships a light Xfce desktop with the SnapshOT wallpaper, a
+  SnapshOT menu with a category per tool group, and the SnapshOT GRUB and Plymouth
+  themes. The next release brings the Kali-style desktop: the SnapshOT-Dark theme,
+  Papirus-Dark icons, one top panel with the Whisker menu, and the tools in seven
+  numbered folders:
+
+| Folder | Tools |
+|---|---|
+| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, avahi-browse, *GRASSMARLIN* |
+| 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy, *Zeek with CISA ICSNPP parsers* |
+| 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, cpppo, pydnp3, BACpypes3, BAC0, asyncua, opcua-client, python-snap7*; *plcscan, s7scan* |
+| 04 Firmware & Hardware | binwalk, *firmware-mod-kit*, *Ghidra*, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
+| 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
+| 06 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
+| 07 Reference | offline reference folder, the build manifest, *Exploit-DB with searchsploit* |
+
+Items in *italics* are the **vendor layer**: tools that are not in Debian (pinned in
+[`vendor/sources.lock`](vendor/sources.lock)) and the ICS Python libraries, which come
+from a hash-pinned wheelhouse ([`vendor/python/requirements.in`](vendor/python/requirements.in)).
+**v0.1.0 does not include the vendor layer**: its sources are not pinned yet. Everything
+else comes from the Debian package lists in [`config/package-lists/`](config/package-lists/).
+
+## Security posture
+
+- **Quiet on the wire.** avahi, systemd-timesyncd and ModemManager are masked;
+  systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
+  and creates no automatic wired profile; IPv6 autoconfiguration and router
+  advertisements are off. Interfaces come up only when the operator brings them up.
+- **Encryption at rest.** The installer sets up LUKS2 on the root filesystem. `/boot`
+  holds only the kernel, initramfs and GRUB files and is not encrypted.
+- **Small, fixed install.** No recommended packages, and no network during the
+  install: Calamares copies the live image.
+- **One client per image.** Re-image between engagements instead of updating in place;
+  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror for the
+  exception.
+- **Scope.** SnapshOT is a defensive and assessment platform for authorized OT
+  engagements only. The default toolset is OT-focused and passive-first.
+
+## Reproducible builds
+
+Every apt source in the build points at one snapshot.debian.org timestamp
+(`SNAPSHOT_DEBIAN_PIN` in [`config/snapshot.env`](config/snapshot.env)), and files are
+stamped with the matching `SOURCE_DATE_EPOCH`, so two builds of a release from the same
+pin resolve the same packages. Each image records where it came from:
+
+- `/etc/snapshot-release`: version, architecture, Debian pin, `SOURCE_DATE_EPOCH` and
+  the build commit.
+- `/usr/share/snapshot/reference/BUILD-MANIFEST.txt`: the same, plus the kernel, every
+  installed package with its version, and the vendor layer.
+
+[`scripts/verify-repro.sh`](scripts/verify-repro.sh) builds twice from a clean state
+and compares the two ISOs, running diffoscope when they differ.
+
+## Build from source
+
+```sh
+SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
+docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
+sudo scripts/build.sh                          # directly on a Debian trixie host
+scripts/check-installer.sh                     # validate the installer configuration first
+```
+
+The ISO lands in the repository root and the log in `build/build.log`. Requirements,
+the vendor layer and the offline mechanics are in [docs/build.md](docs/build.md).
+Maintainers publish with [`scripts/release.sh`](scripts/release.sh), which also
+refreshes the download table above.
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
+| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `calamares-settings-snapshot` (the installer) |
+| [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
+| [`vendor/`](vendor/) | pinned inputs for software that is not in Debian |
+| [`scripts/`](scripts/) | build, checks, reproducibility test, update USB, release |
+| [`docker/`](docker/) | the build container |
+| [`docs/`](docs/) | build, offline install and field updates |
+
+## Status and known issues
+
+- **v0.1.0 cannot install to disk.** Its installer stops at the display-manager step,
+  and the encrypted layout it would have written does not boot: Calamares formats
+  LUKS2 with Argon2id, which Debian's GRUB cannot unlock. Use v0.1.0 as a live system
+  only. The fixes are in this tree (`calamares-settings-snapshot` 0.1.3,
+  `snapshot-boot` 0.1.1) and ship with the next image.
+- The vendor layer is not pinned yet (`TODO` entries in `vendor/sources.lock`), so no
+  image includes it.
+- The installer's swap options create a separate encrypted swap partition; that path
+  has not been through QA yet.
+- Product and support URLs and the package maintainer address are `example.invalid`
+  placeholders.
+
+## Licensing
+
+SnapshOT is assembled from Debian packages and third-party tools. Each keeps its own
+license; on a running system the terms are in `/usr/share/doc/<package>/copyright`.
