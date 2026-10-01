@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=GRASSMARLIN
+Comment=Passive ICS/SCADA network mapper
+Exec=/opt/snapshot/grassmarlin/bin/grassmarlin
+TryExec=/opt/snapshot/grassmarlin/bin/grassmarlin
+Terminal=false
+Icon=applications-internet
+Categories=X-SnapshOT-Recon;

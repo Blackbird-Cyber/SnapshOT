@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=SnapshOT-Dark
+Comment=The SnapshOT dark theme
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=SnapshOT-Dark
+MetacityTheme=SnapshOT-Dark
+IconTheme=Papirus-Dark
+CursorTheme=Adwaita
+ButtonLayout=:minimize,maximize,close

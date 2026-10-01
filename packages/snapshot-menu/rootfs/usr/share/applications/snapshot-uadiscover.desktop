@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=OPC UA discover (uadiscover)
+Comment=Discover OPC UA servers on the network
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/ics-python/bin/uadiscover -h"
+TryExec=/opt/snapshot/ics-python/bin/uadiscover
+Terminal=true
+StartupNotify=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

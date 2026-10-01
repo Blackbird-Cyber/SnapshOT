@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=avahi-browse (mDNS)
+Comment=Browse mDNS/DNS-SD services on the network
+Exec=/usr/share/snapshot-menu/exec-in-shell "avahi-browse --help"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Recon;

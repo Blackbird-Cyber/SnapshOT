@@ -1,8 +1,11 @@
 [Desktop Entry]
 Type=Application
+Version=1.0
 Name=plcscan
-Exec=xfce4-terminal -e 'bash -lc "/opt/snapshot/plcscan/plcscan.py -h 2>/dev/null; exec bash"'
+Comment=Scan for PLCs (S7comm/Modbus)
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/plcscan/bin/plcscan -h"
+TryExec=/opt/snapshot/plcscan/bin/plcscan
 Terminal=true
+StartupNotify=false
+Icon=applications-engineering
 Categories=X-SnapshOT-Protocols;
-Comment=PLC discovery scanner
-Icon=utilities-terminal

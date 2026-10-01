@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Scapy
+Comment=Interactive packet crafting
+Exec=/usr/share/snapshot-menu/exec-in-shell "scapy"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;X-SnapshOT-Protocols;

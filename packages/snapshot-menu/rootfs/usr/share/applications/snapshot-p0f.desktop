@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=p0f
+Comment=Passive OS fingerprinting
+Exec=/usr/share/snapshot-menu/exec-in-shell "p0f -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Recon;

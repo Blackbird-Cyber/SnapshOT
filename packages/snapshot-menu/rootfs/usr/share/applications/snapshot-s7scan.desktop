@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=s7scan
+Comment=Enumerate Siemens S7 PLCs
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/s7scan/bin/s7scan -h"
+TryExec=/opt/snapshot/s7scan/bin/s7scan
+Terminal=true
+StartupNotify=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

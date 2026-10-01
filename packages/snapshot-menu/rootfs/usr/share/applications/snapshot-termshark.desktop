@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=termshark
+Comment=Terminal UI for tshark
+Exec=/usr/share/snapshot-menu/exec-in-shell "termshark --help"
+Terminal=true
+StartupNotify=false
+Icon=wireshark
+Categories=X-SnapshOT-Traffic;

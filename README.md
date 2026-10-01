@@ -117,23 +117,29 @@ come with the next image; see [Status and known issues](#status-and-known-issues
   SnapshOT menu with a category per tool group, and the SnapshOT GRUB and Plymouth
   themes. The next release brings the Kali-style desktop: the SnapshOT-Dark theme,
   Papirus-Dark icons, one top panel with the Whisker menu, and the tools in seven
-  numbered folders:
+  numbered folders ([docs/desktop.md](docs/desktop.md)):
 
 | Folder | Tools |
 |---|---|
-| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, avahi-browse, *GRASSMARLIN* |
-| 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy, *Zeek with CISA ICSNPP parsers* |
-| 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, cpppo, pydnp3, BACpypes3, BAC0, asyncua, opcua-client, python-snap7*; *plcscan, s7scan* |
-| 04 Firmware & Hardware | binwalk, *firmware-mod-kit*, *Ghidra*, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
+| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, avahi-browse |
+| 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
+| 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
+| 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
 | 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
 | 06 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
-| 07 Reference | offline reference folder, the build manifest, *Exploit-DB with searchsploit* |
+| 07 Reference | offline reference folder, the build manifest |
 
-Items in *italics* are the **vendor layer**: tools that are not in Debian (pinned in
-[`vendor/sources.lock`](vendor/sources.lock)) and the ICS Python libraries, which come
-from a hash-pinned wheelhouse ([`vendor/python/requirements.in`](vendor/python/requirements.in)).
-**v0.1.0 does not include the vendor layer**: its sources are not pinned yet. Everything
-else comes from the Debian package lists in [`config/package-lists/`](config/package-lists/).
+Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
+[`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
+each with its own pinned runtime (CPython 3.11 for the Python tools) and reached through
+`/opt/snapshot/bin` on `PATH`. It is fetched before a build with
+`python3 scripts/vendor.py fetch --arch all` (Docker and network); a build without that
+step still produces a working image, just without these tools. **v0.1.0 does not include
+the vendor layer.** Zeek with the CISA ICSNPP parsers, Arkime, s7scan, firmware-mod-kit,
+Exploit-DB and GRASSMARLIN are defined in the lock but disabled (not yet vendored, or in
+GRASSMARLIN's case x86-only Java 8); Ghidra is pinned but disabled because it and its JDK
+add about 650 MB. See [docs/vendoring.md](docs/vendoring.md). Everything else comes from
+the Debian package lists in [`config/package-lists/`](config/package-lists/).
 
 ## Security posture
 
@@ -169,14 +175,17 @@ and compares the two ISOs, running diffoscope when they differ.
 ## Build from source
 
 ```sh
+python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes and tools for the vendor layer
+scripts/check-installer.sh                     # validate the installer configuration
+scripts/check-desktop.sh                       # validate the desktop menu and launchers
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
 sudo scripts/build.sh                          # directly on a Debian trixie host
-scripts/check-installer.sh                     # validate the installer configuration first
 ```
 
 The ISO lands in the repository root and the log in `build/build.log`. Requirements,
-the vendor layer and the offline mechanics are in [docs/build.md](docs/build.md).
+the vendor layer and the offline mechanics are in [docs/build.md](docs/build.md) and
+[docs/vendoring.md](docs/vendoring.md).
 Maintainers publish with [`scripts/release.sh`](scripts/release.sh), which also
 refreshes the download table above.
 
@@ -187,10 +196,10 @@ refreshes the download table above.
 | [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
 | [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
-| [`vendor/`](vendor/) | pinned inputs for software that is not in Debian |
-| [`scripts/`](scripts/) | build, checks, reproducibility test, update USB, release |
+| [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer; runtimes, wheelhouses and archives are fetched, not committed |
+| [`scripts/`](scripts/) | build, `vendor.py`, the installer and desktop checks, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
-| [`docs/`](docs/) | build, offline install and field updates |
+| [`docs/`](docs/) | build, vendoring, desktop, offline install and field updates |
 
 ## Status and known issues
 
@@ -199,8 +208,8 @@ refreshes the download table above.
   LUKS2 with Argon2id, which Debian's GRUB cannot unlock. Use v0.1.0 as a live system
   only. The fixes are in this tree (`calamares-settings-snapshot` 0.1.3,
   `snapshot-boot` 0.1.1) and ship with the next image.
-- The vendor layer is not pinned yet (`TODO` entries in `vendor/sources.lock`), so no
-  image includes it.
+- An image only includes the vendor layer when `python3 scripts/vendor.py fetch` ran
+  before the build; v0.1.0 has none of it.
 - No hibernation: swap, when chosen, is a file inside the encrypted root and the
   installer writes no resume parameter.
 - Product and support URLs and the package maintainer address are `example.invalid`

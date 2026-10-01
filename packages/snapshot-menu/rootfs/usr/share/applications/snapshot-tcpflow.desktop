@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=tcpflow
+Comment=Reconstruct and record TCP flows
+Exec=/usr/share/snapshot-menu/exec-in-shell "tcpflow -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;

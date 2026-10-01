@@ -14,10 +14,17 @@ mkdir -p "$(dirname "$OUT")"
     echo "== dpkg packages =="
     dpkg-query -W -f='${Package} ${Version}\n' 2>/dev/null | sort
     echo
-    echo "== venv (ICS python) =="
-    [ -x /opt/snapshot/venv/bin/pip ] && /opt/snapshot/venv/bin/pip freeze 2>/dev/null | sort || echo "(none)"
-    echo
-    echo "== vendored tools =="
-    ls -1 /opt/snapshot 2>/dev/null || echo "(none)"
+    echo "== vendored runtimes & tools (/opt/snapshot) =="
+    if ls /usr/share/snapshot/vendor/*.manifest >/dev/null 2>&1; then
+        for m in /usr/share/snapshot/vendor/*.manifest; do
+            echo "--- $(basename "$m" .manifest) ---"
+            cat "$m"
+            echo
+        done
+        echo "== /opt/snapshot/bin =="
+        ls -1 /opt/snapshot/bin 2>/dev/null || echo "(none)"
+    else
+        echo "(no vendor layer in this image)"
+    fi
 } > "$OUT"
 echo "SnapshOT: wrote $OUT"

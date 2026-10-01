@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=firmware-mod-kit
+Comment=Extract and rebuild firmware images
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/firmware-mod-kit/bin/extract-firmware"
+TryExec=/opt/snapshot/firmware-mod-kit/bin/extract-firmware
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

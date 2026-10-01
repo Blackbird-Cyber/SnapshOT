@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=pymodbus console
+Comment=Interactive Modbus client console
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/ics-python/bin/pymodbus-console --help"
+TryExec=/opt/snapshot/ics-python/bin/pymodbus-console
+Terminal=true
+StartupNotify=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Application
+Version=1.0
 Name=nmap ICS scripts
-Exec=xfce4-terminal -e 'bash -lc "nmap --script-help \"*modbus*,*s7*,*enip*,*bacnet*\"; exec bash"'
+Comment=nmap NSE help for ICS/OT protocols
+Exec=/usr/share/snapshot-menu/exec-in-shell "nmap --script-help 'modbus*,s7*,enip*,bacnet*,dnp3*,omron*,fox*,pcworx*,iec*'"
 Terminal=true
-Categories=X-SnapshOT-Discovery;
-Comment=nmap ICS NSE help (run scans deliberately)
-Icon=utilities-terminal
+StartupNotify=false
+Icon=nmap
+Categories=X-SnapshOT-Recon;X-SnapshOT-Protocols;

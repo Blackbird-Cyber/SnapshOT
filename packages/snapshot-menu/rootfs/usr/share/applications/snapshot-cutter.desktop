@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Rizin Cutter
-Exec=cutter
-Terminal=true
-Categories=X-SnapshOT-Firmware;
-Comment=Reverse engineering
-Icon=utilities-terminal

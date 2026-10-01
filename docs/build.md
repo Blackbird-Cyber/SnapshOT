@@ -2,8 +2,10 @@
 
 ## Requirements
 A Debian trixie host (or the `docker/` container) with `live-build`, `dpkg-dev`,
-`debhelper`, `xorriso`, `squashfs-tools`, and `pipx` (`pipx install pip-tools`
-for the vendor step; trixie has no pip-tools package). live-build runs as root.
+`debhelper`, `xorriso`, `squashfs-tools`. live-build runs as root. The vendor
+step needs **Docker and network** but nothing extra on the host: it builds the
+Python wheelhouses inside per-arch trixie containers using the pinned
+interpreter, so no `pip-tools` (or `uv`) is installed on the host.
 
 The container path works on macOS too: `docker/build-in-docker.sh` copies the
 tree into the container, builds there (live-build cannot build a chroot on a
@@ -14,12 +16,16 @@ back out. On Apple Silicon it runs under amd64 emulation and takes hours.
 1. Set the pin in `config/snapshot.env` (`SNAPSHOT_DEBIAN_PIN` + matching
    `SNAPSHOT_SOURCE_DATE_EPOCH`). Verify the timestamp exists under
    https://snapshot.debian.org/archive/debian/ .
-2. Pin Python versions in `vendor/python/requirements.in`.
-3. Fill `vendor/sources.lock` URLs, then:
+2. Fetch the vendor layer (pinned runtimes + tools + per-arch wheelhouses), which
+   needs Docker and network (see [`docs/vendoring.md`](vendoring.md)):
    ```
-   scripts/fetch-vendor.sh --update-hashes   # records sha256 into the lock
-   scripts/fetch-vendor.sh                    # builds wheelhouse, verifies hashes
+   python3 scripts/vendor.py update-hashes      # fills any TODO sha256 in the lock
+   python3 scripts/vendor.py fetch --arch all   # runtimes + wheelhouses, hash-verified
+   python3 scripts/vendor.py verify             # re-check sha256 under vendor/src
    ```
+   The per-arch `requirements.<arch>.txt` locks are committed; the wheelhouses and
+   downloaded archives are gitignored, so this step is required before a build
+   that includes the vendor layer. A build without it still works.
 
 ## Build
 ```
@@ -46,9 +52,12 @@ exec sequence in `settings.conf` runs `packages` before `initramfscfg`.
 ## How offline works
 - All apt mirrors point at the snapshot timestamp; the live squashfs holds the
   whole system, so the install copies bytes rather than fetching them.
-- ICS Python libs come from a pinned wheelhouse installed with
-  `pip install --no-index --require-hashes` into `/opt/snapshot/venv`.
-- Non-apt tools come from `vendor/sources.lock` artifacts, hash-verified.
+- Every non-apt tool is installed into `/opt/snapshot/<tool>/` with its own
+  pinned runtime by the chroot hooks, offline, from the staged layer: Python
+  tools from a hash-pinned per-arch wheelhouse (`pip install --no-index
+  --no-deps --require-hashes`), archives from `vendor/sources.lock` (sha256
+  re-verified). Tools are reached through `/opt/snapshot/bin` on `PATH`. See
+  [`docs/vendoring.md`](vendoring.md).
 
 ## Reproducibility
 `scripts/verify-repro.sh` builds twice from clean state and compares ISO sha256,

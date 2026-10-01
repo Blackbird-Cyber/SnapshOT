@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Root Terminal
+Comment=Open a terminal as root
+Exec=pkexec xfce4-terminal --disable-server
+Terminal=false
+Icon=utilities-terminal
+Categories=System;TerminalEmulator;

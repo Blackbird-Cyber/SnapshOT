@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Ghidra
+Comment=Software reverse engineering suite
+Exec=/opt/snapshot/ghidra/bin/ghidra
+TryExec=/opt/snapshot/ghidra/bin/ghidra
+Terminal=false
+Icon=ghidra
+Categories=X-SnapshOT-Firmware;

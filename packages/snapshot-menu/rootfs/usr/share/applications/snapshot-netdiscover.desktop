@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=netdiscover
+Comment=Active/passive ARP network discovery
+Exec=/usr/share/snapshot-menu/exec-in-shell "netdiscover -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Recon;

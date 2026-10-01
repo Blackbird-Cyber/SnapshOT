@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=picocom (serial)
+Comment=Minimal serial terminal
+Exec=/usr/share/snapshot-menu/exec-in-shell "picocom --help"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

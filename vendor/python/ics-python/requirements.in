@@ -1,0 +1,21 @@
+# SnapshOT ICS Python libraries — human-edited source of truth for the
+# `ics-python` tool (one venv on the pinned cpython-3.11.16 runtime).
+#
+# The hash-pinned lock (requirements.txt, committed) and the per-arch wheelhouse
+# are regenerated with `scripts/vendor.py fetch` (or `wheels`), which runs
+# pip-compile and `pip download --only-binary=:all:` inside a trixie container
+# using this exact interpreter. Pin exact versions so the lock is reproducible.
+#
+# pydnp3 and opcua-client are deliberately NOT here: pydnp3 is sdist-only (dropped),
+# opcua-client (PyQt5 GUI) is its own amd64-only tool (../opcua-client/).
+pymodbus==3.11.3
+# pymodbus 3.11 moved the REPL out of core; pymodbus-repl provides pymodbus.console.
+pymodbus-repl
+pycomm3==1.2.14
+# cpppo dropped: every release pins greenery<3.0, and no greenery <3.0 publishes a
+# wheel (wheels start at 3.2), so it cannot be installed wheels-only. pycomm3 covers
+# EtherNet/IP. See docs/vendoring.md (out of scope).
+bacpypes3==0.0.102
+BAC0==2024.9.20
+asyncua==1.1.5
+python-snap7==2.0.2

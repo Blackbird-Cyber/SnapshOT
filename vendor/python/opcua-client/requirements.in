@@ -1,0 +1,6 @@
+# SnapshOT OPC UA GUI client — human-edited source of truth for the
+# `opcua-client` tool (its own venv on cpython-3.11.16). amd64 only: it pulls
+# PyQt5, which publishes x86_64 manylinux wheels but no aarch64 wheels.
+#
+# Regenerate requirements.txt + wheelhouse with `scripts/vendor.py fetch`.
+opcua-client==0.8.4
