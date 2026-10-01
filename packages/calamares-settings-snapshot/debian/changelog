@@ -16,6 +16,10 @@ calamares-settings-snapshot (0.1.2) unstable; urgency=low
     is a plain file, so with the module default the LUKS root would never be
     unlocked at boot; the keyscript form plus the encrypt_hook from
     initramfscfg is what calamares-settings-debian relies on.
+  * Add welcome.conf: storage, RAM and root pre-flight checks and no internet
+    check (offline install). It also puts requiredStorageGiB in global
+    storage, without which the partition page never offers "replace" or
+    "alongside".
 
  -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
 
