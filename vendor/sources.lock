@@ -56,7 +56,7 @@ notes: full JDK (Ghidra needs javac). Enabled automatically when an enabled tool
 name: ics-python
 type: python
 version: 2026.10
-license: per-package (pymodbus BSD-3, pycomm3 MIT, cpppo dual, asyncua LGPL-3.0, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT)
+license: per-package (pymodbus BSD-3-Clause, pymodbus-repl MIT, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT)
 arch: amd64, arm64
 runtime: cpython-3.11.16
 requirements: vendor/python/ics-python/requirements.in
@@ -66,7 +66,7 @@ notes: pymodbus pymodbus-repl pycomm3 bacpypes3 BAC0 asyncua python-snap7. pydnp
 name: opcua-client
 type: python
 version: 0.8.4
-license: GPL-3.0 (PyQt5 GUI)
+license: GPL (opcua-client, unversioned) + GPL-3.0 (PyQt5)
 arch: amd64
 runtime: cpython-3.11.16
 requirements: vendor/python/opcua-client/requirements.in

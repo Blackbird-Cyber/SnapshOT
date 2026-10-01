@@ -181,8 +181,8 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 |---|---|
 | CPython runtimes (python-build-standalone) | PSF-2.0 (bundles OpenSSL etc. under their own terms) |
 | Temurin JDK 21 | GPL-2.0-with-Classpath-Exception |
-| ics-python wheels | per package: pymodbus BSD-3, pymodbus-repl BSD-3, pycomm3 MIT, asyncua LGPL-3.0, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
-| opcua-client | GPL-3.0 (PyQt5 GUI) |
+| ics-python wheels | per package (from wheel metadata / bundled LICENSE): pymodbus BSD-3-Clause, pymodbus-repl MIT, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
+| opcua-client | GPL (opcua-client, unversioned) + GPL-3.0 (PyQt5) |
 | plcscan (eloraux fork) | GPL-3.0 |
 | Redpoint NSE | Nmap license (same as Nmap; see bundled `LICENSE`) |
 | Ghidra | Apache-2.0 |
