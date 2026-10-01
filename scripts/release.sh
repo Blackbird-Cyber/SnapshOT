@@ -9,9 +9,10 @@
 # parts (snapshot-<arch>.hybrid.iso.part-aa, .part-ab, ...). Join them with
 #   cat snapshot-<arch>.hybrid.iso.part-* > snapshot-<arch>.hybrid.iso
 # and verify against SHA256SUMS, which always lists the whole ISO.
-# The tag is created at HEAD and pushed if it does not exist yet; an existing
-# release gets its assets replaced. README.md's download table, download links
-# and badges are rewritten for the tag; review and commit that change afterwards.
+# README.md's download table, download links and badges are rewritten for the
+# tag first. If that changed README.md, the script stops so you can commit it;
+# on the re-run the tag is created at HEAD (now including the README) and pushed
+# if it does not exist yet, and an existing release gets its assets replaced.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 TAG="${1:?usage: release.sh <tag> [--prerelease]}"; shift || true
@@ -95,6 +96,10 @@ else
     echo "README.md has no release-table markers; not updated" >&2
 fi
 
+if ! git diff --quiet HEAD -- README.md; then
+    echo "README.md now lists $TAG. Review and commit it, then re-run this script so the tag includes it." >&2
+    exit 1
+fi
 if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     git tag -a "$TAG" -m "SnapshOT $TAG"
     git push origin "$TAG"
@@ -130,4 +135,4 @@ done
 [ "$ok" = 1 ] || { echo "not publishing: asset verification failed" >&2; exit 1; }
 gh release edit "$TAG" --repo "$REPO" --draft=false
 echo "release: https://github.com/$REPO/releases/tag/$TAG"
-echo "Next: review README.md (now listing $TAG) and commit it; this script does not commit."
+echo "README.md lists $TAG and is committed; push the branch when ready."
