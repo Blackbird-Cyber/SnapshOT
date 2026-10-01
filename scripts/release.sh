@@ -10,7 +10,8 @@
 #   cat snapshot-<arch>.hybrid.iso.part-* > snapshot-<arch>.hybrid.iso
 # and verify against SHA256SUMS, which always lists the whole ISO.
 # The tag is created at HEAD and pushed if it does not exist yet; an existing
-# release gets its assets replaced.
+# release gets its assets replaced. README.md's download table, download links
+# and badges are rewritten for the tag; review and commit that change afterwards.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 TAG="${1:?usage: release.sh <tag> [--prerelease]}"; shift || true
@@ -37,6 +38,62 @@ for iso in "${ISOS[@]}"; do
         ASSETS+=("$iso")
     fi
 done
+
+# Refresh README.md for this release: the table between the release-table
+# markers (rows from SHA256SUMS, sizes from stat), the download links, the
+# release badge and the snapshot-pin badge. The script does not commit it.
+PRERELEASE=0
+for a in "$@"; do [ "$a" = "--prerelease" ] && PRERELEASE=1; done
+release_table() {
+    local kind=release sum file size gib hw boot link
+    [ "$PRERELEASE" = 1 ] && kind=pre-release
+    echo "<!-- release-table:start -->"
+    echo "**$TAG** ($kind): Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org \`${SNAPSHOT_DEBIAN_PIN}\`."
+    echo
+    echo "| Image | Hardware | Boot | Size | SHA-256 |"
+    echo "|---|---|---|---|---|"
+    while read -r sum file; do
+        file="${file#\*}"
+        size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file")
+        gib=$(awk -v b="$size" 'BEGIN { printf "%.2f GiB", b / 1073741824 }')
+        case "$file" in
+            *amd64*) hw="x86-64 laptops and VMs"; boot="BIOS + UEFI" ;;
+            *arm64*) hw="arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware"; boot="UEFI" ;;
+            *)       hw="-"; boot="-" ;;
+        esac
+        if [ -e "$file.part-aa" ]; then
+            link="[$file](https://github.com/$REPO/releases/tag/$TAG) (in parts, see below)"
+        else
+            link="[$file](https://github.com/$REPO/releases/download/$TAG/$file)"
+        fi
+        echo "| $link | $hw | $boot | $gib | \`$sum\` |"
+    done < SHA256SUMS
+    echo
+    echo "Checksums: [\`SHA256SUMS\`](https://github.com/$REPO/releases/download/$TAG/SHA256SUMS)"
+    echo "<!-- release-table:end -->"
+}
+if grep -q '<!-- release-table:start -->' README.md && grep -q '<!-- release-table:end -->' README.md; then
+    block="$(mktemp)"; readme="$(mktemp)"
+    release_table > "$block"
+    badge_label=release; [ "$PRERELEASE" = 1 ] && badge_label="pre--release"
+    badge_tag="${TAG//-/--}"; badge_tag="${badge_tag//_/__}"
+    pin_badge="${SNAPSHOT_DEBIAN_PIN:0:4}--${SNAPSHOT_DEBIAN_PIN:4:2}--${SNAPSHOT_DEBIAN_PIN:6:2}"
+    awk -v blockfile="$block" '
+        /<!-- release-table:start -->/ { while ((getline line < blockfile) > 0) print line; skip = 1; next }
+        /<!-- release-table:end -->/   { skip = 0; next }
+        !skip
+    ' README.md | sed -E \
+        -e "s#(github\.com/$REPO/releases/download/)[^/]+/#\1$TAG/#g" \
+        -e "s#(github\.com/$REPO/releases/tag/)[^\")[:space:]]+#\1$TAG#g" \
+        -e "s#img\.shields\.io/badge/(pre--)?release-[^\"?)]*-F1000E#img.shields.io/badge/$badge_label-$badge_tag-F1000E#g" \
+        -e "s#img\.shields\.io/badge/snapshot_pin-[0-9-]+-#img.shields.io/badge/snapshot_pin-$pin_badge-#g" \
+        > "$readme"
+    cat "$readme" > README.md
+    rm -f "$block" "$readme"
+    echo "README.md: release table, download links and badges updated for $TAG"
+else
+    echo "README.md has no release-table markers; not updated" >&2
+fi
 
 if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     git tag -a "$TAG" -m "SnapshOT $TAG"
@@ -73,3 +130,4 @@ done
 [ "$ok" = 1 ] || { echo "not publishing: asset verification failed" >&2; exit 1; }
 gh release edit "$TAG" --repo "$REPO" --draft=false
 echo "release: https://github.com/$REPO/releases/tag/$TAG"
+echo "Next: review README.md (now listing $TAG) and commit it; this script does not commit."
