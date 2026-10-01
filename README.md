@@ -90,7 +90,8 @@ session).
 disk and uses no network. Choose **Erase disk** and **Encrypt system**:
 
 - Layout: EFI system partition (UEFI), a 1 GiB unencrypted `/boot`, and the root
-  filesystem (ext4 by default) inside LUKS2. Swap is optional and off by default.
+  filesystem (ext4 by default) inside LUKS2. Swap is off by default; if chosen, it is
+  a file inside the encrypted root (no hibernation).
 - First boot: the SnapshOT GRUB menu, then the boot splash asks for the disk passphrase
   once, then the LightDM login.
 - Administration: the account created in the installer is in group `sudo`, with its
@@ -200,8 +201,8 @@ refreshes the download table above.
   `snapshot-boot` 0.1.1) and ship with the next image.
 - The vendor layer is not pinned yet (`TODO` entries in `vendor/sources.lock`), so no
   image includes it.
-- The installer's swap options create a separate encrypted swap partition; that path
-  has not been through QA yet.
+- No hibernation: swap, when chosen, is a file inside the encrypted root and the
+  installer writes no resume parameter.
 - Product and support URLs and the package maintainer address are `example.invalid`
   placeholders.
 

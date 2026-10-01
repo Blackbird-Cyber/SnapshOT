@@ -5,6 +5,10 @@ calamares-settings-snapshot (0.1.3) unstable; urgency=low
     which Debian's GRUB 2.12 cannot unlock, so with /boot inside LUKS the
     installed system could not boot. GRUB now reads /boot directly and the
     initramfs asks for the passphrase once, through Plymouth.
+  * partition.conf: offer swap only as a file inside the encrypted root
+    (userSwapChoices none, file). The small and suspend choices made a
+    second LUKS volume; with /boot unencrypted there is no keyfile, so the
+    initramfs would have asked for the passphrase twice.
   * Add packages.conf and run the packages module after services-systemd,
     before initramfscfg. unpackfs clones the live squashfs, so the installed
     system kept live-boot, live-config, user-setup and the installer itself.

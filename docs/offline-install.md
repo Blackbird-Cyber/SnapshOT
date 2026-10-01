@@ -21,7 +21,7 @@ network at any point, so it works the same at an air-gapped site.
 3. Location and keyboard.
 4. Partitions: choose **Erase disk**, tick **Encrypt system** and enter the disk
    passphrase. The root filesystem defaults to ext4 (btrfs and xfs are offered). Swap
-   is off by default.
+   is off by default; the only other choice is a swap file inside the encrypted root.
 5. Users: name, login and password. This account administers the system through
    `sudo`; there is no root password.
 6. Summary, then **Install**. When it finishes, reboot and remove the USB stick.
@@ -33,13 +33,14 @@ network at any point, so it works the same at an air-gapped site.
 | EFI system partition (UEFI only), `/boot/efi` | 300 MiB | FAT32 | no |
 | `/boot` | 1 GiB | ext4 | no |
 | `/` | rest of the disk | ext4, btrfs or xfs inside LUKS2 | yes (Argon2id) |
-| swap (only if chosen) | depends on RAM | swap inside LUKS2 | yes |
+| `/swapfile` (only if chosen) | depends on RAM | file inside the encrypted root | yes |
 
 `/boot` stays outside LUKS because Calamares formats LUKS2 with Argon2id, which
 Debian's GRUB cannot unlock. It holds only the kernel, the initramfs and GRUB's
-files, but it is neither encrypted nor tamper-protected. The swap choices (small,
-suspend) create a separate LUKS partition with the same passphrase; that path is not
-yet covered by the QA checklist below.
+files, but it is neither encrypted nor tamper-protected. Swap is offered only as a
+file inside the encrypted root: a swap partition would be a second LUKS volume, and
+without a keyfile (there is none when `/boot` is unencrypted) the initramfs would ask
+for the passphrase twice. There is no hibernation.
 
 ## 4. First boot
 
