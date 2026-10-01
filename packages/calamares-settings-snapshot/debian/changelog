@@ -5,6 +5,12 @@ calamares-settings-snapshot (0.1.3) unstable; urgency=low
     which Debian's GRUB 2.12 cannot unlock, so with /boot inside LUKS the
     installed system could not boot. GRUB now reads /boot directly and the
     initramfs asks for the passphrase once, through Plymouth.
+  * Add packages.conf and run the packages module after services-systemd,
+    before initramfscfg. unpackfs clones the live squashfs, so the installed
+    system kept live-boot, live-config, user-setup and the installer itself.
+    They are now purged with apt (offline-safe for removals; update_db is
+    set to false explicitly because the schema defaults it to true), and the
+    final initramfs is built without the live-boot hooks.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
 
