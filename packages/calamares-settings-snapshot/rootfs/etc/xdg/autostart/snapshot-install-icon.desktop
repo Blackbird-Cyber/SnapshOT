@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=SnapshOT Install Icon
+Comment=Put the Install SnapshOT launcher on the live session desktop
+Exec=/usr/bin/snapshot-install-icon
+NoDisplay=true
+StartupNotify=false
+X-GNOME-Autostart-Phase=Initialization

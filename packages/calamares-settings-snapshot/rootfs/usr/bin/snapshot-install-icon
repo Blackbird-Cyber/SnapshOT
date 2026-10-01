@@ -1,0 +1,35 @@
+#!/bin/sh
+# Put the "Install SnapshOT" launcher on the desktop of the live session.
+# Started at login by /etc/xdg/autostart/snapshot-install-icon.desktop. It does
+# nothing on an installed system (the installer also removes this package
+# there), so the icon never follows the user into the installed home.
+# Same steps as calamares-settings-debian's add-calamares-desktop-icon.
+
+live=0
+[ -d /run/live/medium ] && live=1
+case " $(cat /proc/cmdline 2>/dev/null) " in
+    *" boot=live "*) live=1 ;;
+esac
+[ "$live" = 1 ] || exit 0
+
+src=/usr/share/applications/install-snapshot.desktop
+[ -r "$src" ] || exit 0
+
+# xdg-user-dir knows the localised name of the desktop folder; the image does
+# not install xdg-user-dirs, so fall back to ~/Desktop.
+desktop=$(xdg-user-dir DESKTOP 2>/dev/null) || desktop=
+[ -n "$desktop" ] || desktop="$HOME/Desktop"
+mkdir -p "$desktop" || exit 0
+icon="$desktop/install-snapshot.desktop"
+cp "$src" "$icon" || exit 0
+
+# Xfce only starts a desktop launcher that is executable and, since 4.18,
+# marked trusted with the checksum of its contents (Debian #1037299).
+chmod +x "$icon"
+if [ "${XDG_CURRENT_DESKTOP:-}" = "XFCE" ]; then
+    gio set --type=string "$icon" metadata::trusted true 2>/dev/null
+    gio set --type=string "$icon" metadata::xfce-exe-checksum \
+        "$(sha256sum "$icon" | cut -f1 -d' ')" 2>/dev/null
+    touch "$icon"
+fi
+exit 0
