@@ -1,40 +1,85 @@
 <!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
  "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+
+<!--
+  SnapshOT tool folders, merged into the root xfce-applications.menu (which owns
+  the single <Layout>). Each folder collects its X-SnapshOT-* launchers plus the
+  upstream GUI tools that belong to that engagement phase. The <Exclude> lists
+  that keep those upstream tools out of Usual Applications live in the root menu.
+-->
 <Menu>
   <Name>Applications</Name>
-  <Menu>
-    <Name>SnapshOT</Name>
-    <Directory>snapshot.directory</Directory>
 
-    <Menu>
-      <Name>SnapshOT-Discovery</Name>
-      <Directory>snapshot-discovery.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Discovery</Category></And></Include>
-    </Menu>
-    <Menu>
-      <Name>SnapshOT-Traffic</Name>
-      <Directory>snapshot-traffic.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Traffic</Category></And></Include>
-    </Menu>
-    <Menu>
-      <Name>SnapshOT-Protocols</Name>
-      <Directory>snapshot-protocols.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Protocols</Category></And></Include>
-    </Menu>
-    <Menu>
-      <Name>SnapshOT-Firmware</Name>
-      <Directory>snapshot-firmware.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Firmware</Category></And></Include>
-    </Menu>
-    <Menu>
-      <Name>SnapshOT-Wireless</Name>
-      <Directory>snapshot-wireless.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Wireless</Category></And></Include>
-    </Menu>
-    <Menu>
-      <Name>SnapshOT-Reporting</Name>
-      <Directory>snapshot-reporting.directory</Directory>
-      <Include><And><Category>X-SnapshOT-Reporting</Category></And></Include>
-    </Menu>
+  <Menu>
+    <Name>SnapshOT-Recon</Name>
+    <Directory>snapshot-recon.directory</Directory>
+    <Include>
+      <Category>X-SnapshOT-Recon</Category>
+    </Include>
   </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Traffic</Name>
+    <Directory>snapshot-traffic.directory</Directory>
+    <Include>
+      <Or>
+        <Category>X-SnapshOT-Traffic</Category>
+        <Filename>org.wireshark.Wireshark.desktop</Filename>
+      </Or>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Protocols</Name>
+    <Directory>snapshot-protocols.directory</Directory>
+    <Include>
+      <Category>X-SnapshOT-Protocols</Category>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Firmware</Name>
+    <Directory>snapshot-firmware.directory</Directory>
+    <Include>
+      <Or>
+        <Category>X-SnapshOT-Firmware</Category>
+        <Filename>org.sigrok.PulseView.desktop</Filename>
+      </Or>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Wireless</Name>
+    <Directory>snapshot-wireless.directory</Directory>
+    <Include>
+      <Or>
+        <Category>X-SnapshOT-Wireless</Category>
+        <Filename>dk.gqrx.gqrx.desktop</Filename>
+        <Filename>gnuradio-grc.desktop</Filename>
+      </Or>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Reporting</Name>
+    <Directory>snapshot-reporting.directory</Directory>
+    <Include>
+      <Or>
+        <Category>X-SnapshOT-Reporting</Category>
+        <Filename>cherrytree.desktop</Filename>
+        <Filename>org.flameshot.Flameshot.desktop</Filename>
+        <Filename>org.keepassxc.KeePassXC.desktop</Filename>
+        <Filename>libreoffice-writer.desktop</Filename>
+      </Or>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>SnapshOT-Reference</Name>
+    <Directory>snapshot-reference.directory</Directory>
+    <Include>
+      <Category>X-SnapshOT-Reference</Category>
+    </Include>
+  </Menu>
+
 </Menu>

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=airodump-ng
+Comment=802.11 capture and discovery
+Exec=/usr/share/snapshot-menu/exec-in-shell "airodump-ng --help"
+Terminal=true
+StartupNotify=false
+Icon=aircrack-ng
+Categories=X-SnapshOT-Wireless;

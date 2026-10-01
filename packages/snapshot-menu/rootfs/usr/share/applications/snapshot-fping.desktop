@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=fping
+Comment=Fast multi-host ping sweep
+Exec=/usr/share/snapshot-menu/exec-in-shell "fping -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Recon;

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=tio (serial)
+Comment=Simple serial device I/O tool
+Exec=/usr/share/snapshot-menu/exec-in-shell "tio --help"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

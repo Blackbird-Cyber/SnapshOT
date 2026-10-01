@@ -1,0 +1,207 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+
+<!--
+  SnapshOT root Xfce menu (diverts libgarcon-common's xfce-applications.menu).
+  It owns the single <Layout>: the seven SnapshOT engagement-phase folders at the
+  top level, then the stock Xfce categories nested under "Usual Applications".
+  The seven <Menu> blocks themselves are merged in from
+  applications-merged/snapshot.menu via <DefaultMergeDirs/>.
+-->
+<Menu>
+    <Name>Xfce</Name>
+
+    <DefaultAppDirs/>
+    <DefaultDirectoryDirs/>
+    <DefaultMergeDirs/>
+
+    <Include>
+        <Category>X-Xfce-Toplevel</Category>
+    </Include>
+
+    <Layout>
+        <Filename>xfce4-run.desktop</Filename>
+        <Separator/>
+        <Filename>xfce4-terminal-emulator.desktop</Filename>
+        <Filename>xfce4-file-manager.desktop</Filename>
+        <Separator/>
+        <Menuname>SnapshOT-Recon</Menuname>
+        <Menuname>SnapshOT-Traffic</Menuname>
+        <Menuname>SnapshOT-Protocols</Menuname>
+        <Menuname>SnapshOT-Firmware</Menuname>
+        <Menuname>SnapshOT-Wireless</Menuname>
+        <Menuname>SnapshOT-Reporting</Menuname>
+        <Menuname>SnapshOT-Reference</Menuname>
+        <Separator/>
+        <Menuname>Usual Applications</Menuname>
+        <Menuname>Settings</Menuname>
+        <Separator/>
+        <Merge type="all"/>
+        <Separator/>
+        <Filename>xfce4-about.desktop</Filename>
+        <Filename>xfce4-session-logout.desktop</Filename>
+    </Layout>
+
+    <!-- Settings stays a top-level menu (stock libgarcon block). -->
+    <Menu>
+        <Name>Settings</Name>
+        <Directory>xfce-settings.directory</Directory>
+        <Include>
+            <Category>Settings</Category>
+        </Include>
+        <Layout>
+            <Filename>xfce-settings-manager.desktop</Filename>
+            <Separator/>
+            <Merge type="all"/>
+        </Layout>
+        <Menu>
+            <Name>Screensavers</Name>
+            <Directory>xfce-screensavers.directory</Directory>
+            <Include>
+                <Category>Screensaver</Category>
+            </Include>
+        </Menu>
+    </Menu>
+
+    <!-- The stock Xfce categories, nested under Usual Applications. The Exclude
+         lists keep tools pulled into SnapshOT folders from also appearing here. -->
+    <Menu>
+        <Name>Usual Applications</Name>
+        <Directory>snapshot-usual-applications.directory</Directory>
+
+        <Menu>
+            <Name>Accessories</Name>
+            <Directory>xfce-accessories.directory</Directory>
+            <Include>
+                <Or>
+                    <Category>Accessibility</Category>
+                    <Category>Core</Category>
+                    <Category>Legacy</Category>
+                    <Category>Utility</Category>
+                </Or>
+            </Include>
+            <Exclude>
+                <Or>
+                    <Filename>xfce4-file-manager.desktop</Filename>
+                    <Filename>xfce4-terminal-emulator.desktop</Filename>
+                    <Filename>xfce4-about.desktop</Filename>
+                    <Filename>xfce4-run.desktop</Filename>
+                    <Filename>cherrytree.desktop</Filename>
+                    <Filename>org.keepassxc.KeePassXC.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Development</Name>
+            <Directory>xfce-development.directory</Directory>
+            <Include>
+                <Category>Development</Category>
+            </Include>
+            <Exclude>
+                <Or>
+                    <Filename>gnuradio-grc.desktop</Filename>
+                    <Filename>org.sigrok.PulseView.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Education</Name>
+            <Directory>xfce-education.directory</Directory>
+            <Include>
+                <Category>Education</Category>
+            </Include>
+        </Menu>
+
+        <Menu>
+            <Name>Games</Name>
+            <Directory>xfce-games.directory</Directory>
+            <Include>
+                <Category>Game</Category>
+            </Include>
+        </Menu>
+
+        <Menu>
+            <Name>Graphics</Name>
+            <Directory>xfce-graphics.directory</Directory>
+            <Include>
+                <Category>Graphics</Category>
+            </Include>
+            <Exclude>
+                <Filename>org.flameshot.Flameshot.desktop</Filename>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Multimedia</Name>
+            <Directory>xfce-multimedia.directory</Directory>
+            <Include>
+                <Category>Audio</Category>
+                <Category>Video</Category>
+                <Category>AudioVideo</Category>
+            </Include>
+            <Exclude>
+                <Filename>dk.gqrx.gqrx.desktop</Filename>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Network</Name>
+            <Directory>xfce-network.directory</Directory>
+            <Include>
+                <Category>Network</Category>
+            </Include>
+            <Exclude>
+                <Or>
+                    <Filename>xfce4-mail-reader.desktop</Filename>
+                    <Filename>xfce4-web-browser.desktop</Filename>
+                    <Filename>org.wireshark.Wireshark.desktop</Filename>
+                </Or>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Office</Name>
+            <Directory>xfce-office.directory</Directory>
+            <Include>
+                <Category>Office</Category>
+            </Include>
+        </Menu>
+
+        <Menu>
+            <Name>Science</Name>
+            <Directory>xfce-science.directory</Directory>
+            <Include>
+                <Category>Science</Category>
+            </Include>
+            <Exclude>
+                <Filename>gnuradio-grc.desktop</Filename>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>System</Name>
+            <Directory>xfce-system.directory</Directory>
+            <Include>
+                <Or>
+                    <Category>Emulator</Category>
+                    <Category>System</Category>
+                </Or>
+            </Include>
+            <Exclude>
+                <Filename>xfce4-session-logout.desktop</Filename>
+            </Exclude>
+        </Menu>
+
+        <Menu>
+            <Name>Other</Name>
+            <Directory>xfce-other.directory</Directory>
+            <OnlyUnallocated/>
+            <Include>
+                <All/>
+            </Include>
+        </Menu>
+
+    </Menu>
+</Menu>

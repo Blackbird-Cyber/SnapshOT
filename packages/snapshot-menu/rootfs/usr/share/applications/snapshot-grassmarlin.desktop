@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=GRASSMARLIN
+Comment=Passive ICS/SCADA network mapper
+Exec=sh -c "cd /opt/snapshot/grassmarlin && java -jar *.jar"
+TryExec=/opt/snapshot/grassmarlin
+Terminal=false
+Icon=applications-internet
+Categories=X-SnapshOT-Recon;

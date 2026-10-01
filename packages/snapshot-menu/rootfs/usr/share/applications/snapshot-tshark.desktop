@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=tshark (capture)
-Exec=xfce4-terminal -e 'tshark'
+Version=1.0
+Name=tshark
+Comment=CLI network protocol analyzer
+Exec=/usr/share/snapshot-menu/exec-in-shell "tshark -D"
 Terminal=true
-Categories=X-SnapshOT-Discovery;
-Comment=Live capture with ICS dissectors
-Icon=utilities-terminal
+StartupNotify=false
+Icon=wireshark
+Categories=X-SnapshOT-Traffic;

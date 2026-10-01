@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Suricata
+Comment=IDS/IPS and network monitoring
+Exec=/usr/share/snapshot-menu/exec-in-shell "suricata --build-info"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;

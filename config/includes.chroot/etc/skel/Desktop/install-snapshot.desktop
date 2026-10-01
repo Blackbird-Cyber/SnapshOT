@@ -2,6 +2,6 @@
 Type=Application
 Name=Install SnapshOT
 Exec=pkexec calamares
-Icon=/etc/calamares/branding/snapshot/icon.svg
+Icon=snapshot
 Terminal=false
 Categories=System;

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Build manifest
+Comment=View the image build manifest
+Exec=exo-open /usr/share/snapshot/reference/BUILD-MANIFEST.txt
+Terminal=false
+Icon=accessories-dictionary
+Categories=X-SnapshOT-Reference;

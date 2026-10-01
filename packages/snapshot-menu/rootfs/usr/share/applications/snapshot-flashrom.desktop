@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=flashrom
+Comment=Read/write SPI flash chips
+Exec=/usr/share/snapshot-menu/exec-in-shell "flashrom --help"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

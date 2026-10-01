@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# Run a tool, print the command, then drop into an interactive shell so the
+# output stays on screen. Used by the SnapshOT CLI launchers (Terminal=true).
+# Prepend the vendor-layer tool dirs so venv/zeek tools resolve even though
+# /etc/X11/Xsession does not source /etc/profile.d.
+for d in /opt/snapshot/venv/bin /opt/snapshot/zeek/bin; do
+    [ -d "$d" ] && PATH="$d:$PATH"
+done
+export PATH
+
+echo "$ $@"
+eval $@
+
+USER=${USER:-$(whoami)}
+SHELL=${SHELL:-$(getent passwd $USER | cut -d: -f7)}
+${SHELL:-bash} -i

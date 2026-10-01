@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=tcpreplay
+Comment=Replay captured traffic
+Exec=/usr/share/snapshot-menu/exec-in-shell "tcpreplay -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;

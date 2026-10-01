@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=sigrok-cli
+Comment=Logic analyzer CLI (sigrok)
+Exec=/usr/share/snapshot-menu/exec-in-shell "sigrok-cli --help"
+Terminal=true
+StartupNotify=false
+Icon=pulseview
+Categories=X-SnapshOT-Firmware;

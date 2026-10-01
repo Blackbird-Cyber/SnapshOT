@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=OPC UA client
-Exec=opcua-client
-Terminal=true
-Categories=X-SnapshOT-Protocols;
+Version=1.0
+Name=OPC UA Client (GUI)
 Comment=Graphical OPC UA client
-Icon=utilities-terminal
+Exec=/opt/snapshot/venv/bin/opcua-client
+TryExec=/opt/snapshot/venv/bin/opcua-client
+Terminal=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

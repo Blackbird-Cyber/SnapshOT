@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=pandoc
+Comment=Universal document converter
+Exec=/usr/share/snapshot-menu/exec-in-shell "pandoc --version"
+Terminal=true
+StartupNotify=false
+Icon=applications-office
+Categories=X-SnapshOT-Reporting;

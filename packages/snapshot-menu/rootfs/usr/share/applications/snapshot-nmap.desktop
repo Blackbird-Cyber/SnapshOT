@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=nmap
+Comment=Network and port scanner
+Exec=/usr/share/snapshot-menu/exec-in-shell "nmap -h"
+Terminal=true
+StartupNotify=false
+Icon=nmap
+Categories=X-SnapshOT-Recon;

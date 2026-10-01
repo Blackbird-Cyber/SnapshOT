@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=s7scan
+Comment=Enumerate Siemens S7 PLCs
+Exec=/usr/share/snapshot-menu/exec-in-shell "python3 /opt/snapshot/s7scan/s7scan.py -h"
+TryExec=/opt/snapshot/s7scan/s7scan.py
+Terminal=true
+StartupNotify=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

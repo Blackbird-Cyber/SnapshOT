@@ -8,8 +8,11 @@ Rules-Requires-Root: no
 
 Package: snapshot-menu
 Architecture: all
-Depends: ${misc:Depends}
-Description: SnapshOT categorized tool menu
- An XDG menu that groups SnapshOT tools by engagement phase (Discovery, Traffic
- Analysis, Protocol Tools, Firmware/Hardware, Wireless/SDR, Reporting), in the
- style of the Kali tools menu.
+Depends: ${misc:Depends}, desktop-file-utils
+Description: SnapshOT categorized tool menu (Kali-style)
+ A Kali-style Xfce applications menu for SnapshOT: seven numbered engagement-phase
+ folders (Recon, Traffic Analysis, Protocol Tools, Firmware & Hardware, Wireless &
+ SDR, Reporting, Reference) at the top level, with the stock Xfce categories nested
+ under "Usual Applications". Ships the tool launchers, the folder definitions, the
+ root menu (diverting libgarcon-common's xfce-applications.menu) and a helper that
+ keeps CLI tool output on screen.
