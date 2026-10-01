@@ -6,6 +6,7 @@ FILES_TO_DIVERT="\
 /etc/xdg/xfce4/panel/default.xml \
 /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml \
 /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml \
+/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml \
 /etc/xdg/xfce4/whiskermenu/defaults.rc"
 
 case "$1" in
