@@ -7,14 +7,14 @@ desktop-image-scale-method: "crop"
 desktop-image-h-align: "center"
 desktop-image-v-align: "center"
 desktop-color: "#0A0B0C"
-terminal-font: "Unifont Regular 16"
+terminal-font: "GNU Unifont Regular 16"
 
 + boot_menu {
     left = 32%
     top = 66%
     width = 36%
     height = 24%
-    item_font = "Unifont Regular 16"
+    item_font = "GNU Unifont Regular 16"
     item_color = "#F4F5F6"
     selected_item_color = "#F1000E"
     item_height = 28
@@ -34,5 +34,5 @@ terminal-font: "Unifont Regular 16"
     id = "__timeout__"
     text = "Booting the highlighted entry in %d seconds"
     color = "#8A8D91"
-    font = "Unifont Regular 16"
+    font = "GNU Unifont Regular 16"
 }
