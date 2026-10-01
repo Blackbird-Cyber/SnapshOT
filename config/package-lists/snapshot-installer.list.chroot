@@ -2,6 +2,11 @@
 # Calamares installs onto the target disk. amd64 gets BIOS + UEFI GRUB; arm64 is
 # UEFI only.
 calamares
+# Calamares checks the new user's password with libpwquality (users.conf), which
+# loads the cracklib dictionary. Only cracklib-runtime ships it (as a recommend,
+# and recommends are off); without it every password fails with "error loading
+# dictionary".
+cracklib-runtime
 squashfs-tools
 cryptsetup
 cryptsetup-initramfs

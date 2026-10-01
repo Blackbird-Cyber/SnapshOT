@@ -22,8 +22,10 @@ network at any point, so it works the same at an air-gapped site.
 4. Partitions: choose **Erase disk**, tick **Encrypt system** and enter the disk
    passphrase. The root filesystem defaults to ext4 (btrfs and xfs are offered). Swap
    is off by default; the only other choice is a swap file inside the encrypted root.
-5. Users: name, login and password. This account administers the system through
-   `sudo`; there is no root password.
+5. Users: name, login and password. The password must be at least six characters
+   and must not be a dictionary word or contain the login name (libpwquality with
+   the cracklib dictionary). This account administers the system through `sudo`;
+   there is no root password.
 6. Summary, then **Install**. When it finishes, reboot and remove the USB stick.
 
 ## 3. Disk layout
