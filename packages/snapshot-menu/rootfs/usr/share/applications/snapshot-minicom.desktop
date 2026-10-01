@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=minicom (serial)
+Comment=Serial console terminal
+Exec=/usr/share/snapshot-menu/exec-in-shell "minicom -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

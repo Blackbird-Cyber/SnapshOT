@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Zeek
+Comment=Network security monitor
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/zeek/bin/zeek --help"
+TryExec=/opt/snapshot/zeek/bin/zeek
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;

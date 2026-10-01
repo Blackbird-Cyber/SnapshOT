@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=tcpdump
+Comment=Command-line packet capture
+Exec=/usr/share/snapshot-menu/exec-in-shell "tcpdump -D"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Traffic;

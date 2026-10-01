@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+DIV=/etc/xdg/menus/xfce-applications.menu
+case "$1" in
+    remove|abort-install|disappear)
+        dpkg-divert --package snapshot-menu --remove --rename \
+            --divert "$DIV.distrib" "$DIV"
+        ;;
+esac
+#DEBHELPER#
+exit 0

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=rtl-sdr (rtl_test)
+Comment=Test RTL-SDR dongles
+Exec=/usr/share/snapshot-menu/exec-in-shell "rtl_test -t"
+Terminal=true
+StartupNotify=false
+Icon=network-wireless
+Categories=X-SnapshOT-Wireless;

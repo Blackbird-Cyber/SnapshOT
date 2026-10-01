@@ -1,0 +1,8 @@
+# SnapshOT: put the vendor-layer tool dirs on PATH for the X session. Debian's
+# /etc/X11/Xsession does not source /etc/profile.d, so menu launchers would not
+# otherwise find /opt/snapshot/venv/bin or /opt/snapshot/zeek/bin. No shebang:
+# this fragment is sourced by /etc/X11/Xsession.
+for d in /opt/snapshot/venv/bin /opt/snapshot/zeek/bin; do
+    [ -d "$d" ] && PATH="$d:$PATH"
+done
+export PATH

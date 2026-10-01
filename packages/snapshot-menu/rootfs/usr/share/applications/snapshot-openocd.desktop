@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=OpenOCD
+Comment=On-chip debugger (JTAG/SWD)
+Exec=/usr/share/snapshot-menu/exec-in-shell "openocd --help"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

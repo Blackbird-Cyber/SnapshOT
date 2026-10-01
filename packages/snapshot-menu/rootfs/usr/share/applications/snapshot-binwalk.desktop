@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=binwalk
+Comment=Firmware analysis and extraction
+Exec=/usr/share/snapshot-menu/exec-in-shell "binwalk -h"
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Firmware;

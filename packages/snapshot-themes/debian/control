@@ -8,9 +8,10 @@ Rules-Requires-Root: no
 
 Package: snapshot-themes
 Architecture: all
-Depends: ${misc:Depends}
-Recommends: lightdm-gtk-greeter, xfce4-settings
-Description: SnapshOT desktop theme, wallpaper, and greeter branding
- Wallpaper, Xfce desktop defaults for new users, and the LightDM greeter
- background for the SnapshOT OT assessment distribution, plus the SnapshOT
- app icon in the hicolor theme.
+Depends: ${misc:Depends}, papirus-icon-theme, fonts-firacode, fonts-cantarell
+Description: SnapshOT desktop theme, wallpaper, and Xfce defaults
+ The SnapshOT dark desktop for the OT assessment distribution: the SnapshOT-Dark
+ GTK/xfwm4 theme, Papirus-Dark icon defaults, the wallpaper and the LightDM
+ greeter branding, and system-wide Xfce defaults under /etc/xdg (panel, whisker
+ menu, terminal, xfwm4, xfconf and Qt) applied like Kali's kali-themes. The
+ SnapshOT app and panel-menu icons are shipped in the hicolor theme.

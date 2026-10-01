@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Application
+Version=1.0
 Name=mbpoll (Modbus)
-Exec=xfce4-terminal -e 'bash -lc "mbpoll --help; exec bash"'
+Comment=Modbus TCP/RTU master poller
+Exec=/usr/share/snapshot-menu/exec-in-shell "mbpoll -h"
 Terminal=true
+StartupNotify=false
+Icon=applications-engineering
 Categories=X-SnapshOT-Protocols;
-Comment=Modbus master CLI
-Icon=utilities-terminal

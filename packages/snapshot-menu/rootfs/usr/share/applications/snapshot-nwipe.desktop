@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=nwipe (disk wipe)
+Comment=Securely wipe disks
+Exec=/usr/share/snapshot-menu/exec-in-shell "nwipe --help"
+Terminal=true
+StartupNotify=false
+Icon=drive-harddisk
+Categories=X-SnapshOT-Reporting;

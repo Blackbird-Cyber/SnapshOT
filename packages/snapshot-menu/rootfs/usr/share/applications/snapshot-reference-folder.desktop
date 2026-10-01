@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Offline reference data
+Comment=Browse the offline reference data folder
+Exec=exo-open --launch FileManager /usr/share/snapshot/reference
+Terminal=false
+Icon=folder-documents
+Categories=X-SnapshOT-Reference;
