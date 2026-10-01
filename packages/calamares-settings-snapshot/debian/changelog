@@ -8,6 +8,14 @@ calamares-settings-snapshot (0.1.2) unstable; urgency=low
     user GIDs) plus dialout and kvm for the serial-console and qemu tools the
     image ships. nonempty and userGroup are dropped: Calamares 3.3 ignores
     both (minLength: 1 replaces nonempty).
+  * Add mount.conf. With no extraMounts nothing is bind-mounted into the
+    target, so grub-install and update-initramfs would run in a chroot
+    without /dev, /proc, /sys or efivarfs.
+  * Add fstab.conf with crypttabOptions luks,discard,keyscript=/bin/cat.
+    Debian's cryptsetup-initramfs hook skips a root target whose crypttab key
+    is a plain file, so with the module default the LUKS root would never be
+    unlocked at boot; the keyscript form plus the encrypt_hook from
+    initramfscfg is what calamares-settings-debian relies on.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
 
