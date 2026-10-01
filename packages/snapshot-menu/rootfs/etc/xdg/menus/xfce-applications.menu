@@ -157,6 +157,8 @@
                     <Filename>xfce4-mail-reader.desktop</Filename>
                     <Filename>xfce4-web-browser.desktop</Filename>
                     <Filename>org.wireshark.Wireshark.desktop</Filename>
+                    <!-- serial tool; 04 - Firmware & Hardware has its own launcher -->
+                    <Filename>minicom.desktop</Filename>
                 </Or>
             </Exclude>
         </Menu>
@@ -190,7 +192,13 @@
                 </Or>
             </Include>
             <Exclude>
-                <Filename>xfce4-session-logout.desktop</Filename>
+                <Or>
+                    <Filename>xfce4-session-logout.desktop</Filename>
+                    <!-- stock "Install System"; install-snapshot.desktop is the branded one -->
+                    <Filename>calamares.desktop</Filename>
+                    <!-- serial tool; 04 - Firmware & Hardware has its own launcher -->
+                    <Filename>minicom.desktop</Filename>
+                </Or>
             </Exclude>
         </Menu>
 
