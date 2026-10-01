@@ -33,6 +33,23 @@ while IFS= read -r f; do
     if [ -n "$err" ]; then echo "ERROR $f:"; printf "%s\n" "$err"; fail=1; fi
 done < <(find "$THEMES" "$MENU" -name "*.desktop" | sort)
 
+echo "== vendor path policy =="
+# Every /opt/snapshot reference in a launcher must be the per-tool wrapper form
+# /opt/snapshot/<tool>/bin/<cmd> (e.g. /opt/snapshot/zeek/bin/zeek); the old
+# /opt/snapshot/venv/... paths and bare tool paths are gone. Fail if any remain.
+viol="$(
+    grep -rhoE '/opt/snapshot/[A-Za-z0-9._/-]+' "$MENU/usr/share/applications" 2>/dev/null \
+        | grep -vE '^/opt/snapshot/[a-z0-9-]+/bin/[A-Za-z0-9._-]+$' || true
+    grep -rhoE '/opt/snapshot/venv[A-Za-z0-9._/-]*' "$MENU/usr/share/applications" 2>/dev/null || true
+)"
+if [ -n "$viol" ]; then
+    echo "ERROR: launcher path is not /opt/snapshot/<tool>/bin/<cmd>:"
+    printf "%s\n" "$viol" | sort -u | sed 's/^/  /'
+    fail=1
+else
+    echo "all /opt/snapshot launcher paths use <tool>/bin/<cmd>"
+fi
+
 echo "== xmllint =="
 while IFS= read -r f; do
     if ! xmllint --noout --nonet "$f" 2>/tmp/xmlerr; then

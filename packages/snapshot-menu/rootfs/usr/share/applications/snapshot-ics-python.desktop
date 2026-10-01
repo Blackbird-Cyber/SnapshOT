@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=ICS Python shell
+Comment=Python 3.11 shell with the ICS libraries (pymodbus, pycomm3, asyncua, bacpypes3, BAC0, python-snap7)
+Exec=/usr/share/snapshot-menu/exec-in-shell "/opt/snapshot/ics-python/bin/ics-python -c 'import pymodbus, asyncua; print(\"ICS libs ready\")'"
+TryExec=/opt/snapshot/ics-python/bin/ics-python
+Terminal=true
+StartupNotify=false
+Icon=applications-engineering
+Categories=X-SnapshOT-Protocols;

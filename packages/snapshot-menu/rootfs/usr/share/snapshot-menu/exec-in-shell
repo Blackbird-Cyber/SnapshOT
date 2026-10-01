@@ -1,11 +1,13 @@
 #!/usr/bin/env sh
 # Run a tool, print the command, then drop into an interactive shell so the
 # output stays on screen. Used by the SnapshOT CLI launchers (Terminal=true).
-# Prepend the vendor-layer tool dirs so venv/zeek tools resolve even though
-# /etc/X11/Xsession does not source /etc/profile.d.
-for d in /opt/snapshot/venv/bin /opt/snapshot/zeek/bin; do
-    [ -d "$d" ] && PATH="$d:$PATH"
-done
+# The launchers call the vendored tools by absolute /opt/snapshot/<tool>/bin
+# path, but append /opt/snapshot/bin here too so the interactive shell the user
+# is left in can reach them by bare name. Appended so OS commands win.
+case ":$PATH:" in
+  *":/opt/snapshot/bin:"*) ;;
+  *) PATH="$PATH:/opt/snapshot/bin" ;;
+esac
 export PATH
 
 echo "$ $@"
