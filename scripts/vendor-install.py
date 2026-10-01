@@ -370,15 +370,15 @@ def phase_tools(bn, stanzas, arch, ep):
             run([rtpy, "-m", "pip", "--python", os.path.join(venv, "bin", "python"),
                  "install", "--no-index", "--no-cache-dir", "--no-compile",
                  "--no-deps", "--require-hashes", *findlinks, "-r", req])
-            run([os.path.join(venv, "bin", "python"), "-m", "compileall", "-q",
-                 "--invalidation-mode", "unchecked-hash",
+            run([os.path.join(venv, "bin", "python"), "-m", "compileall",
+                 "-q", "-j0", "-f", "--invalidation-mode", "unchecked-hash",
                  os.path.join(venv, "lib")])
             has_venv = True
 
         # 3. record a bundled LICENSE for provenance
-        for cand in ("scripts/LICENSE", "scripts/LICENSE.txt",
-                     "app/LICENSE", "app/LICENSE.txt", "app/COPYING",
-                     "data/LICENSE"):
+        for cand in ("scripts/LICENSE", "scripts/LICENSE.txt", "scripts/LICENSE.md",
+                     "app/LICENSE", "app/LICENSE.txt", "app/LICENSE.md",
+                     "app/COPYING", "data/LICENSE"):
             lp = os.path.join(tdir, cand)
             if os.path.exists(lp):
                 shutil.copy2(lp, os.path.join(tdir, "LICENSE"))

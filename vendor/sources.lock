@@ -61,7 +61,7 @@ arch: amd64, arm64
 runtime: cpython-3.11.16
 requirements: vendor/python/ics-python/requirements.in
 commands: ics-python=python, uadiscover=venv/bin/uadiscover, uals=venv/bin/uals, uaread=venv/bin/uaread, uawrite=venv/bin/uawrite, uasubscribe=venv/bin/uasubscribe, uaclient=venv/bin/uaclient, uaserver=venv/bin/uaserver, uacall=venv/bin/uacall, uahistoryread=venv/bin/uahistoryread, pymodbus-console=venv/bin/pymodbus.console
-notes: pymodbus pycomm3 cpppo bacpypes3 BAC0 asyncua python-snap7. pydnp3 dropped (sdist only, needs a native build stage).
+notes: pymodbus pymodbus-repl pycomm3 bacpypes3 BAC0 asyncua python-snap7. pydnp3 dropped (sdist only); cpppo dropped (pins greenery<3.0 which has no wheel). pycomm3 covers EtherNet/IP.
 
 name: opcua-client
 type: python
@@ -82,7 +82,7 @@ arch: noarch
 runtime: cpython-3.11.16
 strip: 1
 url: https://github.com/eloraux/plcscan/archive/33270ff4ca05f1d1844ce652661d8a37a15792d3.tar.gz
-sha256: TODO
+sha256: 29b33732f0e22211061e6c7c90b666f6cb74af7546e6ab733638af0a55c7cca0
 commands: plcscan=python app/plcscan.py
 notes: GPL-3.0 Python 3 port of Digital Bond plcscan (Modbus + S7); plcscan.py, modbus.py, s7.py at top level. Fresh AI-assisted port (2026-09-30), so the hook test must run it against a live pymodbus server.
 
@@ -90,12 +90,12 @@ name: redpoint-nse
 type: data
 kind: git-archive
 version: git-23ef36b
-license: see bundled LICENSE (Digital Bond)
+license: Nmap license (same as Nmap; see bundled LICENSE)
 arch: noarch
 strip: 1
 install: nmap-scripts
 url: https://github.com/digitalbond/Redpoint/archive/23ef36bf8416b3e71efb7abbcbd6e5717ad9471f.tar.gz
-sha256: TODO
+sha256: 930ff650230dadc8b7eb2cc1b5d128422d646a5172c4b564186ef5e7739f8c51
 notes: 14 ICS NSE scripts at the archive top level (s7-enumerate, enip-enumerate, BACnet-discover-enumerate, modicon-info, dnp3-info, ...); symlinked into /usr/share/nmap/scripts, then nmap --script-updatedb. Record the repo LICENSE text in the MANIFEST dir.
 
 name: ghidra
