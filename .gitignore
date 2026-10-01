@@ -24,15 +24,14 @@ packages/*/debian/snapshot-*/
 packages/*/debian/calamares-settings-snapshot/
 packages/*/obj-*/
 
-# fetched vendor artifacts (reproduced from vendor/*.in + *.lock, not committed)
-vendor/python/wheelhouse/
-vendor/src/*/
+# fetched vendor artifacts (reproduced from vendor/*.in + *.lock, not committed).
+# Per-tool requirements.txt (hash-pinned locks) ARE committed.
+vendor/python/*/wheelhouse/
+vendor/src/**
 !vendor/src/.gitkeep
 
 # staged copies
-config/includes.chroot/usr/local/share/snapshot/wheelhouse/
-config/includes.chroot/usr/local/share/snapshot/src/
-config/includes.chroot/usr/local/share/snapshot/requirements.txt
+config/includes.chroot/usr/local/share/snapshot/vendor/
 config/includes.chroot/etc/snapshot-release
 
 # private / unfree ingest (never committed)
@@ -45,3 +44,7 @@ private/
 SHA256SUMS
 *.sha256
 *.iso.part-*
+
+# python bytecode
+__pycache__/
+*.pyc

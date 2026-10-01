@@ -4,9 +4,10 @@
 #
 #   sudo scripts/build.sh
 #
-# Steps: build branding .debs -> stage them -> stage the offline wheelhouse and
-# source tools -> lb config -> lb build. Reproducibility comes from the snapshot
-# pin in config/snapshot.env plus SOURCE_DATE_EPOCH.
+# Steps: build branding .debs -> stage them -> stage the vendor layer (pinned
+# runtimes + tools + per-arch wheelhouses for this arch) -> lb config -> lb build.
+# Reproducibility comes from the snapshot pin in config/snapshot.env plus
+# SOURCE_DATE_EPOCH.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -33,25 +34,13 @@ find packages -maxdepth 1 -name '*.deb' -exec mv -t config/packages.chroot/ {} +
 mv packages/*.deb config/packages.chroot/ 2>/dev/null || true
 echo "staged .debs:"; ls -1 config/packages.chroot/ || true
 
-# 2. Stage the offline wheelhouse + requirements (if fetched).
-STAGE="config/includes.chroot/usr/local/share/snapshot"
-mkdir -p "$STAGE"
-if [ -d vendor/python/wheelhouse ]; then
-    rm -rf "$STAGE/wheelhouse"; cp -a vendor/python/wheelhouse "$STAGE/wheelhouse"
-    cp -a vendor/python/requirements.txt "$STAGE/requirements.txt"
-    echo "staged wheelhouse ($(ls vendor/python/wheelhouse | wc -l | tr -d ' ') files)"
-else
-    echo "WARN: no vendor/python/wheelhouse — ICS Python libs will be skipped. Run scripts/fetch-vendor.sh."
-fi
-
-# 3. Stage vendored source/binary tools (if fetched).
-if [ -d vendor/src ] && [ -n "$(ls -A vendor/src 2>/dev/null)" ]; then
-    rm -rf "$STAGE/src"; mkdir -p "$STAGE/src"
-    cp -a vendor/src/. "$STAGE/src/"
-    echo "staged source tools: $(ls -1 vendor/src | tr '\n' ' ')"
-else
-    echo "WARN: no vendor/src — zeek/ghidra/grassmarlin etc. will be skipped."
-fi
+# 2. Stage the vendor layer (pinned runtimes, tools, per-arch wheelhouses) for
+#    this arch. vendor.py copies only what is fetched; a build without the vendor
+#    layer still works (the hooks skip when nothing is staged). Set
+#    SNAPSHOT_VENDOR_REQUIRED=1 to turn "enabled but not fetched" into an error.
+STAGE="config/includes.chroot/usr/local/share/snapshot/vendor"
+rm -rf "$STAGE"
+python3 scripts/vendor.py stage --arch "$SNAPSHOT_ARCH" --dest "$STAGE"
 
 # 3b. Stamp the release identity into the image: read by the manifest hook and
 #     available as /etc/snapshot-release on live and installed systems.

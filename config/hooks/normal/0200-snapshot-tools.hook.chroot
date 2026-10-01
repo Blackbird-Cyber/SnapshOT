@@ -1,0 +1,19 @@
+#!/bin/sh
+# Install every enabled vendored tool that this image's arch covers into
+# /opt/snapshot/<tool>/ (venvs from the staged wheelhouse, archives, wrappers,
+# nmap NSE symlinks), then clamp mtimes and remove the staging dir. Offline.
+# See docs/vendoring.md.
+set -e
+VENDOR=/usr/local/share/snapshot/vendor
+if [ ! -f "$VENDOR/vendor-install.py" ]; then
+    echo "SnapshOT: no vendor layer staged; skipping tools."
+    exit 0
+fi
+
+if [ -z "${SOURCE_DATE_EPOCH:-}" ] && [ -f /etc/snapshot-release ]; then
+    . /etc/snapshot-release
+    SOURCE_DATE_EPOCH="${SNAPSHOT_SOURCE_DATE_EPOCH:-}"
+fi
+export SOURCE_DATE_EPOCH
+
+exec python3 "$VENDOR/vendor-install.py" tools finish

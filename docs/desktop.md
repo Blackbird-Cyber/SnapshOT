@@ -79,8 +79,12 @@ so they are not listed twice. (LibreOffice Writer is intentionally left in both
 1. Add a `.desktop` file under
    `packages/snapshot-menu/rootfs/usr/share/applications/`. CLI tools use
    `Terminal=true` and `Exec=/usr/share/snapshot-menu/exec-in-shell "<cmd>"`
-   (which keeps the output on screen); give vendor-layer tools an absolute
-   `TryExec=` so the entry hides when the vendor layer is absent.
+   (which keeps the output on screen). A vendor-layer tool is always reached by
+   its absolute per-tool wrapper path `/opt/snapshot/<tool>/bin/<cmd>` in both
+   `Exec` and `TryExec`, never `/opt/snapshot/venv/...` or a bare path — the
+   wrapper sets the tool's runtime up and the `TryExec` hides the entry when the
+   vendor layer is absent. `check-desktop.sh` enforces this. See
+   [`docs/vendoring.md`](vendoring.md).
 2. Put the folder's category in `Categories=` (e.g. `X-SnapshOT-Recon;`).
 3. If it is an upstream GUI tool pulled into a folder, add a `<Filename>` to that
    folder's `<Or>` in `applications-merged/snapshot.menu` and an `<Exclude>` in the

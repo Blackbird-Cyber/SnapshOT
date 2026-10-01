@@ -1,0 +1,20 @@
+#!/bin/sh
+# Install the pinned runtimes (CPython, JDK, ...) that enabled vendored tools
+# reference, into /opt/snapshot/runtimes/. Offline: everything comes from the
+# wheelhouse/archives staged under /usr/local/share/snapshot/vendor by
+# scripts/vendor.py stage. See docs/vendoring.md.
+set -e
+VENDOR=/usr/local/share/snapshot/vendor
+if [ ! -f "$VENDOR/vendor-install.py" ]; then
+    echo "SnapshOT: no vendor layer staged; skipping runtimes."
+    exit 0
+fi
+
+# live-build exports SOURCE_DATE_EPOCH into hooks; fall back to the release stamp.
+if [ -z "${SOURCE_DATE_EPOCH:-}" ] && [ -f /etc/snapshot-release ]; then
+    . /etc/snapshot-release
+    SOURCE_DATE_EPOCH="${SNAPSHOT_SOURCE_DATE_EPOCH:-}"
+fi
+export SOURCE_DATE_EPOCH
+
+exec python3 "$VENDOR/vendor-install.py" runtimes
