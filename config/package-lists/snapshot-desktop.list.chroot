@@ -35,3 +35,6 @@ qt6ct
 pipewire-pulse
 wireplumber
 pavucontrol
+# The panel's pulseaudio plugin itself is a separate package (not pulled by
+# xfce4-goodies, and recommends are off).
+xfce4-pulseaudio-plugin
