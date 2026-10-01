@@ -49,7 +49,7 @@ NOTES="SnapshOT ${TAG#v}: Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org 
 - snapshot-arm64.hybrid.iso: UEFI only, for arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware. Not bootable on Apple Silicon bare metal.
 - Live session: user \`snapshot\`, password \`live\`. Install with the desktop icon (Calamares, LUKS2).
 - Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS.
-- This build omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN): run scripts/fetch-vendor.sh before a build to include it."
+- Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 are defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
 
 # Create the release as a draft, upload one asset at a time with retries (a
 # 1.7 GiB POST over a flaky link fails easily), verify every asset's size, then

@@ -9,6 +9,8 @@
 # pydnp3 and opcua-client are deliberately NOT here: pydnp3 is sdist-only (dropped),
 # opcua-client (PyQt5 GUI) is its own amd64-only tool (../opcua-client/).
 pymodbus==3.11.3
+# pymodbus 3.11 moved the REPL out of core; pymodbus-repl provides pymodbus.console.
+pymodbus-repl
 pycomm3==1.2.14
 cpppo==5.2.5
 bacpypes3==0.0.102

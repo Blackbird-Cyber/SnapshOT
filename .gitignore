@@ -44,3 +44,7 @@ private/
 SHA256SUMS
 *.sha256
 *.iso.part-*
+
+# python bytecode
+__pycache__/
+*.pyc
