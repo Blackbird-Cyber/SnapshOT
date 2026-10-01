@@ -1,4 +1,4 @@
-# Xfce desktop + display manager (light, Kali-style)
+# Xfce desktop + display manager (Kali-style)
 xorg
 xfce4
 xfce4-goodies
@@ -16,3 +16,22 @@ mousepad
 ristretto
 # GdkPixbuf SVG loader (only a recommend of GTK): SVG icons and backdrops render blank without it.
 librsvg2-common
+# Dark flat look: Papirus-Dark icons and the Fira Code mono font the theme asks for.
+papirus-icon-theme
+fonts-firacode
+# Power management: the panel's power-manager-plugin lives in the -plugins package
+# (a recommend, and recommends are off), and battery handling on field laptops.
+xfce4-power-manager
+xfce4-power-manager-plugins
+# Screen lock / screensaver (xflock4 target; Kali ships this too).
+xfce4-screensaver
+# Dark Qt for the Qt tools (Wireshark, gqrx, PulseView, GRC, KeePassXC). qt5ct
+# ships /etc/X11/Xsession.d/99qt5ct which exports QT_QPA_PLATFORMTHEME=qt5ct;
+# qt6ct honours the same key.
+qt5ct
+qt6ct
+# Sound server: nothing else in the lists provides PulseAudio, so the panel's
+# pulseaudio plugin and gqrx audio would find no device without it.
+pipewire-pulse
+wireplumber
+pavucontrol
