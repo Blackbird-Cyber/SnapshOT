@@ -21,6 +21,11 @@ Module configuration lives in `modules/` next to `settings.conf`:
   `finished.conf` — LUKS2 erase layout, squashfs source, GRUB, machine-id,
   reboot prompt.
 
+Administration on the installed system goes through `sudo` with the user's
+password; root stays locked. `config/hooks/normal/0500-snapshot-sudo.hook.chroot`
+writes `/etc/sudoers.d/snapshot-operator` so a password is remembered for 60
+minutes across all terminals.
+
 The installer sequence and LUKS settings live in
 `packages/calamares-settings-snapshot/rootfs/etc/calamares/`. Debian's `calamares`
 package ships no module configuration and this package replaces

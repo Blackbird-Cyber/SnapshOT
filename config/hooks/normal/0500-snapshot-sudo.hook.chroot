@@ -1,0 +1,18 @@
+#!/bin/sh
+# sudo policy for the installed system. The installer puts the user in group
+# sudo (users.conf) and keeps the password prompt; this only makes the prompt
+# less frequent. The live session is unaffected: live-config gives the live
+# user passwordless sudo at boot, outside the squashfs.
+set -e
+
+f=/etc/sudoers.d/snapshot-operator
+cat > "$f" <<'SUDO'
+# SnapshOT: administration goes through sudo (installer puts the user in group sudo).
+# Remember the password for an hour, shared across terminals, instead of every 15 minutes.
+Defaults timestamp_timeout=60
+Defaults timestamp_type=global
+SUDO
+chown root:root "$f"
+chmod 0440 "$f"
+visudo -cf "$f"
+echo "SnapshOT: wrote $f (sudo timestamp 60 minutes, global)."
