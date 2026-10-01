@@ -16,8 +16,11 @@ See the full design in `docs/` and the approved plan referenced there.
 - Desktop: the live/installed Xfce desktop (dark SnapshOT-Dark theme, Papirus-Dark
   icons, one top panel with a Whisker menu, tools in numbered folders) is set up by
   `snapshot-themes` and `snapshot-menu`; see [`docs/desktop.md`](docs/desktop.md).
-- `vendor/` — pinned inputs for non-apt software (Python wheelhouse, source tools).
-- `scripts/` — `fetch-vendor.sh` (online), `build.sh`, `verify-repro.sh`, `make-update-usb.sh`.
+- `vendor/` — pinned inputs for the per-tool runtime layer: the lock and the
+  committed per-arch `requirements.<arch>.txt`; wheelhouses and archives are
+  fetched, not committed. See [`docs/vendoring.md`](docs/vendoring.md).
+- `scripts/` — `vendor.py` (online: fetch runtimes + per-arch wheelhouses),
+  `build.sh`, `test-vendor-hooks.sh`, `verify-repro.sh`, `make-update-usb.sh`.
 - `docker/` — pinned build container.
 
 ## Download
@@ -37,12 +40,14 @@ Current release: **v0.1.0**, Debian trixie pinned to snapshot.debian.org
 - Live session: user `snapshot`, password `live`. Boots into the dark SnapshOT
   Xfce desktop with the Kali-style tool menu. Install from the desktop icon
   (Calamares, offline, LUKS2).
-- v0.1.0 omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN);
-  run `scripts/fetch-vendor.sh` before building to include it.
+- v0.1.0 omits the vendor layer; run `python3 scripts/vendor.py fetch` (Docker +
+  network) before building to include the per-tool `/opt/snapshot` runtimes and
+  tools (ICS Python libraries, OPC UA GUI client, plcscan, Redpoint NSE). See
+  [`docs/vendoring.md`](docs/vendoring.md).
 
 ## Build (on Debian trixie, or via docker/)
 ```
-scripts/fetch-vendor.sh                        # once, online: build wheelhouse + fetch source tools
+python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes + per-arch wheelhouses
 sudo scripts/build.sh                          # produces snapshot-amd64.hybrid.iso
 SNAPSHOT_ARCH=arm64 sudo scripts/build.sh      # arm64 (UEFI only), on an arm64 host
 docker/build-in-docker.sh                      # same, inside the pinned container (macOS too)
@@ -51,10 +56,13 @@ scripts/release.sh v0.1.0 --prerelease         # publish ISOs as a GitHub releas
 ```
 
 ## Status
-Scaffold complete and branded. Before a first real build: set the snapshot pin
-in `config/snapshot.env`, fill `vendor/sources.lock` URLs/hashes, and replace the
-`example.invalid` product/support URLs and maintainer address in `packages/`.
-This tree is authored on macOS; builds run on a Debian host.
+Scaffold complete and branded, with the tool-isolation vendor layer in place:
+`vendor/sources.lock` v2 pins each non-apt tool's own runtime and
+`scripts/vendor.py` fetches them into `/opt/snapshot/<tool>/`
+(see [`docs/vendoring.md`](docs/vendoring.md)). Before a first real build: set the
+snapshot pin in `config/snapshot.env`, run `python3 scripts/vendor.py fetch`, and
+replace the `example.invalid` product/support URLs and maintainer address in
+`packages/`. This tree is authored on macOS; builds run on a Debian host.
 
 ## Scope note
 SnapshOT is a defensive/assessment platform for authorized OT engagements. The
