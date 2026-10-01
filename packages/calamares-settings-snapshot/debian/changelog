@@ -1,3 +1,16 @@
+calamares-settings-snapshot (0.1.2) unstable; urgency=low
+
+  * Add users.conf. Without it the users module logs "Using fallback groups",
+    puts the user in lp/video/network/storage/wheel/audio and has no
+    sudoersGroup, so the installed user cannot sudo. Groups follow
+    calamares-settings-debian 13.0.13 minus lpadmin, scanner and bluetooth
+    (no cups, sane or bluez in the image; Calamares would create them with
+    user GIDs) plus dialout and kvm for the serial-console and qemu tools the
+    image ships. nonempty and userGroup are dropped: Calamares 3.3 ignores
+    both (minLength: 1 replaces nonempty).
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
+
 calamares-settings-snapshot (0.1.0) unstable; urgency=low
 
   * Initial packaging: offline sequence, LUKS2 partitioning, SnapshOT branding.
