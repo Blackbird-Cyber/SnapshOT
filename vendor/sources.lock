@@ -1,75 +1,131 @@
-# SnapshOT source/binary artifact lock.
-# Non-apt, non-pip tools vendored as pinned artifacts. scripts/fetch-vendor.sh
-# downloads each, verifies sha256, and stores it under vendor/src/<name>/.
-# Hook 0200 installs them into the image offline.
-#
-# Format (one record per stanza):
-#   name:    <short id>
-#   kind:    tarball | zip | deb | git-archive
-#   url:     <download url>
-#   sha256:  <hex digest>   # TODO(release): fill real digests via fetch-vendor.sh --update-hashes
-#   version: <human version/commit>
-#   notes:   <what/why, and menu category>
+# SnapshOT vendored artifacts. One stanza per artifact; blank line between stanzas.
+# type:     runtime | python | java | data
+# kind:     tarball | zip | git-archive | deb          (archive handling)
+# arch:     noarch | amd64 | arm64 | amd64, arm64     (which images get it)
+# url / sha256:          arch-independent artifact
+# url.<arch> / sha256.<arch>: one artifact per architecture
+# strip:    top-level directories to strip on extraction (default 0)
+# runtime:  name of a runtime stanza (python/java tools)
+# requirements: path to a requirements.in for a venv (python tools; optional)
+# commands: name=exec, ... ; exec is relative to the tool dir; "python <path>" runs
+#           the tool's venv python (or the runtime python when there is no venv)
+# install:  nmap-scripts (data symlinked into nmap's script dir) | copy (default)
+# enabled:  true | false (default true). Disabled stanzas are validated, not fetched.
+# All hashes are sha256 of the downloaded archive. `scripts/vendor.py update-hashes`
+# fills "TODO" values; `scripts/vendor.py fetch` refuses to proceed on TODO.
 
-name: zeek
+name: cpython-3.11.16
+type: runtime
 kind: tarball
-url: TODO
-sha256: TODO
-version: TODO
-notes: Network security monitor with built-in Modbus/DNP3 analyzers. Not in Debian. Discovery.
+version: 3.11.16+20260929
+strip: 1
+url.arm64: https://github.com/astral-sh/python-build-standalone/releases/download/20260929/cpython-3.11.16+20260929-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz
+sha256.arm64: 0fe7a9925be231f38c7dffc92eb7f5cf47b121661899ffdb9bc77adfdc74ad2f
+url.amd64: https://github.com/astral-sh/python-build-standalone/releases/download/20260929/cpython-3.11.16+20260929-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+sha256.amd64: f05084f3fbd7a0c7ed762ea6fd2455976a463952bb5c3253fc6cdc777f84728d
+notes: python-build-standalone, relocatable, gnu libc build (loads C-extension wheels)
 
-name: icsnpp
-kind: git-archive
-url: TODO
-sha256: TODO
-version: TODO
-notes: CISA ICSNPP extended ICS protocol parsers for Zeek. Installed as Zeek plugins. Discovery.
+name: temurin-jdk-21.0.12.1
+type: runtime
+kind: tarball
+version: 21.0.12.1+1
+strip: 1
+enabled: false
+url.arm64: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_aarch64_linux_hotspot_21.0.12.1_1.tar.gz
+sha256.arm64: 23e37e026f12f3e706f18938ff611db3032d075b09d0879a25d06718c773e223
+url.amd64: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz
+sha256.amd64: ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94
+notes: full JDK (Ghidra needs javac). Enabled automatically when an enabled tool references it.
 
-name: grassmarlin
-kind: zip
-url: TODO
-sha256: TODO
-version: TODO
-notes: Passive ICS network/topology mapper (Java). Discovery.
+name: ics-python
+type: python
+version: 2026.10
+arch: amd64, arm64
+runtime: cpython-3.11.16
+requirements: vendor/python/ics-python/requirements.in
+commands: ics-python=python, uadiscover=venv/bin/uadiscover, uals=venv/bin/uals, uaread=venv/bin/uaread, uawrite=venv/bin/uawrite, uasubscribe=venv/bin/uasubscribe, uaclient=venv/bin/uaclient, uaserver=venv/bin/uaserver, uacall=venv/bin/uacall, uahistoryread=venv/bin/uahistoryread, pymodbus-console=venv/bin/pymodbus.console
+notes: pymodbus pycomm3 cpppo bacpypes3 BAC0 asyncua python-snap7. pydnp3 dropped (sdist only, needs a native build stage).
 
-name: redpoint-nse
-kind: git-archive
-url: TODO
-sha256: TODO
-version: TODO
-notes: Digital Bond Redpoint ICS NSE scripts for nmap. Copied into /usr/share/nmap/scripts. Discovery.
+name: opcua-client
+type: python
+version: 0.8.4
+arch: amd64
+runtime: cpython-3.11.16
+requirements: vendor/python/opcua-client/requirements.in
+commands: opcua-client=venv/bin/opcua-client
+notes: GUI; PyQt5 publishes x86_64 wheels only, so no arm64 build.
 
 name: plcscan
+type: python
 kind: git-archive
-url: TODO
+version: git-33270ff
+arch: noarch
+runtime: cpython-3.11.16
+strip: 1
+url: https://github.com/eloraux/plcscan/archive/33270ff4ca05f1d1844ce652661d8a37a15792d3.tar.gz
 sha256: TODO
-version: TODO
-notes: PLC discovery scanner. Protocol tools.
+commands: plcscan=python app/plcscan.py
+notes: GPL-3.0 Python 3 port of Digital Bond plcscan (Modbus + S7); plcscan.py, modbus.py, s7.py at top level. Fresh AI-assisted port (2026-09-30), so the hook test must run it against a live pymodbus server.
 
-name: s7scan
+name: redpoint-nse
+type: data
 kind: git-archive
-url: TODO
+version: git-23ef36b
+arch: noarch
+strip: 1
+install: nmap-scripts
+url: https://github.com/digitalbond/Redpoint/archive/23ef36bf8416b3e71efb7abbcbd6e5717ad9471f.tar.gz
 sha256: TODO
-version: TODO
-notes: Siemens S7 network scanner. Protocol tools.
+notes: 14 ICS NSE scripts at the archive top level (s7-enumerate, enip-enumerate, BACnet-discover-enumerate, modicon-info, dnp3-info, ...); symlinked into /usr/share/nmap/scripts, then nmap --script-updatedb. Record the repo LICENSE text in the MANIFEST dir.
 
 name: ghidra
+type: java
 kind: zip
-url: TODO
-sha256: TODO
-version: TODO
-notes: NSA reverse-engineering suite (Java). Not in Debian. Firmware/Hardware.
+version: 11.4.3
+arch: noarch
+runtime: temurin-jdk-21.0.12.1
+strip: 1
+enabled: false
+url: https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.4.3_build/ghidra_11.4.3_PUBLIC_20251203.zip
+sha256: b22a8baebb14339f19903c54363ba7e01781930cc43ab430539aabce0d58547a
+commands: ghidra=app/ghidraRun, ghidra-headless=app/support/analyzeHeadless
+notes: 456 MB; enabling pushes the ISO past 2 GiB (release.sh splits).
+
+# --- Disabled placeholders: shape decided, artifacts not yet pinned. ---
+# These are validated by `vendor.py` but never fetched until given a url/sha256
+# and enabled. See docs/vendoring.md "out of scope and why".
+
+name: s7scan
+type: python
+enabled: false
+notes: desvert/s7scan Python 3 fork. Needs scapy pinned in its own venv on cpython-3.11.16. Not yet vendored.
+
+name: zeek
+type: data
+enabled: false
+notes: network security monitor with Modbus/DNP3 analyzers. Official OBS .deb for Debian_13, upstream prefix /opt/zeek, pulls apt deps — the documented exception to "self-contained". Not yet vendored.
+
+name: icsnpp
+type: data
+enabled: false
+notes: CISA ICSNPP extended ICS protocol parsers for Zeek (zkg packages). Needs an enabled zeek. Not yet vendored.
+
+name: arkime
+type: data
+enabled: false
+notes: full-packet capture/index. Ships as a .deb into /opt/arkime; upstream publishes no stable sha. Not yet vendored.
+
+name: grassmarlin
+type: java
+enabled: false
+notes: archived passive ICS mapper. Java 8 + JavaFX and an x86-only JNetPcap native lib — unsupported on this image. Not vendored.
 
 name: firmware-mod-kit
-kind: git-archive
-url: TODO
-sha256: TODO
-version: TODO
-notes: Firmware extraction/rebuild helpers. Firmware/Hardware.
+type: data
+enabled: false
+notes: firmware extraction/rebuild helpers. Needs its own build stage. Not yet vendored.
 
 name: exploitdb
-kind: git-archive
-url: TODO
-sha256: TODO
-version: TODO
-notes: Exploit-DB + searchsploit database. Installed as offline reference data.
+type: data
+enabled: false
+notes: Exploit-DB + searchsploit database as offline reference data (large). Not yet vendored.
