@@ -13,6 +13,9 @@ See the full design in `docs/` and the approved plan referenced there.
 - `packages/` — SnapshOT branding packages: `snapshot-themes`, `snapshot-boot`,
   `snapshot-menu`, `calamares-settings-snapshot`.
 - `branding/` — SnapshOT brand assets (source of truth; packages carry copies).
+- Desktop: the live/installed Xfce desktop (dark SnapshOT-Dark theme, Papirus-Dark
+  icons, one top panel with a Whisker menu, tools in numbered folders) is set up by
+  `snapshot-themes` and `snapshot-menu`; see [`docs/desktop.md`](docs/desktop.md).
 - `vendor/` — pinned inputs for non-apt software (Python wheelhouse, source tools).
 - `scripts/` — `fetch-vendor.sh` (online), `build.sh`, `verify-repro.sh`, `make-update-usb.sh`.
 - `docker/` — pinned build container.
@@ -31,7 +34,8 @@ Current release: **v0.1.0**, Debian trixie pinned to snapshot.debian.org
 - Write the amd64 image to USB with `dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync`
   or Ventoy. Verify with `shasum -a 256 <file>` against the table or the release's
   `SHA256SUMS`.
-- Live session: user `snapshot`, password `live`. Install from the desktop icon
+- Live session: user `snapshot`, password `live`. Boots into the dark SnapshOT
+  Xfce desktop with the Kali-style tool menu. Install from the desktop icon
   (Calamares, offline, LUKS2).
 - v0.1.0 omits the vendor layer (ICS Python wheelhouse, zeek, ghidra, GRASSMARLIN);
   run `scripts/fetch-vendor.sh` before building to include it.
