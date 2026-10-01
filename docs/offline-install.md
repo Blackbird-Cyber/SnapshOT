@@ -7,5 +7,9 @@
 4. Set the passphrase, create the user, finish, reboot, unlock.
 
 The installer sequence and LUKS settings live in
-`packages/calamares-settings-snapshot/rootfs/etc/calamares/`. Verify with the QEMU
-test in `docs/build.md` using a VM that has no NIC attached.
+`packages/calamares-settings-snapshot/rootfs/etc/calamares/`. Debian's `calamares`
+package ships no module configuration and this package replaces
+`calamares-settings-debian`, so every module that needs settings must have its
+`.conf` under `modules/` here. A module with no file runs on upstream defaults;
+`displaymanager` is one that refuses to run without one. Verify with the QEMU test
+in `docs/build.md` using a VM that has no NIC attached.

@@ -1,3 +1,12 @@
+calamares-settings-snapshot (0.1.1) unstable; urgency=low
+
+  * Add displaymanager.conf (LightDM, GTK greeter, Xfce session). Replacing
+    calamares-settings-debian dropped its copy, and Debian's calamares ships
+    no module configs, so the install failed at the displaymanager step with
+    "No display managers selected for the displaymanager module".
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
+
 calamares-settings-snapshot (0.1.0) unstable; urgency=low
 
   * Initial packaging: offline sequence, LUKS2 partitioning, SnapshOT branding.
