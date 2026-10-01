@@ -96,7 +96,7 @@ strip: 1
 install: nmap-scripts
 url: https://github.com/digitalbond/Redpoint/archive/23ef36bf8416b3e71efb7abbcbd6e5717ad9471f.tar.gz
 sha256: 930ff650230dadc8b7eb2cc1b5d128422d646a5172c4b564186ef5e7739f8c51
-notes: 14 ICS NSE scripts at the archive top level (s7-enumerate, enip-enumerate, BACnet-discover-enumerate, modicon-info, dnp3-info, ...); symlinked into /usr/share/nmap/scripts, then nmap --script-updatedb. Record the repo LICENSE text in the MANIFEST dir.
+notes: 13 ICS NSE scripts at the archive top level (s7-enumerate, enip-enumerate, BACnet-discover-enumerate, modicon-info, dnp3-info, ...); symlinked into /usr/share/nmap/scripts, then nmap --script-updatedb. Record the repo LICENSE text in the MANIFEST dir.
 
 name: ghidra
 type: java
