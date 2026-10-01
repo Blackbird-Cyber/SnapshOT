@@ -3,8 +3,10 @@
 # light #F4F5F6. Assets come from branding/ at the repo root.
 componentName: snapshot
 
+# The welcome page shows only the lockup banner: the stylesheet collapses the
+# "Welcome to the Calamares installer" label (QLabel#mainText), and no welcome
+# image is set, so the logo is not repeated below the requirement checks.
 welcomeStyleCalamares: true
-welcomeExpandingLogo: true
 windowExpanding: normal
 windowSize: 960px,640px
 windowPlacement: center
@@ -24,7 +26,7 @@ strings:
 images:
     productLogo:    "logo.svg"
     productIcon:    "icon.svg"
-    productWelcome: "welcome.png"
+    productBanner:  "banner.png"
 
 slideshow: "show.qml"
 slideshowAPI: 1

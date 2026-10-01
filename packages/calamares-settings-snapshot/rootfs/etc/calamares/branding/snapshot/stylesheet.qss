@@ -58,3 +58,7 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
 QToolTip { background-color: #141517; color: #F4F5F6; border: 1px solid #2A2C2F; }
 
 #debugButton, #aboutButton { color: #8A8D91; }
+
+/* Welcome page: hide the "Welcome to the Calamares installer for ..." label so
+   the productBanner (the lockup) is the page header. */
+QLabel#mainText { max-height: 0px; min-height: 0px; margin: 0; padding: 0; color: transparent; }

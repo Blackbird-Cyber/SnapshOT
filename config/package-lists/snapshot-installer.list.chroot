@@ -7,6 +7,11 @@ calamares
 # and recommends are off); without it every password fails with "error loading
 # dictionary".
 cracklib-runtime
+# The install slideshow (branding show.qml) is QML and imports QtQuick, and
+# Calamares' slideshow components import QtQuick.Window. The calamares package
+# depends on neither QML module, so without them the slideshow area is black.
+qml6-module-qtquick
+qml6-module-qtquick-window
 squashfs-tools
 cryptsetup
 cryptsetup-initramfs
