@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=The Sleuth Kit (CLI)
+Comment=Disk image and filesystem forensics: mmls, fsstat, fls, icat, tsk_recover
+Exec=/usr/share/snapshot-menu/exec-in-shell "mmls -V"
+TryExec=/usr/bin/mmls
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Reporting;

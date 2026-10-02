@@ -1,3 +1,13 @@
+snapshot-menu (0.2.2) unstable; urgency=low
+
+  * Add Autopsy (snapshot-autopsy.desktop) to 06 Reporting & Documentation,
+    through the vendor-layer wrapper /opt/snapshot/autopsy/bin/autopsy. amd64
+    images only; its TryExec hides it on arm64.
+  * Add "The Sleuth Kit (CLI)" (snapshot-sleuthkit.desktop) to 06 Reporting &
+    Documentation, on both architectures.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
+
 snapshot-menu (0.2.1) unstable; urgency=low
 
   * Point every vendor-layer launcher at the per-tool wrapper path
