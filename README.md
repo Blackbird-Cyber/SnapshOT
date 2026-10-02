@@ -57,7 +57,8 @@ shasum -a 256 snapshot-amd64.hybrid.iso             # macOS
 certutil -hashfile snapshot-amd64.hybrid.iso SHA256 # Windows
 ```
 
-GitHub limits a release asset to 2 GiB. An image larger than that is published as
+GitHub limits a release asset to 2 GiB, and the amd64 image with the vendor layer is
+larger, so it is published in parts. Any image over the limit is published as
 `snapshot-<arch>.hybrid.iso.part-aa`, `.part-ab`, ...; join the parts in order, then
 verify the joined file (`SHA256SUMS` always lists the whole ISO):
 
@@ -75,10 +76,33 @@ On Windows: `copy /b snapshot-amd64.hybrid.iso.part-aa + snapshot-amd64.hybrid.i
   `sudo dd if=snapshot-amd64.hybrid.iso of=/dev/rdiskN bs=4m`.
 - **balenaEtcher** works as is. **Rufus**: when it asks, choose **DD Image** mode, not
   ISO mode. **Ventoy**: copy the ISO onto the Ventoy stick.
-- **VMs:** enable UEFI firmware, give the VM 4 GB of RAM and a 20 GB disk. Use the
+- **VMs:** enable UEFI firmware, give the VM 4 GB of RAM (8 GB or more to run Autopsy)
+  and a 20 GB disk. Use the
   arm64 image for UTM, Parallels or VMware Fusion on Apple Silicon; it does not boot an
   Apple Silicon Mac directly. To test the offline install, remove the VM's network
   adapter.
+
+## amd64 and arm64 images
+
+Both images come from the same tree and pin. They differ only where the hardware
+or upstream software requires it:
+
+| | amd64 | arm64 |
+|---|---|---|
+| Use it on | x86-64 laptops, desktops and VMs (VMware, VirtualBox, Hyper-V, QEMU/KVM) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware; it does not boot an Apple Silicon Mac directly |
+| Live ISO boots with | BIOS or UEFI | UEFI only |
+| Installed bootloader | GRUB for BIOS (`grub-pc-bin`) or UEFI (`grub-efi-amd64`), matching how the live system started; EFI system partition only on UEFI installs | GRUB for UEFI (`grub-efi-arm64`) |
+| Kernel | Debian `linux-image-amd64` | Debian `linux-image-arm64` |
+| CPU microcode | `intel-microcode`, `amd64-microcode` | none (x86-only packages) |
+| OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
+| *Autopsy* 4.23.1 | yes, with its own Temurin 21 JRE, a `libtsk_jni` built from The Sleuth Kit 4.15.0, and the GStreamer plugins and `lsof` it uses | no: its release ships JavaFX and other native libraries for x86-64 Linux only, and upstream does not support arm64 Linux |
+| The Sleuth Kit CLI, TestDisk/PhotoRec | yes | yes |
+| Image size with the vendor layer (approx.) | about 2.6 GiB, published in two parts | about 1.7 GiB |
+
+Everything else is the same on both: the Debian package lists, the other vendored tools
+(ICS Python libraries and OPC UA command-line tools, plcscan, Redpoint NSE), the desktop,
+the installer and the network defaults. Launchers for amd64-only tools ship on both
+images and are hidden on arm64.
 
 ## Live session and install
 
@@ -126,12 +150,13 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
 | 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
-| 06 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
+| 06 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe, The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reference | offline reference folder, the build manifest |
 
 Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
 [`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
-each with its own pinned runtime (CPython 3.11 for the Python tools) and reached through
+each with its own pinned runtime (CPython 3.11 for the Python tools, a Temurin 21 JRE for
+Autopsy) and reached through
 `/opt/snapshot/bin` on `PATH`. It is fetched before a build with
 `python3 scripts/vendor.py fetch --arch all` (Docker and network); a build without that
 step still produces a working image, just without these tools. **v0.1.0 does not include
@@ -196,7 +221,7 @@ refreshes the download table above.
 | [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
 | [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
-| [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer; runtimes, wheelhouses and archives are fetched, not committed |
+| [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
 | [`scripts/`](scripts/) | build, `vendor.py`, the installer and desktop checks, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
 | [`docs/`](docs/) | build, vendoring, desktop, offline install and field updates |
@@ -210,6 +235,9 @@ refreshes the download table above.
   `snapshot-boot` 0.1.1) and ship with the next image.
 - An image only includes the vendor layer when `python3 scripts/vendor.py fetch` ran
   before the build; v0.1.0 has none of it.
+- Autopsy on Linux is a subset of the Windows build: upstream lists Recent Activity as
+  partial and LEAPP, plaso, OCR, YARA, HEIF and video thumbnails as unsupported, and
+  SnapshOT ships it without the Windows binaries those modules call.
 - No hibernation: swap, when chosen, is a file inside the encrypted root and the
   installer writes no resume parameter.
 - Product and support URLs and the package maintainer address are `example.invalid`

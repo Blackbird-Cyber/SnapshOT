@@ -20,12 +20,15 @@ back out. On Apple Silicon it runs under amd64 emulation and takes hours.
    needs Docker and network (see [`docs/vendoring.md`](vendoring.md)):
    ```
    python3 scripts/vendor.py update-hashes      # fills any TODO sha256 in the lock
-   python3 scripts/vendor.py fetch --arch all   # runtimes + wheelhouses, hash-verified
+   python3 scripts/vendor.py fetch --arch all   # runtimes + builds + wheelhouses, hash-verified
    python3 scripts/vendor.py verify             # re-check sha256 under vendor/src
    ```
    The per-arch `requirements.<arch>.txt` locks are committed; the wheelhouses and
    downloaded archives are gitignored, so this step is required before a build
    that includes the vendor layer. A build without it still works.
+   For amd64, `fetch` also downloads the 1.16 GiB Autopsy zip and builds
+   `libtsk_jni` from The Sleuth Kit source in a pinned trixie container (about
+   5 minutes under emulation on Apple Silicon).
 
 ## Build
 ```
