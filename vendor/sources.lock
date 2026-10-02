@@ -1,5 +1,6 @@
 # SnapshOT vendored artifacts. One stanza per artifact; blank line between stanzas.
-# type:     runtime | python | java | data
+# type:     runtime | python | java | data | build
+#           (build: fetched and built by vendor.py; never installed alone)
 # kind:     tarball | zip | git-archive | deb          (archive handling)
 # arch:     noarch | amd64 | arm64 | amd64, arm64     (which images get it)
 # url / sha256:          arch-independent artifact
@@ -12,6 +13,11 @@
 # commands: name=exec, ... ; exec is relative to the tool dir; "python <path>" runs
 #           the tool's venv python (or the runtime python when there is no venv)
 # install:  nmap-scripts (data symlinked into nmap's script dir) | copy (default)
+# build:    recipe script under vendor/recipes/ (type: build)
+# build.sha256.<arch>: sha256 of the build's SHA256SUMS (TODO is filled by
+#           `scripts/vendor.py update-hashes`)
+# uses:     build stanzas whose output the tool's setup consumes
+# setup:    vendor/setup/<tool>.py, run in the chroot after extraction
 # enabled:  true | false (default true). Disabled stanzas are validated, not fetched.
 # All hashes are sha256 of the downloaded archive. `scripts/vendor.py update-hashes`
 # fills "TODO" values; `scripts/vendor.py fetch` refuses to proceed on TODO.
@@ -52,6 +58,16 @@ sha256.arm64: 23e37e026f12f3e706f18938ff611db3032d075b09d0879a25d06718c773e223
 url.amd64: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_linux_hotspot_21.0.12.1_1.tar.gz
 sha256.amd64: ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94
 notes: full JDK (Ghidra needs javac). Enabled automatically when an enabled tool references it.
+
+name: temurin-jre-21.0.12.1
+type: runtime
+kind: tarball
+version: 21.0.12.1+1
+license: GPL-2.0-with-classpath-exception
+strip: 1
+url.amd64: https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jre_x64_linux_hotspot_21.0.12.1_1.tar.gz
+sha256.amd64: 2413149700df0f7d440500a84a8f764c535f21e5a5e87d38328b64eec2c5b500
+notes: JRE (no javac/jps/jstack), 52 MB download, 158 MiB unpacked, top dir jdk-21.0.12.1+1-jre/. Autopsy 4.23.1 needs Java 21 (its sleuthkit-4.15.0.jar is class version 65). amd64 only because Autopsy is; add url.arm64/sha256.arm64 if an arm64 Java tool needs it.
 
 name: ics-python
 type: python
@@ -97,6 +113,36 @@ install: nmap-scripts
 url: https://github.com/digitalbond/Redpoint/archive/23ef36bf8416b3e71efb7abbcbd6e5717ad9471f.tar.gz
 sha256: 930ff650230dadc8b7eb2cc1b5d128422d646a5172c4b564186ef5e7739f8c51
 notes: 13 ICS NSE scripts at the archive top level (s7-enumerate, enip-enumerate, BACnet-discover-enumerate, modicon-info, dnp3-info, ...); symlinked into /usr/share/nmap/scripts, then nmap --script-updatedb. Record the repo LICENSE text in the MANIFEST dir.
+
+name: sleuthkit-jni
+type: build
+kind: tarball
+version: 4.15.0
+license: IPL-1.0 AND CPL-1.0 (libtsk); Apache-2.0 (Java bindings); texts in sleuthkit-licenses/
+arch: amd64
+strip: 1
+url: https://github.com/sleuthkit/sleuthkit/releases/download/sleuthkit-4.15.0/sleuthkit-4.15.0.tar.gz
+sha256: 3a8c1e7d18a9b81f3e5e8aa78313974aceaafc6e051d636bc92cd7168286eca9
+size: 4951534
+build: vendor/recipes/sleuthkit-jni.sh
+build.sha256.amd64: b82c3ae83e017ab83c47702aea8b0613106d347038a02f18bd586ac08fbf2eb5
+notes: libtsk_jni.so for Autopsy (libtsk 4.15.0 static, other libs shared from the pin). The jar in the Autopsy zip only carries Windows DLLs and TSK loads the JNI only from NATIVELIBS/<os.arch>/linux/ in that jar; vendor/setup/autopsy.py puts it there. --without-libvslvm: the 4.15.0 tarball lacks tsk/pool/tsk_lvm.hpp.
+
+name: autopsy
+type: java
+kind: zip
+version: 4.23.1
+license: Apache-2.0 (Autopsy; bundled third-party components under their own licenses) + IPL-1.0/CPL-1.0 (libtsk_jni from The Sleuth Kit 4.15.0)
+arch: amd64
+runtime: temurin-jre-21.0.12.1
+strip: 1
+url: https://github.com/sleuthkit/autopsy/releases/download/autopsy-4.23.1/autopsy-4.23.1.zip
+sha256: b58cd4c04f42f49823488f05f6a5b43ada470ff7343c2d71dd2e154114d09eae
+size: 1250556137
+uses: sleuthkit-jni
+setup: vendor/setup/autopsy.py
+commands: autopsy=app/bin/autopsy
+notes: 1.16 GiB zip, 1808 MiB unpacked, ~910 MiB after vendor/setup/autopsy.py prunes the Windows/macOS-only payload. amd64 only: the JavaFX -linux jars and libheifconvert.so are x86-64. Store is vendor/src/amd64 (arch + plain url), so arm64 builds never copy it.
 
 name: ghidra
 type: java
