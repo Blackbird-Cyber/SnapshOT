@@ -131,7 +131,8 @@ expected = {
     "05 - Wireless & SDR":            ["snapshot-aircrack-ng.desktop", "dk.gqrx.gqrx.desktop", "gnuradio-grc.desktop"],
     "06 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
                                        "org.flameshot.Flameshot.desktop", "org.keepassxc.KeePassXC.desktop",
-                                       "libreoffice-writer.desktop"],
+                                       "libreoffice-writer.desktop", "snapshot-autopsy.desktop",
+                                       "snapshot-sleuthkit.desktop"],
     "07 - Reference":                 ["snapshot-build-manifest.desktop"],
 }
 for name, want in expected.items():

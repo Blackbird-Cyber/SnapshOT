@@ -11,11 +11,14 @@ It reads the staged sources.lock and wheelhouses from this script's directory
   finish     clamp mtimes to SOURCE_DATE_EPOCH and remove the staging dir
 
 Only enabled tools whose arch covers this image and whose files are staged are
-installed; a partial vendor set still builds. Nothing is modified after its
-mtime clamp, and no vendored python/java/pip is reachable by its bare name.
+installed; a partial vendor set still builds. A tool with `setup:` runs its
+vendor/setup/<tool>.py after extraction, with the verified output of the source
+builds it `uses:`. Nothing is modified after its mtime clamp, and no vendored
+python/java/pip is reachable by its bare name.
 """
 import datetime
 import glob
+import hashlib
 import os
 import re
 import shutil
@@ -67,6 +70,10 @@ class Stanza:
         a = self.arches()
         return arch in a or "noarch" in a
 
+    def uses(self):
+        return [u.strip() for u in self.fields.get("uses", "").split(",")
+                if u.strip()]
+
     def artifact(self, arch):
         """(store_arch, basename, sha256) for this image arch, or None."""
         per = {k.split(".", 1)[1]: v for k, v in self.fields.items()
@@ -94,7 +101,8 @@ def load_lock():
 
 # ---------------------------------------------------------------- helpers
 def log(msg):
-    print("vendor-install: %s" % msg)
+    # flushed so it stays in order with subprocess output (setup scripts)
+    print("vendor-install: %s" % msg, flush=True)
 
 
 def die(msg):
@@ -135,7 +143,6 @@ def iso(e):
 
 
 def sha256(path):
-    import hashlib
     h = hashlib.sha256()
     with open(path, "rb") as f:
         for c in iter(lambda: f.read(1 << 20), b""):
@@ -149,6 +156,25 @@ def staged_archive(stanza, arch):
         return None, None
     store, base, sha = art
     return os.path.join(VENDOR, "src", store, stanza.name, base), sha
+
+
+def staged_build(name, arch):
+    return os.path.join(VENDOR, "src", arch, name, "out")
+
+
+def verify_build(bs, arch):
+    """Check a staged source build against the lock; return its directory."""
+    out = staged_build(bs.name, arch)
+    text = open(os.path.join(out, "SHA256SUMS")).read()
+    want = bs.get("build.sha256.%s" % arch)
+    got = hashlib.sha256(text.encode()).hexdigest()
+    if want in (None, "TODO") or got != want:
+        die("%s: staged build SHA256SUMS %s != lock %s" % (bs.name, got, want))
+    for line in text.splitlines():
+        sha, rel = line.split("  ", 1)
+        if sha256(os.path.join(out, rel)) != sha:
+            die("%s: %s sha256 mismatch" % (bs.name, rel))
+    return out
 
 
 def extract(archive, destdir, kind, strip):
@@ -176,7 +202,7 @@ def extract(archive, destdir, kind, strip):
 def write_manifest(name, fields):
     tooldir = fields.pop("_dir")
     order = ["name", "type", "version", "arch", "runtime", "url", "sha256",
-             "license", "built", "commands"]
+             "uses", "setup", "license", "built", "commands"]
     lines = []
     for k in order:
         if fields.get(k) is not None:
@@ -235,6 +261,17 @@ def installable_tools(stanzas, arch):
             if not rpath or not os.path.exists(rpath):
                 log("skip %s: runtime %s not staged for %s" % (s.name, rt, arch))
                 continue
+        # source-build output and setup script present
+        unbuilt = [u for u in s.uses() if not os.path.exists(
+            os.path.join(staged_build(u, arch), "SHA256SUMS"))]
+        if unbuilt:
+            log("skip %s: build %s not staged for %s"
+                % (s.name, ", ".join(unbuilt), arch))
+            continue
+        if s.get("setup") and not os.path.exists(
+                os.path.join(VENDOR, "setup", os.path.basename(s.get("setup")))):
+            log("skip %s: setup %s not staged" % (s.name, s.get("setup")))
+            continue
         out.append(s)
     return out
 
@@ -378,17 +415,37 @@ def phase_tools(bn, stanzas, arch, ep):
         # 3. record a bundled LICENSE for provenance
         for cand in ("scripts/LICENSE", "scripts/LICENSE.txt", "scripts/LICENSE.md",
                      "app/LICENSE", "app/LICENSE.txt", "app/LICENSE.md",
-                     "app/COPYING", "data/LICENSE"):
+                     "app/COPYING", "app/LICENSE-2.0.txt", "data/LICENSE"):
             lp = os.path.join(tdir, cand)
             if os.path.exists(lp):
                 shutil.copy2(lp, os.path.join(tdir, "LICENSE"))
                 break
+
+        # 3b. per-tool setup (vendor/setup/<tool>.py), before wrappers and the
+        # go-w/MANIFEST/mtime steps; gets the verified source-build outputs.
+        if s.get("setup"):
+            env = dict(os.environ, SNAPSHOT_TOOL=tdir,
+                       SNAPSHOT_APP=os.path.join(tdir, "app"),
+                       SNAPSHOT_ARCH=arch, SOURCE_DATE_EPOCH=str(ep))
+            if s.get("runtime"):
+                env["SNAPSHOT_RUNTIME"] = os.path.join(RUNTIMES, s.get("runtime"))
+            for u in s.uses():
+                env["SNAPSHOT_BUILD_" + re.sub(r"[^A-Z0-9]", "_", u.upper())] = \
+                    verify_build(bn[u], arch)
+            run([sys.executable, os.path.join(
+                VENDOR, "setup", os.path.basename(s.get("setup")))], env=env)
 
         # 4. wrappers + /opt/snapshot/bin symlinks
         has_lib = os.path.isdir(os.path.join(tdir, "lib"))
         cmds = parse_commands(s.get("commands", ""))
         os.makedirs(os.path.join(tdir, "bin"), exist_ok=True)
         for (cname, ex) in cmds:
+            if ex.split()[0] != "python":
+                # catches exec bits a zip did not store, for any tool
+                tgt = os.path.join(tdir, ex)
+                if not (os.path.isfile(tgt) and os.access(tgt, os.X_OK)):
+                    die("%s: command %s target %s missing or not executable"
+                        % (name, cname, tgt))
             w = os.path.join(tdir, "bin", cname)
             open(w, "w").write(wrapper_text(
                 name, s.get("runtime"), s.type, has_venv, has_lib, ex))
@@ -420,6 +477,10 @@ def phase_tools(bn, stanzas, arch, ep):
             "runtime": s.get("runtime"),
             "url": (art[1] if art else "(pip wheelhouse)"),
             "sha256": (art[2] if art else "(requirements.%s.txt hash-pinned)" % arch),
+            "uses": ",".join("%s@%s:%s" % (u, bn[u].get("version"),
+                                           bn[u].get("build.sha256." + arch))
+                             for u in s.uses()) or None,
+            "setup": os.path.basename(s.get("setup")) if s.get("setup") else None,
             "license": s.get("license"),
             "built": iso(ep),
             "commands": ",".join(c for c, _ in cmds) or None,

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Autopsy
+GenericName=Digital forensics
+Comment=Case building and evidence analysis on The Sleuth Kit (amd64 only)
+Exec=/opt/snapshot/autopsy/bin/autopsy
+TryExec=/opt/snapshot/autopsy/bin/autopsy
+Terminal=false
+StartupNotify=false
+Icon=system-search
+Categories=X-SnapshOT-Reporting;

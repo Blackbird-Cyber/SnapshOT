@@ -10,9 +10,11 @@
 #   cat snapshot-<arch>.hybrid.iso.part-* > snapshot-<arch>.hybrid.iso
 # and verify against SHA256SUMS, which always lists the whole ISO.
 # README.md's download table, download links and badges are rewritten for the
-# tag first. If that changed README.md, the script stops so you can commit it;
-# on the re-run the tag is created at HEAD (now including the README) and pushed
-# if it does not exist yet, and an existing release gets its assets replaced.
+# tag first; the Download badge of a split ISO points at the release page, since
+# there is no single asset to link. If that changed README.md, the script stops
+# so you can commit it; on the re-run the tag is created at HEAD (now including
+# the README) and pushed if it does not exist yet, and an existing release gets
+# its assets replaced.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 TAG="${1:?usage: release.sh <tag> [--prerelease]}"; shift || true
@@ -28,6 +30,7 @@ ISOS=(snapshot-*.hybrid.iso)
 
 if command -v sha256sum >/dev/null 2>&1; then sha256sum "${ISOS[@]}" > SHA256SUMS; else shasum -a 256 "${ISOS[@]}" > SHA256SUMS; fi
 ASSETS=(SHA256SUMS)
+split_isos=()
 for iso in "${ISOS[@]}"; do
     size=$(stat -f%z "$iso" 2>/dev/null || stat -c%s "$iso")
     if [ "$size" -gt "$LIMIT" ]; then
@@ -35,6 +38,7 @@ for iso in "${ISOS[@]}"; do
         rm -f "$iso".part-*
         split -b 1900m "$iso" "$iso.part-"
         ASSETS+=("$iso".part-*)
+        split_isos+=("$iso")
     else
         ASSETS+=("$iso")
     fi
@@ -79,12 +83,18 @@ if grep -q '<!-- release-table:start -->' README.md && grep -q '<!-- release-tab
     badge_label=release; [ "$PRERELEASE" = 1 ] && badge_label="pre--release"
     badge_tag="${TAG//-/--}"; badge_tag="${badge_tag//_/__}"
     pin_badge="${SNAPSHOT_DEBIAN_PIN:0:4}--${SNAPSHOT_DEBIAN_PIN:4:2}--${SNAPSHOT_DEBIAN_PIN:6:2}"
+    # A split ISO has no single download asset: its badge goes to the release page.
+    sed_split=()
+    for iso in ${split_isos[@]+"${split_isos[@]}"}; do
+        sed_split+=(-e "s#(github\.com/$REPO/releases/)download/$TAG/${iso//./\\.}\"#\1tag/$TAG\"#g")
+    done
     awk -v blockfile="$block" '
         /<!-- release-table:start -->/ { while ((getline line < blockfile) > 0) print line; skip = 1; next }
         /<!-- release-table:end -->/   { skip = 0; next }
         !skip
     ' README.md | sed -E \
         -e "s#(github\.com/$REPO/releases/download/)[^/]+/#\1$TAG/#g" \
+        ${sed_split[@]+"${sed_split[@]}"} \
         -e "s#(github\.com/$REPO/releases/tag/)[^\")[:space:]]+#\1$TAG#g" \
         -e "s#img\.shields\.io/badge/(pre--)?release-[^\"?)]*-F1000E#img.shields.io/badge/$badge_label-$badge_tag-F1000E#g" \
         -e "s#img\.shields\.io/badge/snapshot_pin-[0-9-]+-#img.shields.io/badge/snapshot_pin-$pin_badge-#g" \
@@ -105,13 +115,25 @@ if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
     git push origin "$TAG"
 fi
 
+# "; about X GiB" (from stat, as release_table) plus the parts, for one ISO.
+iso_note() {
+    local iso="$1" size n
+    [ -e "$iso" ] || return 0
+    size=$(stat -f%z "$iso" 2>/dev/null || stat -c%s "$iso")
+    awk -v b="$size" 'BEGIN { printf "; about %.1f GiB", b / 1073741824 }'
+    if [ -e "$iso.part-aa" ]; then
+        n=$(ls "$iso".part-* | wc -l | tr -d ' ')
+        printf ', published as %s parts (%s.part-*)' "$n" "$iso"
+    fi
+}
 NOTES="SnapshOT ${TAG#v}: Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org ${SNAPSHOT_DEBIAN_PIN} (SOURCE_DATE_EPOCH ${SNAPSHOT_SOURCE_DATE_EPOCH}). Each image records its exact build commit in /etc/snapshot-release.
 
-- snapshot-amd64.hybrid.iso: BIOS + UEFI, for x86-64 laptops. Write it to USB with dd or Ventoy.
-- snapshot-arm64.hybrid.iso: UEFI only, for arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware. Not bootable on Apple Silicon bare metal.
+- snapshot-amd64.hybrid.iso: BIOS + UEFI, for x86-64 laptops and VMs$(iso_note snapshot-amd64.hybrid.iso). Write it to USB with dd or Ventoy.
+- snapshot-arm64.hybrid.iso: UEFI only, for arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware$(iso_note snapshot-arm64.hybrid.iso). Not bootable on Apple Silicon bare metal.
+- amd64 only: Autopsy 4.23.1 (06 Reporting & Documentation) and the OPC UA GUI client; see 'amd64 and arm64 images' in README.md.
 - Live session: user \`snapshot\`, password \`live\`. Install with the desktop icon (Calamares, LUKS2).
 - Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS.
-- Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 are defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
+- Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Autopsy 4.23.1 with a Temurin 21 JRE on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 are defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
 
 # Create the release as a draft, upload one asset at a time with retries (a
 # 1.7 GiB POST over a flaky link fails easily), verify every asset's size, then

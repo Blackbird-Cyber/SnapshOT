@@ -4,18 +4,22 @@
 Every non-apt tool ships under /opt/snapshot/<tool>/ with its own pinned runtime
 (see docs/vendoring.md). This script reads vendor/sources.lock (schema v2) and,
 on a networked Mac/Linux host with Docker, downloads the pinned archives, builds
-per-arch hash-pinned Python wheelhouses inside the target interpreter, verifies
+per-arch hash-pinned Python wheelhouses inside the target interpreter, runs the
+source builds (type: build) in pinned debian:trixie containers, verifies
 everything, and stages a tree the chroot hooks install offline.
 
 Pure stdlib + the Docker CLI. Subcommands:
 
   status                         show the lock and what is fetched
-  update-hashes [--only NAME]    fill TODO sha256 in the lock (downloads once)
+  update-hashes [--only NAME]    fill TODO sha256 in the lock (downloads once),
+                                 including build.sha256.<arch> of source builds
   fetch [--arch all|amd64|arm64] [--only NAME]
-                                 download archives + build wheelhouses, verify
+                                 download archives, run source builds, build
+                                 wheelhouses, verify
   wheels [--arch ...] [--only NAME]
                                  (re)build Python wheelhouses only
   verify                         recompute sha256 of everything under vendor/src
+                                 (archives and source-build output)
   stage --arch ARCH --dest DIR   copy the arch's layer for build.sh / the hooks
 
 Exit non-zero on any mismatch, missing wheel, or TODO hash during fetch.
@@ -35,6 +39,8 @@ SRC = os.path.join(ROOT, "vendor", "src")
 PYDIR = os.path.join(ROOT, "vendor", "python")
 ARCHES = ("amd64", "arm64")
 TRIXIE = os.environ.get("SNAPSHOT_TRIXIE_IMAGE", "debian:trixie")
+ENV_FILE = os.path.join(ROOT, "config", "snapshot.env")
+SUMS = "SHA256SUMS"   # written by vendor.py into each source build's out/
 
 
 # ---------------------------------------------------------------- lock parsing
@@ -76,6 +82,11 @@ class Stanza:
     def covers(self, arch):
         a = self.arches()
         return arch in a or "noarch" in a
+
+    def uses(self):
+        """Build stanzas whose output this tool's setup consumes."""
+        return [u.strip() for u in self.fields.get("uses", "").split(",")
+                if u.strip()]
 
     def artifacts(self):
         """List of (store_arch, url, sha_key, sha_val, basename) for this stanza.
@@ -146,6 +157,16 @@ def human(n):
         n /= 1024.0
 
 
+def snapshot_env():
+    """KEY=value pairs of config/snapshot.env (the literal ones; no expansion)."""
+    env = {}
+    for line in open(ENV_FILE):
+        m = re.match(r'\s*([A-Z_]+)="?([^"#$]*)"?\s*$', line)
+        if m:
+            env[m.group(1)] = m.group(2).strip()
+    return env
+
+
 def arch_set(arg):
     if arg in (None, "all"):
         return list(ARCHES)
@@ -171,6 +192,27 @@ def needed_runtimes(stanzas, build_arch, only=None):
         if rt:
             names.add(rt)
     return names
+
+
+def needed_builds(stanzas, build_arch, only=None):
+    """Build stanzas used by enabled tools that cover build_arch."""
+    bn = by_name(stanzas)
+    names = set()
+    for s in enabled_tools(stanzas):
+        if not s.covers(build_arch):
+            continue
+        for u in s.uses():
+            if only and only not in (s.name, u):
+                continue
+            b = bn.get(u)
+            if not b or b.type != "build" or not b.get("build"):
+                die("%s: uses %r, which is not a type: build stanza with build:"
+                    % (s.name, u))
+            if not b.enabled:
+                die("%s: uses disabled build %s" % (s.name, u))
+            if b.covers(build_arch):
+                names.add(u)
+    return sorted(names)
 
 
 def archive_path(store_arch, name, basename):
@@ -229,6 +271,98 @@ def write_hashes(text, new_hashes):
     return "".join(parts)
 
 
+# ---------------------------------------------------------------- source builds
+# A type: build stanza pins a source archive and a recipe (vendor/recipes/).
+# The recipe runs in a throwaway debian:trixie container of the target arch,
+# with apt pointed at the snapshot pin (vendor/recipes/lib/pinned-apt.sh), and
+# writes into vendor/src/<arch>/<name>/out/. vendor.py then records SHA256SUMS
+# of that tree; the lock pins the sha256 of SHA256SUMS per arch.
+def build_dir(stanza, arch):
+    return os.path.join(SRC, arch, stanza.name, "out")
+
+
+def sums_text(outdir):
+    lines = []
+    for dp, dns, fns in os.walk(outdir):
+        for fn in fns:
+            rel = os.path.relpath(os.path.join(dp, fn), outdir)
+            if rel != SUMS:
+                lines.append((rel, "%s  %s\n"
+                              % (sha256_file(os.path.join(dp, fn)), rel)))
+    return "".join(l for _, l in sorted(lines))
+
+
+def build_state(stanza, arch):
+    """('missing'|'stale'|'todo'|'mismatch'|'ok', sha256-of-SHA256SUMS)."""
+    out = build_dir(stanza, arch)
+    sp = os.path.join(out, SUMS)
+    if not os.path.exists(sp):
+        return "missing", None
+    text = sums_text(out)
+    if not text or open(sp).read() != text:
+        return "stale", None
+    got = hashlib.sha256(text.encode()).hexdigest()
+    want = stanza.get("build.sha256.%s" % arch)
+    if want in (None, "TODO"):
+        return "todo", got
+    return ("ok" if got == want else "mismatch"), got
+
+
+def run_build(stanza, arch):
+    arts = [a for a in stanza.artifacts() if a[0] in (arch, "noarch")]
+    if len(arts) != 1:
+        die("%s: needs exactly one source artifact for %s" % (stanza.name, arch))
+    store, url, sk, sv, base = arts[0]
+    src, _ = fetch_artifact(stanza, store, url, sk, sv, base)
+    recipe = stanza.get("build")
+    if not os.path.isfile(os.path.join(ROOT, recipe)):
+        die("%s: recipe %s missing" % (stanza.name, recipe))
+    out = build_dir(stanza, arch)
+    shutil.rmtree(out, ignore_errors=True)
+    os.makedirs(out)
+    env = snapshot_env()
+    print("== build %s[%s] (platform linux/%s, pin %s)"
+          % (stanza.name, arch, arch, env["SNAPSHOT_DEBIAN_PIN"]), flush=True)
+    run(["docker", "run", "--rm", "--platform", "linux/%s" % arch,
+         "-v", "%s:/work" % ROOT, "-w", "/work",
+         "-e", "SNAPSHOT_DEBIAN_PIN=" + env["SNAPSHOT_DEBIAN_PIN"],
+         "-e", "SNAPSHOT_DIST=" + env.get("SNAPSHOT_DIST", "trixie"),
+         "-e", "SOURCE_DATE_EPOCH=" + env["SNAPSHOT_SOURCE_DATE_EPOCH"],
+         "-e", "BUILD_SRC=/work/" + os.path.relpath(src, ROOT),
+         "-e", "BUILD_STRIP=" + stanza.get("strip", "0"),
+         "-e", "BUILD_OUT=/work/" + os.path.relpath(out, ROOT),
+         "-e", "HOST_UID=%d" % os.getuid(), "-e", "HOST_GID=%d" % os.getgid(),
+         TRIXIE, "bash", "/work/" + recipe])
+    text = sums_text(out)
+    if not text:
+        die("%s[%s]: build produced no files" % (stanza.name, arch))
+    open(os.path.join(out, SUMS), "w").write(text)
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def ensure_build(stanza, arch, update=False, new_hashes=None):
+    """Build if missing/stale/mismatched, then check against the lock."""
+    key = "build.sha256.%s" % arch
+    state, got = build_state(stanza, arch)
+    if state == "ok":
+        print("  build %s[%s]: up to date" % (stanza.name, arch))
+        return
+    if state in ("missing", "stale", "mismatch"):
+        got = run_build(stanza, arch)
+    want = stanza.get(key)
+    if want in (None, "TODO"):
+        if update:
+            new_hashes.append((stanza.name, key, got))
+            print("    %s -> %s" % (key, got))
+            return
+        die("%s[%s]: %s is TODO; run `vendor.py update-hashes --only %s`"
+            % (stanza.name, arch, key, stanza.name))
+    if got != want:
+        die("%s[%s]: build output sha256 %s != lock %s (pin moved or build "
+            "not reproducible)" % (stanza.name, arch, got, want))
+    print("  build %s[%s]: matches the lock" % (stanza.name, arch))
+
+
 def cmd_update_hashes(args):
     text, _, stanzas = load_lock()
     new_hashes = []
@@ -242,12 +376,26 @@ def cmd_update_hashes(args):
                 continue
             fetch_artifact(s, store_arch, url, sha_key, sha_val, basename,
                            update_hashes=True, new_hashes=new_hashes)
-    if not new_hashes:
+    if new_hashes:
+        text = write_hashes(text, new_hashes)
+        open(LOCK, "w").write(text)
+        print("updated %s (%d hashes)" % (LOCK, len(new_hashes)))
+
+    # source builds: the output hash needs the (now pinned) source archive
+    text, _, stanzas = load_lock()
+    new_builds = []
+    for s in stanzas:
+        if s.type != "build" or (args.only and s.name != args.only):
+            continue
+        arches = ARCHES if "noarch" in s.arches() else s.arches()
+        for a in arches:
+            if s.get("build.sha256." + a, "TODO") == "TODO":
+                ensure_build(s, a, update=True, new_hashes=new_builds)
+    if new_builds:
+        open(LOCK, "w").write(write_hashes(text, new_builds))
+        print("updated %s (%d build hashes)" % (LOCK, len(new_builds)))
+    if not new_hashes and not new_builds:
         print("no TODO hashes to fill.")
-        return
-    text = write_hashes(text, new_hashes)
-    open(LOCK, "w").write(text)
-    print("updated %s (%d hashes)" % (LOCK, len(new_hashes)))
 
 
 def cmd_fetch(args):
@@ -278,6 +426,11 @@ def cmd_fetch(args):
                 for a in build_arches:
                     if store in ("noarch", a):
                         totals[a] += size
+
+    # 2b. source builds used by enabled, covered tools
+    for a in build_arches:
+        for u in needed_builds(stanzas, a, args.only):
+            ensure_build(bn[u], a)
 
     # 3. wheels for python tools with a requirements.in
     cmd_wheels(args, loaded=(stanzas, bn))
@@ -360,7 +513,24 @@ def cmd_verify(args):
                 die("%s[%s]: sha256 mismatch (got %s want %s)"
                     % (s.name, store, got, sv))
             checked += 1
-    print("verify: OK (%d archives match the lock)" % checked)
+    built = 0
+    for s in stanzas:
+        if s.type != "build":
+            continue
+        for a in ARCHES:
+            state, got = build_state(s, a)
+            if state == "missing":
+                continue
+            if state == "todo":
+                print("  build %s[%s]: present, lock build.sha256.%s is TODO"
+                      % (s.name, a, a))
+                continue
+            if state != "ok":
+                die("build %s[%s]: %s (SHA256SUMS sha256 %s, lock %s)"
+                    % (s.name, a, state, got, s.get("build.sha256.%s" % a)))
+            built += 1
+    print("verify: OK (%d archives and %d source builds match the lock)"
+          % (checked, built))
 
 
 # ---------------------------------------------------------------- status
@@ -369,6 +539,13 @@ def cmd_status(args):
     print("%-22s %-8s %-7s %-14s %-18s %s" %
           ("name", "type", "enabled", "arch", "runtime", "fetched"))
     for s in stanzas:
+        if s.type == "build":
+            fetched = ["%s:%s" % (a, build_state(s, a)[0]) for a in ARCHES
+                       if os.path.isdir(build_dir(s, a))]
+            print("%-22s %-8s %-7s %-14s %-18s %s" %
+                  (s.name, s.type, "yes" if s.enabled else "no",
+                   ",".join(s.arches()), "-", ",".join(fetched) or "-"))
+            continue
         fetched = []
         for a in ARCHES:
             arts = [art for art in s.artifacts() if art[0] in (a, "noarch")]
@@ -402,6 +579,12 @@ def tool_available(s, bn, arch):
         req = os.path.join(PYDIR, s.name, "requirements.%s.txt" % arch)
         if not (os.path.isdir(wh) and os.listdir(wh) and os.path.exists(req)):
             return False
+    for u in s.uses():
+        b = bn.get(u)
+        if b is None or build_state(b, arch)[0] != "ok":
+            return False
+    if s.get("setup") and not os.path.isfile(os.path.join(ROOT, s.get("setup"))):
+        die("%s: setup %s missing" % (s.name, s.get("setup")))
     return True
 
 
@@ -460,6 +643,15 @@ def cmd_stage(args):
             if os.path.isdir(noarch_wh):
                 shutil.copytree(noarch_wh,
                                 os.path.join(td, "wheelhouse", "noarch"))
+        # source-build output and the per-tool setup script, if any
+        for u in s.uses():
+            shutil.copytree(build_dir(bn[u], arch),
+                            os.path.join(dest, "src", arch, u, "out"))
+        if s.get("setup"):
+            os.makedirs(os.path.join(dest, "setup"), exist_ok=True)
+            shutil.copy2(os.path.join(ROOT, s.get("setup")),
+                         os.path.join(dest, "setup",
+                                      os.path.basename(s.get("setup"))))
 
     for rt in sorted(runtimes):
         rs = bn[rt]

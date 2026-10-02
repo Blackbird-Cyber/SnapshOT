@@ -18,10 +18,13 @@ does not provide at the version we need.
 /opt/snapshot/
   runtimes/cpython-3.11.16/        bin/python3, lib/..., MANIFEST   (shared, immutable)
   runtimes/temurin-jdk-21.0.12.1/  (only once an enabled tool references it)
+  runtimes/temurin-jre-21.0.12.1/  (amd64; Autopsy)
   ics-python/   MANIFEST  venv/  bin/{ics-python,uadiscover,...,pymodbus-console}
   opcua-client/ MANIFEST  venv/  bin/opcua-client            (amd64 images only)
   plcscan/      MANIFEST  app/   bin/plcscan                 (runtime python, no venv)
   redpoint-nse/ MANIFEST  scripts/*.nse  LICENSE  (+ symlinks into nmap's script dir)
+  autopsy/      MANIFEST  app/   bin/autopsy  LICENSE  licenses/sleuthkit/
+                                                             (amd64 images only)
   bin/          symlinks -> ../<tool>/bin/<cmd>   <- the only dir ever put on PATH
 ```
 
@@ -67,9 +70,11 @@ exec "$TOOL/venv/bin/uadiscover" "$@"
 ### MANIFEST
 
 Each runtime and tool gets `/opt/snapshot/<name>/MANIFEST` (key=value: `name`,
-`type`, `version`, `arch`, `runtime`, `url`, `sha256`, `license`, `built`,
-`commands`). `built` is `SOURCE_DATE_EPOCH` in ISO 8601 — manifests carry **no
-wall-clock values**, so the image stays reproducible. Every manifest is also
+`type`, `version`, `arch`, `runtime`, `url`, `sha256`, `uses`, `setup`,
+`license`, `built`, `commands`). `uses` is `<build>@<version>:<build.sha256>`
+for each source build the tool consumed. `built` is `SOURCE_DATE_EPOCH` in ISO
+8601 — manifests carry **no wall-clock values**, so the image stays
+reproducible. Every manifest is also
 copied to `/usr/share/snapshot/vendor/<name>.manifest`, and hook 0900 dumps that
 glob plus `ls /opt/snapshot/bin` into `BUILD-MANIFEST.txt`.
 
@@ -79,7 +84,7 @@ Stanza text (blank-line separated, `key: value`), one stanza per artifact. Field
 
 | field | meaning |
 |---|---|
-| `type` | `runtime` \| `python` \| `java` \| `data` |
+| `type` | `runtime` \| `python` \| `java` \| `data` \| `build` (`build`: fetched and built by `vendor.py`, never installed alone) |
 | `kind` | `tarball` \| `zip` \| `git-archive` \| `deb` (archive handling; `deb` is reserved — not yet implemented) |
 | `arch` | `noarch` \| `amd64` \| `arm64` \| `amd64, arm64` (which images get it) |
 | `url` / `sha256` | an arch-independent artifact |
@@ -90,12 +95,18 @@ Stanza text (blank-line separated, `key: value`), one stanza per artifact. Field
 | `requirements` | a `requirements.in` for a venv (python tools); the per-arch locks `requirements.<arch>.txt` sit beside it |
 | `commands` | `name=exec, ...` (exec relative to the tool dir) |
 | `install` | `nmap-scripts` (symlink *.nse into nmap) \| `copy` (default) |
+| `build` | the recipe script under `vendor/recipes/` (`type: build`) |
+| `build.sha256.<arch>` | sha256 of the build's `SHA256SUMS` (a `TODO` is filled by `update-hashes`) |
+| `uses` | build stanzas whose output the tool's setup consumes |
+| `setup` | `vendor/setup/<tool>.py`, run in the chroot after extraction |
 | `enabled` | `true` (default) \| `false` — disabled stanzas are validated, never fetched |
 | `license` | recorded in the MANIFEST |
 
 `sha256: TODO` is filled by `vendor.py update-hashes`; `vendor.py fetch` refuses
-to proceed on a `TODO`. Only runtimes referenced by an **enabled** tool are ever
-fetched, staged or installed (so JDK 21 does not ship until Ghidra is enabled).
+to proceed on a `TODO`. A runtime is fetched, staged and installed if and only if
+an **enabled** tool references it; the runtime's own `enabled` is ignored (so the
+JDK 21 does not ship until Ghidra is enabled). The same holds for source builds
+and the tools that `uses:` them.
 
 ## The one online step — `scripts/vendor.py`
 
@@ -104,7 +115,7 @@ Run on a networked host with Docker (the Mac is fine) **before** `build.sh`:
 ```
 python3 scripts/vendor.py status                 # table of the lock + what is fetched
 python3 scripts/vendor.py update-hashes          # fill TODO sha256 (downloads once)
-python3 scripts/vendor.py fetch --arch all       # download runtimes + build wheelhouses
+python3 scripts/vendor.py fetch --arch all       # download, run source builds, build wheelhouses
 python3 scripts/vendor.py verify                 # recheck sha256 under vendor/src
 ```
 
@@ -130,6 +141,73 @@ to make "enabled but not fetched" an error).
 config/includes.chroot/usr/local/share/snapshot/vendor`. Hooks 0100/0200 run
 `vendor-install.py runtimes` then `tools finish` offline in the chroot.
 
+## Source builds (`type: build`)
+
+Some tools need a native piece no upstream publishes for Linux. Autopsy is the
+case: its TSK jar only carries Windows DLLs, so SnapshOT builds `libtsk_jni.so`
+from The Sleuth Kit 4.15.0 (stanza `sleuthkit-jni`).
+
+- The recipe lives in `vendor/recipes/<name>.sh` (lock key `build:`). `fetch`
+  runs it for every arch an enabled tool `uses:` it on; `update-hashes` runs it
+  for each arch whose `build.sha256.<arch>` is `TODO`.
+- It runs in a throwaway `$SNAPSHOT_TRIXIE_IMAGE` (`debian:trixie`) container
+  of the target arch with the repo at `/work`. `vendor/recipes/lib/pinned-apt.sh`
+  points apt at the snapshot pin from `config/snapshot.env` only and downgrades
+  the base image to it, so the build links against exactly the libraries the
+  image ships. The recipe gets `BUILD_SRC` (the pinned source archive),
+  `BUILD_STRIP`, `BUILD_OUT`, `SNAPSHOT_DEBIAN_PIN`, `SNAPSHOT_DIST`,
+  `SOURCE_DATE_EPOCH`, `HOST_UID` and `HOST_GID`.
+- Output goes to `vendor/src/<arch>/<name>/out/` (gitignored). `vendor.py`
+  writes `SHA256SUMS` of that tree there, and the lock records the sha256 of
+  `SHA256SUMS`. `fetch`, `verify` and `stage` check it on the host, and
+  `vendor-install.py` checks it and every listed file again in the chroot.
+- A mismatch means the pin moved or the build is not reproducible. Review the
+  change, then clear the value to `TODO` and rerun `update-hashes --only <name>`.
+  Recipes build in fixed paths and link with `--build-id=none` so the output is
+  bit-for-bit the same per pin.
+- The amd64 `libtsk_jni` takes about 3 to 5 minutes emulated on Apple Silicon.
+
+## Post-install setup (`setup:`)
+
+A tool with `setup: vendor/setup/<tool>.py` is staged with that script.
+`vendor-install.py tools` runs it with the image's `python3`, as root and
+offline, after the archive is unpacked and its LICENSE recorded, and before the
+wrappers, `chmod go-w`, the MANIFEST and the mtime clamp. Its environment:
+
+| variable | value |
+|---|---|
+| `SNAPSHOT_TOOL` | `/opt/snapshot/<tool>` |
+| `SNAPSHOT_APP` | `/opt/snapshot/<tool>/app` (the unpacked archive) |
+| `SNAPSHOT_ARCH` | the image arch |
+| `SNAPSHOT_RUNTIME` | `/opt/snapshot/runtimes/<runtime>`, when the tool has one |
+| `SNAPSHOT_BUILD_<NAME>` | the verified `out/` dir of each `uses:` build (`sleuthkit-jni` -> `SNAPSHOT_BUILD_SLEUTHKIT_JNI`) |
+| `SOURCE_DATE_EPOCH` | the pin's epoch |
+
+A non-zero exit fails the image build. After setup, every non-`python`
+`commands:` target must exist and be executable, which catches exec bits lost
+in a zip.
+
+`vendor/setup/autopsy.py` does `unix_setup.sh`'s job for a read-only tree:
+
+- it sets `jdkhome` in `etc/autopsy.conf` to the Temurin JRE and adds
+  `--nosplash` and a per-user Jython cache dir to `default_options`;
+- it puts `libtsk_jni.so` into `autopsy/modules/ext/sleuthkit-4.15.0.jar` as
+  `NATIVELIBS/amd64/linux/libtsk_jni.so`, the only place TSK loads it from, and
+  drops the jar's Windows DLLs;
+- it appends a block to `autopsy/solr/bin/autopsy-solr.in.sh` so the embedded
+  Solr keeps its pid file and logs under `~/.autopsy/dev` instead of the
+  install tree;
+- it restores the exec bits (the zip stores no unix modes);
+- it prunes the Windows/macOS-only payload (GStreamer, PhotoRec, Tesseract,
+  plaso, Volatility, 7-Zip, LEAPP and other `.exe`/`.dll`/`.dylib` files),
+  about 900 MiB. RegRipper (`rr`, `rr-full`) stays because Autopsy runs it with
+  perl on Linux, and the JavaFX mac/win jars stay because module manifests name
+  them;
+- it copies the Sleuth Kit license texts to `licenses/sleuthkit/`.
+
+Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
+`config/package-lists/snapshot-reporting.list.chroot`.
+
 ## Size budget (per arch, this enabled set)
 
 | artifact | amd64 | arm64 |
@@ -138,9 +216,13 @@ config/includes.chroot/usr/local/share/snapshot/vendor`. Hooks 0100/0200 run
 | ics-python wheelhouse (39 wheels) | ~13 MiB | ~13 MiB |
 | opcua-client wheelhouse (19 wheels, incl. PyQt5) | ~74 MiB | n/a |
 | plcscan + Redpoint archives | ~76 KiB | ~76 KiB |
+| Temurin JRE 21 (download / on disk) | ~50 MiB / 158 MiB | n/a |
+| Autopsy 4.23.1 zip (download / installed after the prune) | 1.16 GiB / ~910 MiB | n/a |
+| sleuthkit-jni (source / build output) | 4.7 MiB / 0.9 MiB | n/a |
 
-Ghidra (disabled) is 456 MiB and pulls the 180+ MiB JDK; enabling it pushes the
-ISO past GitHub's 2 GiB asset limit (`release.sh` splits).
+Autopsy already pushes the amd64 ISO past GitHub's 2 GiB asset limit, so
+`release.sh` publishes it in parts. Ghidra (disabled) is 456 MiB and pulls the
+180+ MiB JDK on both arches.
 
 ## Recipes
 
@@ -163,8 +245,30 @@ only fetched/installed once an **enabled** tool sets `runtime: <name>`.
 
 ### Add a Java tool
 
-`type: java`, `runtime: temurin-jdk-21.0.12.1` (flip the JDK to `enabled: true`),
-`kind: zip`/`tarball`, `strip`, `commands: name=app/<launcher>`.
+`type: java`, `runtime: temurin-jdk-21.0.12.1` (or the JRE when the tool needs
+no `javac`), `kind: zip`/`tarball`, `strip`, `commands: name=app/<launcher>`.
+The runtime ships once the tool is enabled.
+
+Autopsy is the worked example of a Java tool that needs more than unpacking:
+
+```
+name: autopsy
+type: java
+kind: zip
+arch: amd64
+runtime: temurin-jre-21.0.12.1
+strip: 1
+url: .../autopsy-4.23.1.zip
+sha256: ...
+size: 1250556137
+uses: sleuthkit-jni                 # type: build stanza, built by vendor.py
+setup: vendor/setup/autopsy.py      # runs in the chroot after extraction
+commands: autopsy=app/bin/autopsy
+```
+
+`vendor.py fetch --only autopsy --arch amd64` fetches the JRE and the zip and
+builds `sleuthkit-jni`; `scripts/test-vendor-hooks.sh amd64` then checks the
+installed tree, the JNI load and Solr as a normal user.
 
 ### Add a data set that plugs into an OS tool
 
@@ -180,12 +284,14 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 | artifact | license |
 |---|---|
 | CPython runtimes (python-build-standalone) | PSF-2.0 (bundles OpenSSL etc. under their own terms) |
-| Temurin JDK 21 | GPL-2.0-with-Classpath-Exception |
+| Temurin JDK 21, Temurin JRE 21 | GPL-2.0-with-Classpath-Exception |
 | ics-python wheels | per package (from wheel metadata / bundled LICENSE): pymodbus BSD-3-Clause, pymodbus-repl MIT, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
 | opcua-client | GPL (opcua-client, unversioned) + GPL-3.0 (PyQt5) |
 | plcscan (eloraux fork) | GPL-3.0 |
 | Redpoint NSE | Nmap license (same as Nmap; see bundled `LICENSE`) |
 | Ghidra | Apache-2.0 |
+| Autopsy | Apache-2.0; bundled third-party components under their own terms (see the release's notices) |
+| The Sleuth Kit (`libtsk_jni.so`) | IPL-1.0 and CPL-1.0 (libtsk), Apache-2.0 (Java bindings); texts in `/opt/snapshot/autopsy/licenses/sleuthkit/` |
 
 ## Out of scope and why
 
@@ -203,6 +309,8 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
   not yet vendored. Placeholder.
 - **firmware-mod-kit / exploitdb** — need their own build/large data stages.
   Placeholders.
+- **Autopsy on arm64** — its JavaFX jars and other native parts are x86-64
+  only, and upstream does not support arm64 Linux.
 
 These stay in the lock as `enabled: false` stanzas so the shape is recorded; they
 are validated but never fetched.

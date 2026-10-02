@@ -10,6 +10,8 @@
 #
 #   docker/build-in-docker.sh                      # amd64 (default)
 #   SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64 (UEFI only)
+#   SNAPSHOT_VENDOR_REQUIRED=1 docker/build-in-docker.sh  # fail if an enabled
+#                                                  # vendored tool is not fetched
 #
 # The container platform follows the target architecture, so the build is
 # native when host and target match and emulated otherwise. On Apple Silicon the
@@ -25,6 +27,7 @@ docker build --platform "$PLATFORM" -t "snapshot-builder:${ARCH}" "$ROOT/docker"
 docker run --rm --privileged --platform "$PLATFORM" \
     -e SNAPSHOT_ARCH="$ARCH" \
     -e SNAPSHOT_OTHER_ARCH="$OTHER" \
+    -e SNAPSHOT_VENDOR_REQUIRED="${SNAPSHOT_VENDOR_REQUIRED:-0}" \
     -e SNAPSHOT_GIT="$(git -C "$ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown)" \
     -v "$ROOT":/snapshot \
     -v "$CACHE_VOLUME":/build/cache \
