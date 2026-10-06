@@ -91,21 +91,47 @@ how the device works.
 
 ## Quick start
 
-PulseView is a GUI; the menu launcher opens the window. The usual flow:
+PulseView is a GUI; the menu launcher opens the window. These commands open it
+the useful ways:
 
 ```sh
 # What the menu launcher runs
 pulseview
 # Open a capture saved by sigrok-cli straight away
-pulseview -i bus.sr
+pulseview -i ~/cases/site-a/firmware/logic/bus.sr
 # Use the named driver only, without scanning for every supported device
 pulseview -D -d fx2lafw
 ```
 
-In the window, pick the device, set the channels and sample rate, run a capture,
-then add a decoder (for example UART or SPI) from the toolbar and set its
-channels and options. Add the SPI flash or Modbus decoder on top to see the
-higher-level protocol.
+A first session on a released board's serial console:
+
+1. **Connect the analyzer.** With the board powered off, clip the analyzer's
+   ground to the board's ground first, then a probe to each line you want to
+   read (for a console, the board's TX pin). Plug the analyzer into the laptop
+   and open PulseView from 04 Firmware & Hardware.
+2. **Pick the device.** Click the device selector at the left of the toolbar.
+   If the analyzer is not listed, choose **Connect to Device**, pick its driver
+   (`fx2lafw` for the common FX2-based analyzers), click **Scan for devices**
+   and select it.
+3. **Set the capture.** On the toolbar, set the sample rate well above the
+   fastest signal (4 MHz is plenty for a 115200 baud console; a SPI flash clock
+   needs more) and a sample count long enough to cover what you want to see.
+4. **Run.** Click **Run**, then power the board or press its reset so the boot
+   output falls inside the capture. Zoom with the mouse wheel over the traces
+   and drag to scroll.
+5. **Add a decoder.** Click the protocol decoder button on the toolbar and
+   choose UART (or SPI, or I2C). Click the name of the new decode trace to open
+   its settings, set the channel (UART: RX on the probed line) and the options
+   (the baud rate), and the decoded bytes appear over the waveform.
+6. **Stack a higher-level decoder.** In the same settings, the **Stack
+   Decoder** menu adds a decoder on top of the first: `spiflash` on SPI to see
+   flash commands and addresses, Modbus on a UART line for Modbus RTU.
+7. **Save.** **Save As** writes the capture as a sigrok `.sr` session into
+   `~/cases/site-a/firmware/logic/`. Right-click the decode trace and choose
+   **Export all annotations** to save the decoded text beside it.
+
+If the baud rate is unknown, measure the narrowest pulse on the line with the
+cursors and take its inverse, then try the nearest standard rate.
 
 ## Output and evidence
 
