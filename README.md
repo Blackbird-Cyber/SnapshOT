@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="branding/exports/snapshot-lockup-on-black.png" width="520" alt="SnapshOT">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="branding/exports/snapshot-lockup-red-transparent.png">
+    <img src="branding/exports/snapshot-lockup-black-transparent.png" width="520" alt="SnapshOT">
+  </picture>
 </p>
 
 <p align="center">
@@ -171,12 +174,12 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
 
 ## Security posture
 
-- **Quiet on the wire.** avahi, systemd-timesyncd and ModemManager are masked;
-  systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
-  and creates no automatic wired profile; IPv6 autoconfiguration and router
-  advertisements are off. Interfaces come up only when the operator brings them up.
-  avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive tshark
-  listener on udp 5353 instead.
+- **Quiet on the wire.** avahi and systemd-timesyncd are masked, and ModemManager is
+  not installed; systemd-resolved has LLMNR and mDNS off; NetworkManager does not
+  check connectivity and creates no automatic wired profile; IPv6 autoconfiguration
+  and router advertisements are off. Interfaces come up only when the operator brings
+  them up. avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive
+  tshark listener on udp 5353 instead.
 - **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
   listen; it answers "is something transmitting here that is not in the asset
   inventory?" with a passive sweep, and airodump-ng is the only 802.11 entry. HackRF,
@@ -187,8 +190,8 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
 - **Small, fixed install.** No recommended packages, and no network during the
   install: Calamares copies the live image.
 - **One client per image.** Re-image between engagements instead of updating in place;
-  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror for the
-  exception.
+  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror (one stick
+  serves amd64 and arm64 laptops) for the exception.
 - **Scope.** SnapshOT is a defensive and assessment platform for authorized OT
   engagements only. The default toolset is OT-focused and passive-first.
 
@@ -214,6 +217,7 @@ python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes
 scripts/check-installer.sh                     # validate the installer configuration
 scripts/check-desktop.sh                       # validate the desktop menu and launchers
 scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
+scripts/test-vendor-hooks.sh [arch]            # install the fetched vendor layer in a trixie container and smoke-test it
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
 sudo scripts/build.sh                          # directly on a Debian trixie host
@@ -233,7 +237,7 @@ refreshes the download table above.
 | [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
 | [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py`, the installer, desktop and field kit checks, reproducibility test, update USB, release |
+| [`scripts/`](scripts/) | build, `vendor.py` and `vendor-install.py`, the installer, desktop and field kit checks, the vendor layer test, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
 | [`docs/`](docs/) | build, vendoring, desktop, field kit, offline install and field updates |
 
