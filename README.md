@@ -281,10 +281,6 @@ refreshes the download table above.
   add-on blocklists or security-list updates: Remote Settings is held off so the browser
   never calls home, and the pinned ESR 140 has no policy for it, so its hosts resolve to
   loopback ([docs/wiki.md](docs/wiki.md)). Re-image rather than update in place.
-- In the vendor layer, the pymodbus console launcher fails at start-up (the pinned
-  pymodbus-repl does not match pymodbus 3.11), and pymodbus's serial client is missing
-  `pyserial`; the pymodbus library works over Modbus TCP, and `mbpoll` covers Modbus RTU
-  ([docs/vendoring.md](docs/vendoring.md#known-issues)).
 - Product and support URLs and the package maintainer address are `example.invalid`
   placeholders.
 

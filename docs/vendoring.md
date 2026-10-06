@@ -320,19 +320,3 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 
 These stay in the lock as `enabled: false` stanzas so the shape is recorded; they
 are validated but never fetched.
-
-## Known issues
-
-- **pymodbus console.** `pymodbus-console` (from pymodbus-repl, pinned with
-  pymodbus 3.11) stops at start-up with `ImportError: cannot import name
-  'ModbusAsciiFramer' from 'pymodbus.transaction'`: the REPL release does not
-  match the pymodbus 3.11 API. The library itself works in scripts and in
-  `ics-python`. The menu launcher (`snapshot-pymodbus-console.desktop`) shows
-  the error.
-- **pymodbus serial client.** `ModbusSerialClient` (Modbus RTU and ASCII) needs
-  `pyserial`, which `vendor/python/ics-python/requirements.in` does not list, so
-  it raises a RuntimeError; Modbus TCP is unaffected. Adding `pyserial` to
-  `requirements.in` and re-running `scripts/vendor.py fetch` would fix it. Until
-  then `mbpoll` (Debian) covers Modbus RTU.
-
-The SnapshOT Wiki's pymodbus page carries the same notes for operators.
