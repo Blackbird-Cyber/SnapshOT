@@ -26,7 +26,7 @@ upstream: https://www.wireshark.org/docs/man-pages/tshark.html
 
 ## What it is
 
-tshark is the command-line form of Wireshark. It captures packets from an
+tshark is the command-line form of [Wireshark](wireshark.md). It captures packets from an
 interface into a pcapng file, or reads an existing capture, and decodes every
 packet with the same dissectors as Wireshark, including Modbus, S7comm,
 EtherNet/IP and CIP, OPC UA, BACnet, DNP3, IEC 60870-5-104, IEC 61850 MMS and
@@ -160,8 +160,10 @@ modify the file.
   the evidence shows exactly what was sent.
 - [mbpoll](../protocols/mbpoll.md): reproduce a Modbus read seen in a capture,
   with the engineer's approval.
-- Wireshark, termshark and tcpdump (02 Traffic Analysis): the same captures in a
-  GUI, in a terminal UI, and with the smallest capture tool.
+- [Wireshark](wireshark.md), [termshark](termshark.md) and
+  [tcpdump](tcpdump.md): the same captures in a GUI, in a terminal UI, and with
+  the smallest capture tool.
+- [Suricata](suricata.md): run detection rules over the same capture offline.
 
 ## Upstream documentation
 

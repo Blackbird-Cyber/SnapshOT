@@ -41,7 +41,7 @@ already seen on the wire, to ask a PLC for its identity in its own protocol, and
 to prove after containment that a segment no longer answers. The **nmap ICS
 scripts** launcher lists the industrial scripts available on this image, and
 when the vendor layer is present the Redpoint NSE scripts are added to the same
-script directory.
+script directory (see [Redpoint NSE](redpoint-nse.md)).
 
 ## On the wire
 
@@ -95,8 +95,8 @@ returns them to normal operation.
 ## MITRE ATT&CK for ICS mapping
 
 nmap *resembles* the Discovery tactic: its traffic is what Remote System
-Discovery (T0846, including Port Scan, T0846.001) and Remote System Information
-Discovery (T0888) look like. That is why the site's monitoring must be told
+Discovery (T0846), Remote System Discovery: Port Scan (T0846.001) and Remote
+System Information Discovery (T0888) look like. That is why the site's monitoring must be told
 before you run it, and why a scan you did not announce, seen in a capture, is a
 strong sign of an intruder. As evidence, nmap's output documents which services
 an adversary could have found on a host at that point in time.
@@ -118,7 +118,7 @@ nmap -sT -n -Pn -p 102 --script s7-info 192.0.2.20
 nmap -sT -n -Pn -p 44818 --script enip-info 192.0.2.30
 # BACnet device properties (a UDP scan needs root)
 sudo nmap -sU -n -Pn -p 47808 --script bacnet-info 192.0.2.40
-# Host discovery only, no port scan; ARP requests on the local segment
+# Host discovery only, no port scan (ARP on the local segment); approved sweeps only
 sudo nmap -sn -n 192.0.2.0/24
 ```
 
@@ -148,8 +148,12 @@ human-readable copy and `.gnmap` suits `grep`.
   exactly what was sent and how the device answered.
 - [mbpoll](../protocols/mbpoll.md): read Modbus registers once nmap has found a
   Modbus device and its unit id.
-- arp-scan and netdiscover (01 Recon & Discovery): ARP-only discovery on the
-  local segment.
+- [arp-scan](arp-scan.md) and [netdiscover](netdiscover.md): ARP-only
+  discovery on the local segment.
+- [Redpoint NSE](redpoint-nse.md): Digital Bond's ICS identification scripts,
+  run with nmap's `--script`.
+- [plcscan](../protocols/plcscan.md): S7comm and Modbus identification without
+  the rest of nmap.
 
 ## Upstream documentation
 
