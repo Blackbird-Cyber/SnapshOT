@@ -29,7 +29,9 @@ The live session logs in automatically as user `snapshot`. The password `live`
 is only needed to unlock the screen: `sudo` and the installer do not ask for it
 in the live session. The live user already has the groups needed for the work,
 including `wireshark` for capture and `dialout` for serial; see
-[administration and capture](admin-and-capture.md).
+[administration and capture](admin-and-capture.md). The
+[desktop page](desktop.md) shows where the tools are in the menu and the
+keyboard shortcuts.
 
 ## Installing to disk
 
@@ -64,6 +66,8 @@ install.
 
 ## Related pages
 
+- [The desktop, menu and shortcuts](desktop.md): the tool folders, the
+  favourites and the field kit.
 - [Administration and capture](admin-and-capture.md): the sudo model, root
   terminal, and packet capture without root.
 - [Quiet network defaults](network-defaults.md): how the image stays silent on a

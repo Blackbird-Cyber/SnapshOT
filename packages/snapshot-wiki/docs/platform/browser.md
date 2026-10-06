@@ -29,13 +29,32 @@ It sets this wiki as the home page. **JavaScript and `file://` stay on**: the
 wiki needs both. A few preferences the policy engine refuses to set ("not allowed
 for stability reasons": the `toolkit.telemetry.*` keys, Normandy and the health
 report) are set instead in `/etc/firefox-esr/snapshot-quiet.js`, which Debian's
-firefox-esr reads alongside its own defaults. The same file keeps Remote Settings,
-and the Nimbus rollouts it delivers, off: the Firefox ESR on this image has no policy for it, so its three Mozilla
-hosts resolve to the laptop itself inside Firefox (`network.dns.localDomains`),
-and no query for them leaves the machine.
+firefox-esr reads alongside its own defaults. The same file keeps Remote
+Settings, and the Nimbus rollouts it delivers, off: the Firefox ESR on this
+image has no policy for it, so its three Mozilla hosts resolve to the laptop
+itself inside Firefox (`network.dns.localDomains`), and no query for them leaves
+the machine. It also turns off the certificate revocation (CRLite) and
+intermediate-certificate data that Remote Settings would deliver.
 
 The repository's `scripts/check-firefox-quiet.sh` proves the result: no packet
 leaves the machine while Firefox shows the wiki.
+
+## Using it on an engagement
+
+Firefox ESR is in the menu under **Usual Applications > Internet**; the
+**SnapshOT Wiki** launcher in 08 Reference and the Whisker favourites opens it
+on this wiki, which is also its home page. For a PLC, HMI, switch or gateway
+web interface, type the device's address (for example `https://192.0.2.10`)
+once the laptop is on the right segment and the work is approved:
+
+- Loading a device's pages is active traffic, and changing a setting there is a
+  write: the [wire classes](../lifecycle/wire-classes.md) and the
+  [rules of engagement](../lifecycle/rules-of-engagement.md) apply exactly as
+  they do to a command-line tool.
+- Device logins come from [KeePassXC](../tools/reporting/keepassxc.md); the
+  browser does not offer to save them.
+- A [Flameshot](../tools/reporting/flameshot.md) screenshot, saved into the
+  case folder, records what a page showed and when.
 
 ## What it costs
 

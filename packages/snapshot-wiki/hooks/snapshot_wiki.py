@@ -58,9 +58,10 @@ log = logging.getLogger("mkdocs.hooks.snapshot_wiki")
 
 # Preferred order inside each section; other pages in the same directory are
 # appended, sorted by title, so new pages need no change here.
-PLATFORM_ORDER = ["live-and-install", "admin-and-capture", "network-defaults",
-                  "vendor-layer", "reference-data", "build-manifest",
-                  "architectures", "field-updates", "browser", "using-this-wiki"]
+PLATFORM_ORDER = ["live-and-install", "desktop", "admin-and-capture",
+                  "network-defaults", "vendor-layer", "reference-data",
+                  "build-manifest", "architectures", "field-updates", "browser",
+                  "using-this-wiki"]
 ROE_ORDER = ["rules-of-engagement", "wire-classes", "evidence-handling"]
 PLAYBOOK_ORDER = ["passive-baseline", "active-enumeration", "protocol-interrogation",
                   "firmware-acquisition", "wireless-survey", "ir-triage",
