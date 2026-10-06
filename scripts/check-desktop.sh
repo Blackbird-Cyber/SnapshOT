@@ -35,13 +35,20 @@ done < <(find "$THEMES" "$MENU" -name "*.desktop" | sort)
 
 echo "== retired launchers =="
 # Dropped in snapshot-menu 0.2.4: the radio slice is receive-only (no HackRF, no
-# GNU Radio, no SoapySDR).
-for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop; do
+# GNU Radio, no SoapySDR) and avahi-browse cannot work with avahi-daemon masked.
+for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop snapshot-avahi-browse.desktop; do
     if [ -e "$MENU/usr/share/applications/$gone" ]; then
         echo "ERROR: retired launcher is back: $gone"; fail=1
     fi
 done
 grep -rl 'gnuradio-grc.desktop' "$MENU/etc/xdg" && { echo "ERROR: menu still references gnuradio-grc.desktop"; fail=1; }
+
+echo "== helper scripts =="
+for h in exec-in-shell mdns-listen; do
+    f="$MENU/usr/share/snapshot-menu/$h"
+    [ -x "$f" ] || { echo "ERROR: $f is not executable"; fail=1; }
+    sh -n "$f" || { echo "ERROR: $f does not parse"; fail=1; }
+done
 
 echo "== vendor path policy =="
 # Every /opt/snapshot reference in a launcher must be the per-tool wrapper form
@@ -133,7 +140,7 @@ top = submenus(menu)
 problems = []
 
 expected = {
-    "01 - Recon & Discovery":         ["snapshot-nmap.desktop"],
+    "01 - Recon & Discovery":         ["snapshot-nmap.desktop", "snapshot-mdns-listen.desktop"],
     "02 - Traffic Analysis":          ["snapshot-tshark.desktop", "org.wireshark.Wireshark.desktop"],
     "03 - Protocol Tools":            ["snapshot-mbpoll.desktop"],
     "04 - Firmware & Hardware":       ["snapshot-binwalk.desktop", "org.sigrok.PulseView.desktop"],

@@ -147,7 +147,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 
 | Folder | Tools |
 |---|---|
-| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, avahi-browse |
+| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, passive mDNS listen (tshark) |
 | 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
@@ -175,6 +175,8 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
   systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
   and creates no automatic wired profile; IPv6 autoconfiguration and router
   advertisements are off. Interfaces come up only when the operator brings them up.
+  avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive tshark
+  listener on udp 5353 instead.
 - **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
   listen; it answers "is something transmitting here that is not in the asset
   inventory?" with a passive sweep. HackRF, GNU Radio and SoapySDR are deliberately

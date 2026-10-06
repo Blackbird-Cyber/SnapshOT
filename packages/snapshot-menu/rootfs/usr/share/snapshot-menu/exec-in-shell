@@ -11,7 +11,11 @@ esac
 export PATH
 
 echo "$ $@"
+# Ctrl-C must stop the tool, not this wrapper: with a trap set here the tool
+# still inherits the default SIGINT action, and the shell below still opens.
+trap : INT
 eval $@
+trap - INT
 
 USER=${USER:-$(whoami)}
 SHELL=${SHELL:-$(getent passwd $USER | cut -d: -f7)}

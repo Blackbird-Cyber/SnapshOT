@@ -11,4 +11,8 @@ netdiscover
 arp-scan
 fping
 nbtscan
+# avahi-browse needs avahi-daemon, which hook 0300 masks (quiet on the wire), so
+# the menu's mDNS entry listens passively with tshark instead (snapshot-menu's
+# mdns-listen helper). Kept for a deliberate avahi-browse after the operator
+# unmasks and starts the daemon.
 avahi-utils

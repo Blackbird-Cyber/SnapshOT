@@ -85,13 +85,17 @@ Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
 passive 802.11 survey, rtl_test and rtl_power for RTL-SDR dongles, and gqrx. The
 HackRF, GNU Radio Companion and SoapySDR entries were dropped with their
 packages; the image never transmits on radio.
+01 Recon & Discovery's *mDNS listen (passive)* runs the package's `mdns-listen`
+helper, a tshark capture on udp 5353 on the one interface that is up (or one the
+operator picks), because avahi-daemon is masked and avahi-browse cannot work.
 
 ### Adding a launcher
 
 1. Add a `.desktop` file under
    `packages/snapshot-menu/rootfs/usr/share/applications/`. CLI tools use
    `Terminal=true` and `Exec=/usr/share/snapshot-menu/exec-in-shell "<cmd>"`
-   (which keeps the output on screen). A vendor-layer tool is always reached by
+   (which keeps the output on screen; Ctrl-C stops the tool and still leaves the
+   operator in the shell). A vendor-layer tool is always reached by
    its absolute per-tool wrapper path `/opt/snapshot/<tool>/bin/<cmd>` in both
    `Exec` and `TryExec`, never `/opt/snapshot/venv/...` or a bare path — the
    wrapper sets the tool's runtime up and the `TryExec` hides the entry when the

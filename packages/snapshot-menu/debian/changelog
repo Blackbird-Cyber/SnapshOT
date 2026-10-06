@@ -8,6 +8,14 @@ snapshot-menu (0.2.4) unstable; urgency=low
     was installed).
   * Add "rtl_power (RF spectrum sweep)" (snapshot-rtl-power.desktop): a passive
     wideband power sweep to CSV with an RTL-SDR dongle.
+  * 01 Recon & Discovery: replace "avahi-browse (mDNS)"
+    (snapshot-avahi-browse.desktop), which only printed "Daemon not running"
+    because avahi-daemon is masked, with "mDNS listen (passive)"
+    (snapshot-mdns-listen.desktop). The new mdns-listen helper captures the
+    mDNS/DNS-SD announcements other hosts send on udp 5353 with tshark, on the
+    one interface that is up or one the operator picks. Nothing is sent.
+  * exec-in-shell traps SIGINT, so Ctrl-C stops the launched tool and still
+    leaves the operator in the shell instead of closing the terminal.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000
 
