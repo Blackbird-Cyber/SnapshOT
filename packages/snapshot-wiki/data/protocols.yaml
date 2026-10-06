@@ -48,7 +48,7 @@ protocols:
   - {slug: wifi, name: Wi-Fi (IEEE 802.11), family: radio, ports: "2.4, 5 and 6 GHz"}
   - {slug: rf, name: Radio spectrum (SDR), family: radio, ports: "receiver dependent"}
   # Hardware and bench
-  - {slug: serial, name: Serial (RS-232, RS-485, UART), family: hardware, ports: "COM ports, USB serial adapters"}
+  - {slug: serial, name: "Serial (RS-232, RS-485, UART)", family: hardware, ports: "COM ports, USB serial adapters"}
   - {slug: jtag, name: JTAG and SWD, family: hardware, ports: "debug header"}
   - {slug: spi, name: SPI flash, family: hardware, ports: "SOIC clip or programmer"}
   - {slug: i2c, name: I2C, family: hardware, ports: "bus header"}

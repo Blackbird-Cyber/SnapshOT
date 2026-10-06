@@ -18,8 +18,11 @@
 # techniques  every ICS technique and sub-technique id -> name. Tool pages may
 #             only use ids listed here (`attack_techniques:`). Copied in full so
 #             authors never need to add one; v19 moved several techniques into
-#             the T16xx range (T1691 to T1695), so the older ids for those are
-#             not used.
+#             the T16xx range (T1691 to T1695), and the older ids for those
+#             (among them T0839 Module Firmware and T0857 System Firmware, now
+#             T1693.002 and T1693.001) are revoked and not listed. 97 entries:
+#             79 techniques and 18 sub-techniques, checked against the table at
+#             attack.mitre.org/techniques/ics/ on 2026-10-06.
 attack_version: "19"
 source: https://attack.mitre.org/matrices/ics/
 
@@ -174,7 +177,6 @@ techniques:
   T0851: "Rootkit"
   T0852: "Screen Capture"
   T0853: "Scripting"
-  T0857: "System Firmware"
   T0858: "Change Operating Mode"
   T0859: "Valid Accounts"
   T0860: "Wireless Compromise"
