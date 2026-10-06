@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Import Field Kit results
+Comment=Copy results from a field kit USB into a case folder with integrity checks
+Exec=/usr/share/snapshot-menu/exec-in-shell "snapshot-fieldkit-import"
+TryExec=/usr/bin/snapshot-fieldkit-import
+Terminal=true
+StartupNotify=false
+Icon=document-import
+Categories=X-SnapshOT-Forensics;

@@ -1,3 +1,15 @@
+snapshot-menu (0.2.3) unstable; urgency=low
+
+  * Add 06 Forensics & Response (snapshot-forensics.directory,
+    X-SnapshOT-Forensics) between Wireless & SDR and Reporting, with the
+    field kit launchers: Prepare Field Kit USB, Import Field Kit results
+    (both in a terminal), Field Kit folder and Field Kit guide.
+  * Move Autopsy and The Sleuth Kit (CLI) from Reporting into Forensics &
+    Response.
+  * Renumber Reporting & Documentation to 07 and Reference to 08.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000
+
 snapshot-menu (0.2.2) unstable; urgency=low
 
   * Add Autopsy (snapshot-autopsy.desktop) to 06 Reporting & Documentation,

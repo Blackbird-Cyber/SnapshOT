@@ -9,4 +9,4 @@ TryExec=/opt/snapshot/autopsy/bin/autopsy
 Terminal=false
 StartupNotify=false
 Icon=system-search
-Categories=X-SnapshOT-Reporting;
+Categories=X-SnapshOT-Forensics;

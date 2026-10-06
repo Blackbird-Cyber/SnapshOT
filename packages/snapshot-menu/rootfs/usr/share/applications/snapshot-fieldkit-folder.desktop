@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Field Kit folder
+Comment=Browse the SnapshOT field triage kit
+Exec=exo-open --launch FileManager /usr/share/snapshot/fieldkit
+Terminal=false
+Icon=folder
+Categories=X-SnapshOT-Forensics;

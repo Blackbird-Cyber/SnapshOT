@@ -61,6 +61,14 @@
   </Menu>
 
   <Menu>
+    <Name>SnapshOT-Forensics</Name>
+    <Directory>snapshot-forensics.directory</Directory>
+    <Include>
+      <Category>X-SnapshOT-Forensics</Category>
+    </Include>
+  </Menu>
+
+  <Menu>
     <Name>SnapshOT-Reporting</Name>
     <Directory>snapshot-reporting.directory</Directory>
     <Include>
