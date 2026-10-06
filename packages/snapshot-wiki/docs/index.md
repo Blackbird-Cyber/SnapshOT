@@ -19,7 +19,7 @@ which tactics it detects, investigates or resembles.
 Each phase links to the tools that serve it. Drag to pan, scroll to zoom, hover
 to highlight a node's links, click a node to open its page.
 
-<div class="snapshot-graph" data-graph="lifecycle" data-height="560">
+<div class="snapshot-graph" data-graph="lifecycle" data-height="660">
 <p class="snapshot-graph__fallback">This graph needs JavaScript; the same links are in the tables on each phase page and in the matrix.</p>
 </div>
 

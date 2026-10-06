@@ -1,35 +1,89 @@
-# PICERL <-> NIST CSF 2.0 (from data/lifecycle.yaml `csf:`). The lifecycle
-# author extends this with SP 800-82r3, the ICS Cyber Kill Chain and the
-# ATT&CK for ICS tactics in play. Format: docs/wiki.md, "Graphs".
-title: PICERL and NIST CSF 2.0
+# PICERL against NIST CSF 2.0 and the ATT&CK for ICS tactics in play, drawn from
+# data/lifecycle.yaml (`csf:` and `tactics:` of each phase). Keep the two in step:
+# a change to a phase's functions or tactics there belongs here too.
+# Columns, left to right: CSF 2.0 functions (level 0), phases (level 1), tactics
+# (level 2). Lessons learned maps the incident to every tactic; those edges are
+# dashed so the phase-specific ones stay readable.
+# Format: docs/wiki.md, "Graphs". Rendered on lifecycle/crosswalk.md.
+title: PICERL, NIST CSF 2.0 and ATT&CK for ICS
 layout: hierarchical
 direction: LR
 
 groups:
-  phase: {color: red, shape: box, label: "PICERL phase"}
   csf: {color: blue, shape: box, label: "NIST CSF 2.0 function"}
+  phase: {color: red, shape: box, label: "PICERL phase"}
+  tactic: {color: amber, shape: box, label: "ATT&CK for ICS tactic"}
 
 nodes:
-  - {id: preparation, level: 0, group: phase, label: "1. Preparation"}
-  - {id: identification, level: 0, group: phase, label: "2. Identification", url: lifecycle/phases/identification.md}
-  - {id: containment, level: 0, group: phase, label: "3. Containment"}
-  - {id: eradication, level: 0, group: phase, label: "4. Eradication"}
-  - {id: recovery, level: 0, group: phase, label: "5. Recovery"}
-  - {id: lessons-learned, level: 0, group: phase, label: "6. Lessons Learned"}
-  - {id: govern, level: 1, group: csf, label: "Govern"}
-  - {id: identify, level: 1, group: csf, label: "Identify"}
-  - {id: protect, level: 1, group: csf, label: "Protect"}
-  - {id: detect, level: 1, group: csf, label: "Detect"}
-  - {id: respond, level: 1, group: csf, label: "Respond"}
-  - {id: recover, level: 1, group: csf, label: "Recover"}
+  - {id: govern, level: 0, group: csf, label: "Govern", title: "Strategy, roles, policy and oversight of cybersecurity risk."}
+  - {id: identify, level: 0, group: csf, label: "Identify", title: "Understanding the assets, the risks and what to improve."}
+  - {id: protect, level: 0, group: csf, label: "Protect", title: "Safeguards that manage the risks."}
+  - {id: detect, level: 0, group: csf, label: "Detect", title: "Finding and analysing possible attacks and compromises."}
+  - {id: respond, level: 0, group: csf, label: "Respond", title: "Actions taken on a detected incident."}
+  - {id: recover, level: 0, group: csf, label: "Recover", title: "Restoring the assets and operations an incident affected."}
+
+  - {id: preparation, level: 1, group: phase, label: "1. Preparation", url: lifecycle/phases/preparation.md, title: "Know the process, the assets and who may touch what; stage the kit and agree the rules of engagement before anything is connected."}
+  - {id: identification, level: 1, group: phase, label: "2. Identification", url: lifecycle/phases/identification.md, title: "Detect and scope the incident from passive evidence first, confirm assets and sessions, and triage by cyber-physical impact."}
+  - {id: containment, level: 1, group: phase, label: "3. Containment", url: lifecycle/phases/containment.md, title: "Take the pre-authorised actions that stop the spread without endangering the process, and preserve evidence while doing it."}
+  - {id: eradication, level: 1, group: phase, label: "4. Eradication", url: lifecycle/phases/eradication.md, title: "Remove the adversary's footholds from hosts, logic and firmware, comparing everything against a verified known-good state."}
+  - {id: recovery, level: 1, group: phase, label: "5. Recovery", url: lifecycle/phases/recovery.md, title: "Restore from verified images, validate the process communications with the process owner and watch for recurrence."}
+  - {id: lessons-learned, level: 1, group: phase, label: "6. Lessons Learned", url: lifecycle/phases/lessons-learned.md, title: "Build the timeline, write the report, name the control gaps and hand over. Maps the incident to all twelve tactics."}
+
+  - {id: initial-access, level: 2, group: tactic, label: "Initial Access\nTA0108", url: lifecycle/attack-ics/initial-access.md, title: "The adversary is trying to get into your ICS environment."}
+  - {id: execution, level: 2, group: tactic, label: "Execution\nTA0104", url: lifecycle/attack-ics/execution.md, title: "The adversary is trying to run code or manipulate system functions, parameters, and data in an unauthorized way."}
+  - {id: persistence, level: 2, group: tactic, label: "Persistence\nTA0110", url: lifecycle/attack-ics/persistence.md, title: "The adversary is trying to maintain their foothold in your ICS environment."}
+  - {id: privilege-escalation, level: 2, group: tactic, label: "Privilege Escalation\nTA0111", url: lifecycle/attack-ics/privilege-escalation.md, title: "The adversary is trying to gain higher-level permissions."}
+  - {id: evasion, level: 2, group: tactic, label: "Evasion\nTA0103", url: lifecycle/attack-ics/evasion.md, title: "The adversary is trying to avoid security defenses."}
+  - {id: discovery, level: 2, group: tactic, label: "Discovery\nTA0102", url: lifecycle/attack-ics/discovery.md, title: "The adversary is locating information to assess and identify their targets in your environment."}
+  - {id: lateral-movement, level: 2, group: tactic, label: "Lateral Movement\nTA0109", url: lifecycle/attack-ics/lateral-movement.md, title: "The adversary is trying to move through your ICS environment."}
+  - {id: collection, level: 2, group: tactic, label: "Collection\nTA0100", url: lifecycle/attack-ics/collection.md, title: "The adversary is trying to gather data of interest and domain knowledge on your ICS environment to inform their goal."}
+  - {id: command-and-control, level: 2, group: tactic, label: "Command and Control\nTA0101", url: lifecycle/attack-ics/command-and-control.md, title: "The adversary is trying to communicate with and control compromised systems, controllers, and platforms with access to your ICS environment."}
+  - {id: inhibit-response-function, level: 2, group: tactic, label: "Inhibit Response Function\nTA0107", url: lifecycle/attack-ics/inhibit-response-function.md, title: "The adversary is trying to prevent your safety, protection, quality assurance, and operator intervention functions from responding to a failure, hazard, or unsafe state."}
+  - {id: impair-process-control, level: 2, group: tactic, label: "Impair Process Control\nTA0106", url: lifecycle/attack-ics/impair-process-control.md, title: "The adversary is trying to manipulate, disable, or damage physical control processes."}
+  - {id: impact, level: 2, group: tactic, label: "Impact\nTA0105", url: lifecycle/attack-ics/impact.md, title: "The adversary is trying to manipulate, interrupt, or destroy your ICS systems, data, and their surrounding environment."}
 
 edges:
-  - {from: preparation, to: govern}
-  - {from: preparation, to: identify}
-  - {from: preparation, to: protect}
-  - {from: identification, to: detect}
-  - {from: containment, to: respond}
-  - {from: eradication, to: respond}
-  - {from: recovery, to: recover}
-  - {from: lessons-learned, to: govern}
-  - {from: lessons-learned, to: identify}
+  # Phases to the CSF 2.0 functions they serve.
+  - {from: preparation, to: govern, color: blue}
+  - {from: preparation, to: identify, color: blue}
+  - {from: preparation, to: protect, color: blue}
+  - {from: identification, to: detect, color: blue}
+  - {from: containment, to: respond, color: blue}
+  - {from: eradication, to: respond, color: blue}
+  - {from: recovery, to: recover, color: blue}
+  - {from: lessons-learned, to: govern, color: blue}
+  - {from: lessons-learned, to: identify, color: blue}
+
+  # Phases to the tactics in play.
+  - {from: preparation, to: initial-access}
+  - {from: preparation, to: lateral-movement}
+  - {from: identification, to: discovery}
+  - {from: identification, to: collection}
+  - {from: identification, to: command-and-control}
+  - {from: identification, to: lateral-movement}
+  - {from: identification, to: evasion}
+  - {from: containment, to: command-and-control}
+  - {from: containment, to: lateral-movement}
+  - {from: containment, to: inhibit-response-function}
+  - {from: containment, to: impair-process-control}
+  - {from: eradication, to: persistence}
+  - {from: eradication, to: execution}
+  - {from: eradication, to: privilege-escalation}
+  - {from: eradication, to: impair-process-control}
+  - {from: recovery, to: impact}
+  - {from: recovery, to: inhibit-response-function}
+  - {from: recovery, to: impair-process-control}
+
+  # Lessons learned maps the whole incident to the matrix.
+  - {from: lessons-learned, to: initial-access, dashes: true}
+  - {from: lessons-learned, to: execution, dashes: true}
+  - {from: lessons-learned, to: persistence, dashes: true}
+  - {from: lessons-learned, to: privilege-escalation, dashes: true}
+  - {from: lessons-learned, to: evasion, dashes: true}
+  - {from: lessons-learned, to: discovery, dashes: true}
+  - {from: lessons-learned, to: lateral-movement, dashes: true}
+  - {from: lessons-learned, to: collection, dashes: true}
+  - {from: lessons-learned, to: command-and-control, dashes: true}
+  - {from: lessons-learned, to: inhibit-response-function, dashes: true}
+  - {from: lessons-learned, to: impair-process-control, dashes: true}
+  - {from: lessons-learned, to: impact, dashes: true}

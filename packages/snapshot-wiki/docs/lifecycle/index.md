@@ -38,22 +38,30 @@ PICERL puts that decision in the right place:
 ## Frameworks behind it
 
 - **NIST CSF 2.0** groups cybersecurity outcomes into six functions: Govern,
-  Identify, Protect, Detect, Respond and Recover. NIST SP 800-61r3 recasts
-  incident response around those functions, and each phase page shows the
-  functions it serves.
+  Identify, Protect, Detect, Respond and Recover. NIST SP 800-61r3 (April 2025)
+  recasts incident response as a CSF 2.0 Community Profile, and each phase page
+  shows the functions it serves.
 - **NIST SP 800-82r3**, the guide to operational technology security, sets out
   what OT incident response must account for: safety, process continuity and
   the asset owner's authority at every step.
+- **The SANS Five ICS Critical Controls** are the checklist for
+  [preparation](phases/preparation.md) and the headings for the control gaps in
+  the report.
+- **The ICS Cyber Kill Chain** separates an adversary's intrusion (Stage 1) from
+  the development and execution of an attack on the process (Stage 2), which
+  tells the team how urgent a finding is.
 - **MITRE ATT&CK for ICS** names what the adversary is doing. Each phase lists
   the tactics it is about, and each tool page says which tactics the tool
   detects, investigates or resembles. See [ATT&CK for ICS](attack-ics/index.md).
+
+The [crosswalk](crosswalk.md) lines the six phases up against all of them.
 
 ## Phases and tools
 
 The graph links every phase to the tools whose pages describe a use in it.
 Tools are coloured by their menu folder. Click a node to open its page.
 
-<div class="snapshot-graph" data-graph="lifecycle" data-height="600">
+<div class="snapshot-graph" data-graph="lifecycle" data-height="700">
 <p class="snapshot-graph__fallback">This graph needs JavaScript; the same links are in the matrix.</p>
 </div>
 
