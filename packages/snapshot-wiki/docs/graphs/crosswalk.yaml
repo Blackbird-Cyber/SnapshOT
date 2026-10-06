@@ -1,0 +1,35 @@
+# PICERL <-> NIST CSF 2.0 (from data/lifecycle.yaml `csf:`). The lifecycle
+# author extends this with SP 800-82r3, the ICS Cyber Kill Chain and the
+# ATT&CK for ICS tactics in play. Format: docs/wiki.md, "Graphs".
+title: PICERL and NIST CSF 2.0
+layout: hierarchical
+direction: LR
+
+groups:
+  phase: {color: red, shape: box, label: "PICERL phase"}
+  csf: {color: blue, shape: box, label: "NIST CSF 2.0 function"}
+
+nodes:
+  - {id: preparation, level: 0, group: phase, label: "1. Preparation"}
+  - {id: identification, level: 0, group: phase, label: "2. Identification", url: lifecycle/phases/identification.md}
+  - {id: containment, level: 0, group: phase, label: "3. Containment"}
+  - {id: eradication, level: 0, group: phase, label: "4. Eradication"}
+  - {id: recovery, level: 0, group: phase, label: "5. Recovery"}
+  - {id: lessons-learned, level: 0, group: phase, label: "6. Lessons Learned"}
+  - {id: govern, level: 1, group: csf, label: "Govern"}
+  - {id: identify, level: 1, group: csf, label: "Identify"}
+  - {id: protect, level: 1, group: csf, label: "Protect"}
+  - {id: detect, level: 1, group: csf, label: "Detect"}
+  - {id: respond, level: 1, group: csf, label: "Respond"}
+  - {id: recover, level: 1, group: csf, label: "Recover"}
+
+edges:
+  - {from: preparation, to: govern}
+  - {from: preparation, to: identify}
+  - {from: preparation, to: protect}
+  - {from: identification, to: detect}
+  - {from: containment, to: respond}
+  - {from: eradication, to: respond}
+  - {from: recovery, to: recover}
+  - {from: lessons-learned, to: govern}
+  - {from: lessons-learned, to: identify}
