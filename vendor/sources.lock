@@ -72,12 +72,12 @@ notes: JRE (no javac/jps/jstack), 52 MB download, 158 MiB unpacked, top dir jdk-
 name: ics-python
 type: python
 version: 2026.10
-license: per-package (pymodbus BSD-3-Clause, pymodbus-repl MIT, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT)
+license: per-package (pymodbus BSD-3-Clause, pyserial BSD-3-Clause, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT)
 arch: amd64, arm64
 runtime: cpython-3.11.16
 requirements: vendor/python/ics-python/requirements.in
-commands: ics-python=python, uadiscover=venv/bin/uadiscover, uals=venv/bin/uals, uaread=venv/bin/uaread, uawrite=venv/bin/uawrite, uasubscribe=venv/bin/uasubscribe, uaclient=venv/bin/uaclient, uaserver=venv/bin/uaserver, uacall=venv/bin/uacall, uahistoryread=venv/bin/uahistoryread, pymodbus-console=venv/bin/pymodbus.console
-notes: pymodbus pymodbus-repl pycomm3 bacpypes3 BAC0 asyncua python-snap7. pydnp3 dropped (sdist only); cpppo dropped (pins greenery<3.0 which has no wheel). pycomm3 covers EtherNet/IP.
+commands: ics-python=python, uadiscover=venv/bin/uadiscover, uals=venv/bin/uals, uaread=venv/bin/uaread, uawrite=venv/bin/uawrite, uasubscribe=venv/bin/uasubscribe, uaclient=venv/bin/uaclient, uaserver=venv/bin/uaserver, uacall=venv/bin/uacall, uahistoryread=venv/bin/uahistoryread
+notes: pymodbus pyserial pycomm3 bacpypes3 BAC0 asyncua python-snap7. pyserial is for pymodbus's ModbusSerialClient (Modbus RTU/ASCII). pydnp3 dropped (sdist only); cpppo dropped (pins greenery<3.0 which has no wheel); pymodbus-repl dropped (2.0.4 runs only with pymodbus 3.7.0-3.7.2). pycomm3 covers EtherNet/IP.
 
 name: opcua-client
 type: python
