@@ -1,0 +1,25 @@
+#!/bin/sh
+# Packet capture without root: members of group wireshark can run dumpcap,
+# which Wireshark, tshark and termshark capture through. wireshark-common only
+# sets this up when its debconf question install-setuid is true, and it
+# defaults to false. The live user (config.conf.d/snapshot.conf) and the
+# installed user (calamares users.conf) are put in the group. tcpdump stays
+# root-only.
+set -e
+
+echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
+dpkg-reconfigure -f noninteractive wireshark-common
+
+# The postinst creates the group, makes dumpcap root:wireshark and gives it
+# cap_net_raw,cap_net_admin (setuid root if setcap fails). squashfs keeps the
+# capability xattr and Calamares' unpackfs copies it with rsync -X.
+dumpcap=/usr/bin/dumpcap
+getent group wireshark >/dev/null || { echo "SnapshOT: no wireshark group" >&2; exit 1; }
+owner="$(stat -c '%U:%G %a' "$dumpcap")"
+caps="$(getcap "$dumpcap")"
+case "$owner $caps" in
+    "root:wireshark 754 "*cap_net_admin,cap_net_raw=eip*) ;;
+    "root:wireshark 4754 "*) echo "SnapshOT: setcap failed; dumpcap is setuid root instead" ;;
+    *) echo "SnapshOT: unexpected dumpcap setup: $owner $caps" >&2; exit 1 ;;
+esac
+echo "SnapshOT: dumpcap $owner ${caps:-no file caps} (group wireshark may capture)."

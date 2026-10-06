@@ -18,7 +18,11 @@
 #   4. desktop-file-validate on the package's .desktop files, and checks that
 #      the install-icon script is executable and parses as sh.
 #   5. Runs config/hooks/normal/0500-snapshot-sudo.hook.chroot, which writes
-#      the sudoers drop-in and checks it with visudo -cf.
+#      the sudoers drop-in and checks it with visudo -cf, and
+#      0600-snapshot-wireshark.hook.chroot against wireshark-common from the
+#      pin: group wireshark exists and dumpcap is root:wireshark with
+#      capabilities (or setuid when the container cannot set them). Checks
+#      that users.conf and the live-config defaults both add group wireshark.
 #   6. Parses settings.conf and asserts that the exec sequence runs packages
 #      before initramfscfg, so the installed initramfs has no live-boot hooks.
 set -euo pipefail
@@ -151,6 +155,30 @@ if sh "$hook"; then
 else
     echo "FAIL $hook"; fail=1
 fi
+
+echo "== wireshark hook =="
+# From the container's trixie (installing from the pin would mix library
+# versions); the postinst logic the hook drives is the same in every trixie
+# point release. Compare the two versions printed below if this ever fails.
+( cd /tmp/deb && apt-get "${APT_PIN[@]}" download wireshark-common >/dev/null )
+# adduser: the postinst's addgroup (the image has it; this container does not).
+apt-get install -y -qq --no-install-recommends adduser wireshark-common >/dev/null
+echo "info wireshark-common $(dpkg-query -W -f='${Version}' wireshark-common)" \
+     "(pin: $(dpkg-deb -f /tmp/deb/wireshark-common_*.deb Version))"
+hook=/snapshot/config/hooks/normal/0600-snapshot-wireshark.hook.chroot
+if [ "$(stat -c %a "$hook")" = 755 ] && sh "$hook"; then
+    echo "ok   ${hook#/snapshot/}"
+else
+    echo "FAIL ${hook#/snapshot/}"; fail=1
+fi
+live=/snapshot/config/includes.chroot/etc/live/config.conf.d/snapshot.conf
+if python3 - "$PKG/etc/calamares/modules/users.conf" <<'PY' && grep -Eq '^LIVE_USER_DEFAULT_GROUPS=".*\<wireshark\>' "$live"
+import sys, yaml
+groups = yaml.safe_load(open(sys.argv[1]))["defaultGroups"]
+sys.exit("wireshark" not in [g["name"] if isinstance(g, dict) else g for g in groups])
+PY
+then echo "ok   installed and live users are in group wireshark"
+else echo "FAIL group wireshark missing from users.conf or the live-config defaults"; fail=1; fi
 
 echo "== settings.conf sequence =="
 python3 - "$PKG/etc/calamares/settings.conf" <<'PY' || fail=1

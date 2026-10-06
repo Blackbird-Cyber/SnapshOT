@@ -121,6 +121,8 @@ disk and uses no network. Choose **Erase disk** and **Encrypt system**:
 - Administration: the account created in the installer is in group `sudo`, with its
   password; root stays locked. The password is remembered for 60 minutes across
   terminals.
+- Packet capture: the live and installed users are in group `wireshark`, so
+  Wireshark, tshark and termshark capture without `sudo`; `tcpdump` still needs it.
 - The installer removes the live-session packages (`live-boot`, `live-config`,
   `user-setup`) and Calamares itself; the installed desktop has no Install icon.
 
