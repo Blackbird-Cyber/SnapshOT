@@ -5,6 +5,10 @@
  * written by hooks/snapshot_wiki.py). The hook adds this script, vis-network
  * and the graph data only to pages that contain a graph.
  *
+ * Each graph gets zoom in, zoom out and full-screen buttons (top right);
+ * the mouse wheel zooms only in full screen so it never hijacks page
+ * scrolling.
+ *
  * Works from file:// at any directory depth: node URLs in the data are
  * site-relative and are resolved against the site root, which is derived from
  * this script's own URL (it lives at <root>/assets/js/snapshot-graphs.js), or
@@ -90,7 +94,7 @@
         smooth: hierarchical ? { type: "cubicBezier", forceDirection: data.direction === "LR" || data.direction === "RL" ? "horizontal" : "vertical", roundness: 0.4 } : { type: "continuous" },
         arrows: { to: { enabled: false, scaleFactor: 0.6 } }
       },
-      interaction: { hover: true, tooltipDelay: 120, zoomView: true, dragView: true,
+      interaction: { hover: true, tooltipDelay: 120, zoomView: false, dragView: true,
                      navigationButtons: false, keyboard: false, multiselect: false },
       physics: hierarchical ? { enabled: false } : {
         solver: "forceAtlas2Based",
@@ -178,6 +182,86 @@
     });
   }
 
+  // Zoom and full-screen controls at the top right of the graph. The mouse
+  // wheel scrolls the page, not the graph; it zooms only while the graph is
+  // full screen. Native full screen is used where the browser allows it, with
+  // a fixed-position fallback (and Escape to leave it) where it does not.
+  var ICONS = {
+    "in": '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    out: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    full: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    exit: '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 2v4H2M10 6V2h4M14 10h-4v4M2 10h4v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  function controls(el, network) {
+    var bar = document.createElement("div");
+    bar.className = "snapshot-graph__controls";
+    bar.setAttribute("role", "group");
+    bar.setAttribute("aria-label", "Graph controls");
+    function button(action, label) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "snapshot-graph__btn snapshot-graph__btn--" + action;
+      b.title = label;
+      b.setAttribute("aria-label", label);
+      b.innerHTML = ICONS[action];
+      bar.appendChild(b);
+      return b;
+    }
+    var zoomIn = button("in", "Zoom in");
+    var zoomOut = button("out", "Zoom out");
+    var full = button("full", "Full screen");
+    el.appendChild(bar);
+
+    function zoom(factor) {
+      network.moveTo({ scale: network.getScale() * factor, position: network.getViewPosition(),
+                       animation: { duration: 150, easingFunction: "easeInOutQuad" } });
+    }
+    zoomIn.addEventListener("click", function () { zoom(1.3); });
+    zoomOut.addEventListener("click", function () { zoom(1 / 1.3); });
+
+    var savedHeight = el.style.height;
+    var isFull = false;
+    function applyFull(on) {
+      isFull = on;
+      el.classList.toggle("snapshot-graph--fullscreen", on);
+      el.style.height = on ? "" : savedHeight;
+      full.title = on ? "Exit full screen" : "Full screen";
+      full.setAttribute("aria-label", full.title);
+      full.innerHTML = on ? ICONS.exit : ICONS.full;
+      network.setOptions({ interaction: { zoomView: on } });
+      // The canvas follows the container size on vis-network's own timer;
+      // redraw and fit as it catches up.
+      [60, 400, 1100].forEach(function (ms) {
+        window.setTimeout(function () { network.redraw(); network.fit({ animation: false }); }, ms);
+      });
+    }
+    full.addEventListener("click", function () {
+      if (isFull) {
+        if (document.fullscreenElement === el && document.exitFullscreen) document.exitFullscreen();
+        else applyFull(false);
+        return;
+      }
+      if (!el.requestFullscreen) { applyFull(true); return; }
+      // Native full screen where the browser grants it. Where it refuses, or an
+      // embedded browser never answers, the fixed overlay takes over instead.
+      var request = el.requestFullscreen();
+      if (request && request.then) {
+        request.then(null, function () { if (!isFull) applyFull(true); });
+      }
+      window.setTimeout(function () {
+        if (!isFull && document.fullscreenElement !== el) applyFull(true);
+      }, 500);
+    });
+    document.addEventListener("fullscreenchange", function () {
+      var now = document.fullscreenElement === el;
+      if (now !== isFull) applyFull(now);
+    });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && isFull && !document.fullscreenElement) applyFull(false);
+    });
+  }
+
   function mount(el) {
     var name = el.getAttribute("data-graph");
     var data = (window.SNAPSHOT_GRAPHS || {})[name];
@@ -185,7 +269,7 @@
     var height = parseInt(el.getAttribute("data-height") || "480", 10);
     el.style.height = height + "px";
     el.innerHTML = "";
-    el.setAttribute("role", "img");
+    el.setAttribute("role", "figure");
     el.setAttribute("aria-label", data.title || name);
 
     var nodes = new window.vis.DataSet(data.nodes.map(function (n) {
@@ -217,6 +301,7 @@
       if (node && node.url) window.location.href = resolve(node.url);
     });
     legend(el, data);
+    controls(el, network);
     el.classList.add("snapshot-graph--ready");
   }
 

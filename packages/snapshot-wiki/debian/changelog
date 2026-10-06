@@ -9,6 +9,8 @@ snapshot-wiki (0.1.0) unstable; urgency=low
     and matrix pages, the facts boxes and the graph data.
   * Vendor vis-network 10.1.2 and the iframe-worker 1.0.4 shim (offline
     search on file://); see assets/vendor/ORIGIN.md.
+  * Graphs: zoom in, zoom out and full-screen buttons at the top right; the
+    mouse wheel scrolls the page and zooms only in full screen.
   * Ship /etc/firefox/policies/policies.json and
     /etc/firefox-esr/snapshot-quiet.js so Firefox ESR makes no unsolicited
     connections and opens the wiki as its home page. Remote Settings, which

@@ -252,8 +252,11 @@ The hook writes each graph to `assets/graphs/<name>.js` as
 `window.SNAPSHOT_GRAPHS["<name>"] = {...}` (a script rather than JSON, because
 `fetch()` does not work on `file://`) and adds vis-network, the data and
 `assets/js/snapshot-graphs.js` to the pages that use it. Readers pan by
-dragging, zoom with the wheel, hover to highlight a node's links and click to
-open a node's page.
+dragging and zoom with the + and - buttons at the top right of the graph (the
+wheel scrolls the page unless the graph is full screen), hover to highlight a
+node's links and click to open a node's page. The third button opens the graph
+full screen: native where the browser allows it, a fixed overlay otherwise,
+and Escape leaves either.
 
 ## What the build hook does
 

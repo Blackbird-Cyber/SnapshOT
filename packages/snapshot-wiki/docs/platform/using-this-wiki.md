@@ -67,8 +67,10 @@ facts box at the top of each tool page carries the same information.
 
 Several pages carry an interactive graph: the lifecycle graph links phases to
 tools, and the ATT&CK graph links tactics to tools coloured by their role. Drag
-to pan, scroll to zoom, hover over a node to highlight its links, and click a node
-to open its page. The graphs need JavaScript (which the wiki is allowed to run);
+to pan and zoom with the + and - buttons at the top right of the graph; the mouse
+wheel scrolls the page, not the graph. The third button opens the graph full
+screen, where the wheel zooms too; Escape or the same button leaves. Hover over
+a node to highlight its links, and click a node to open its page. The graphs need JavaScript (which the wiki is allowed to run);
 where a graph cannot draw, the same links are in the tables on each page and in
 the generated matrix.
 
