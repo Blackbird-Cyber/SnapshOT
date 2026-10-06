@@ -99,6 +99,30 @@ flameshot gui -c
 
 `-p` takes an existing folder or a new file name; `-d` is in milliseconds.
 
+Taking an annotated screenshot by hand:
+
+1. **Start Flameshot** from 07 Reporting & Documentation or the Whisker
+   favourites; its icon appears in the panel's tray.
+2. **Get the screen ready.** Bring the window that shows the evidence to the
+   front: the device page in Firefox, the packet in Wireshark, the terminal.
+3. **Select.** Click the tray icon (or run `flameshot gui`): the screen dims.
+   Drag a rectangle over the area to keep. Drag its edges to adjust it; the
+   arrow keys move it by one pixel and Shift with the arrow keys resizes it.
+4. **Annotate.** The toolbar around the selection draws arrows, rectangles,
+   lines and text, adds numbered markers, and pixelates or blurs what the
+   report's readers should not see (passwords, personal names). Ctrl+Z undoes
+   the last mark.
+5. **Save.** Ctrl+S saves the picture: choose `~/cases/site-a/notes/screens/`
+   and a name that says what it shows. Ctrl+C copies it to the clipboard
+   instead, to paste into [CherryTree](cherrytree.md). Esc leaves without
+   saving.
+6. **Record it.** Write in the case notes what the screenshot shows, on which
+   host or interface, and when (UTC).
+
+The toolbar also has an upload button. Never use it: it sends the picture to an
+online image host. Flameshot asks for confirmation before an upload unless that
+is switched off in its settings; answer no.
+
 ## Output and evidence
 
 Save captures into one folder per case, keep originals and edited figures apart,

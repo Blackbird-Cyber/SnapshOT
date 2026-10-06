@@ -89,8 +89,8 @@ notes, screenshots or browser storage, is a protective habit, not a detection.
 
 ## Quick start
 
-Create the database in the application first: *Database* > *New Database*, saved
-as `~/cases/site-a/site-a.kdbx`.
+The command-line client works on a database created in the application (the
+steps after the commands).
 
 ```sh
 # What the menu launcher runs
@@ -111,6 +111,30 @@ keepassxc-cli generate -L 24 -l -U -n -s
 # A six-word passphrase, for an evidence archive
 keepassxc-cli diceware -W 6
 ```
+
+The database is created once, in the application:
+
+1. **Start it.** Open KeePassXC from 07 Reporting & Documentation.
+2. **Create the database.** **Database > New Database** opens a short wizard.
+   Under **General Database Information**, name it after the case; leave the
+   **Encryption Settings** at their defaults; under **Database Credentials**,
+   set a long passphrase (`keepassxc-cli diceware -W 6` makes one). Save it as
+   `~/cases/site-a/site-a.kdbx`.
+3. **Make groups.** **Groups > New Group** for each kind of device (HMI, PLC,
+   Network), so the entries stay sorted.
+4. **Add an entry.** Select a group and use **Entries > New Entry** (the
+   toolbar's add button does the same). Fill in a title that names the device
+   and host, the user name, the password, the URL (`https://192.0.2.10`) and,
+   in the notes, who issued the account and when it expires. The generator
+   button beside the password field makes a strong one; **Tools > Password
+   Generator** works on its own as well.
+5. **Use an entry.** Select it and use **Copy Username** and **Copy Password**
+   from the Entries menu (or the right-click menu), then paste into the
+   device's login page in Firefox. KeePassXC clears the clipboard again after
+   a short time.
+6. **Lock it.** **Database > Lock Database** whenever you step away, and in
+   **Tools > Settings**, on the **Security** page, set **Lock databases after
+   inactivity of** a few minutes.
 
 ## Output and evidence
 

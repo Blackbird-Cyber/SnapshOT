@@ -107,6 +107,31 @@ Close LibreOffice's windows before a `--convert-to` run: a conversion started
 while LibreOffice is open is handed to the running instance and may produce
 nothing.
 
+Writing the report in Writer:
+
+1. **Start it.** Open LibreOffice Writer from 07 Reporting & Documentation, or
+   open a draft that [pandoc](pandoc.md) produced from the Markdown findings.
+2. **Structure it with styles.** Give each section title the **Heading 1**
+   paragraph style and each subsection **Heading 2**, from the style box at
+   the left of the formatting toolbar. Headings are what the **Navigator**
+   (F5) and the table of contents are built from.
+3. **Add the figures.** **Insert > Image** for a screenshot from
+   `notes/screens/`, then right-click it and choose **Insert Caption** so each
+   figure is numbered.
+4. **Add the tables.** Open a tool's CSV output in Calc first: the **Text
+   Import** dialog asks for the separator (comma) and lets you set a column's
+   type to Text so addresses and times are not reformatted. **Data >
+   AutoFilter** on the header row filters it. Copy the rows you need into the
+   report.
+5. **Add the contents page.** **Insert > Table of Contents and Index > Table of
+   Contents, Index or Bibliography**, then OK.
+6. **Review.** Before the draft goes to a reviewer, **Edit > Track Changes >
+   Record**, so every change is marked for acceptance.
+7. **Save and hand over.** Save the working copy as `.odt` in
+   `~/cases/site-a/report/`. For the copy the client receives, **File > Export
+   as PDF**; for a long-lived archive, choose the PDF/A option on the
+   **General** tab of that dialog.
+
 ## Output and evidence
 
 Keep the report and its sources in the case folder, and hash the version that is

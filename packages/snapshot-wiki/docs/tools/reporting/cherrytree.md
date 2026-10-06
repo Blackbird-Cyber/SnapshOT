@@ -88,25 +88,51 @@ straightforward to write.
 
 ## Quick start
 
+CherryTree is a GUI; the menu launcher opens a new window.
+
 ```sh
 # What the menu launcher runs
 cherrytree --new_window
-# Open the engagement notebook
-cherrytree ~/cases/site-a/notes/site-a.ctb
+# Open the engagement notebook (it asks for the notebook's password)
+cherrytree ~/cases/site-a/notes/site-a.ctx
 # Export the whole notebook as a single HTML page, replacing an earlier export
-cherrytree ~/cases/site-a/notes/site-a.ctb -x ~/cases/site-a/report/notes -s -w
+cherrytree ~/cases/site-a/notes/site-a.ctx -x ~/cases/site-a/report/notes -s -w
 # Export every node to its own text file
-cherrytree ~/cases/site-a/notes/site-a.ctb -t ~/cases/site-a/report/notes -w
+cherrytree ~/cases/site-a/notes/site-a.ctx -t ~/cases/site-a/report/notes -w
 # Export the whole notebook as one PDF
-cherrytree ~/cases/site-a/notes/site-a.ctb -p ~/cases/site-a/report/notes -w
+cherrytree ~/cases/site-a/notes/site-a.ctx -p ~/cases/site-a/report/notes -w
 ```
 
 The HTML and text exports write a folder named after the notebook
-(`site-a.ctb_HTML`, `site-a.ctb_TXT`) inside the directory given; the PDF export
-writes `site-a.ctb.pdf` there. Exports of one node or branch are done from the
-application's export menu. The command-line exports need the desktop session,
-like the application itself. A protected notebook asks for its password; `-P`
-takes it on the command line, where it lands in the shell history, so avoid it.
+(`site-a.ctx_HTML`, `site-a.ctx_TXT`) inside the directory given; the PDF export
+writes `site-a.ctx.pdf` there. The command-line exports need the desktop
+session, like the application itself. `-P` would take the notebook's password
+on the command line, where it lands in the shell history, so leave it out and
+type the password when asked.
+
+Setting up the engagement notebook, the first time:
+
+1. **Start it.** Open CherryTree from 07 Reporting & Documentation.
+2. **Save it protected, at once.** **File > Save As**, and in **Choose Storage
+   Type** pick **Single SQLite File, 7-zip Encrypted and Password Protected**.
+   Set the password (store it in [KeePassXC](keepassxc.md)) and save as
+   `~/cases/site-a/notes/site-a.ctx`.
+3. **Build the tree.** **Tree > Add Node** adds a node beside the selected one
+   and **Tree > Add Subnode** a child of it: for example one node per phase,
+   with a subnode per host or controller. A node's properties (name, rich text
+   or code) are edited from the same menu.
+4. **Write as you go.** Type into the node on the right. The **Insert** menu
+   adds an image (a [Flameshot](flameshot.md) capture from
+   `notes/screens/`), a table, a code box for a command and its output, and a
+   timestamp in the laptop's local time; write UTC times by hand where they
+   matter, as in the rest of the case.
+5. **Find things later.** The **Search** menu finds text in the selected node
+   or across the whole notebook.
+6. **Save often** (Ctrl+S). The notebook is one file, so it is easy to hash and
+   archive with the case.
+7. **Export for the report.** **Export > Export To PDF** or **Export To HTML**
+   asks whether to export the selected node only, the selected node and its
+   subnodes, or all the tree.
 
 ## Output and evidence
 
@@ -116,8 +142,8 @@ engagement closes:
 ```sh
 CASE=~/cases/site-a
 mkdir -p "$CASE/notes" "$CASE/report"
-cherrytree "$CASE/notes/site-a.ctb" -x "$CASE/report/notes" -s -w
-sha256sum "$CASE/notes/site-a.ctb" >> "$CASE/SHA256SUMS"
+cherrytree "$CASE/notes/site-a.ctx" -x "$CASE/report/notes" -s -w
+sha256sum "$CASE/notes/site-a.ctx" >> "$CASE/SHA256SUMS"
 find "$CASE/report/notes" -type f -exec sha256sum {} + >> "$CASE/SHA256SUMS"
 ```
 
