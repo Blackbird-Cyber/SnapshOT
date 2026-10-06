@@ -100,10 +100,7 @@
                 <Category>Development</Category>
             </Include>
             <Exclude>
-                <Or>
-                    <Filename>gnuradio-grc.desktop</Filename>
-                    <Filename>org.sigrok.PulseView.desktop</Filename>
-                </Or>
+                <Filename>org.sigrok.PulseView.desktop</Filename>
             </Exclude>
         </Menu>
 
@@ -178,9 +175,6 @@
             <Include>
                 <Category>Science</Category>
             </Include>
-            <Exclude>
-                <Filename>gnuradio-grc.desktop</Filename>
-            </Exclude>
         </Menu>
 
         <Menu>

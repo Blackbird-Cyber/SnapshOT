@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=rtl_power (RF spectrum sweep)
+Comment=Passive wideband power sweep to CSV with an RTL-SDR dongle (receive only)
+Exec=/usr/share/snapshot-menu/exec-in-shell "rtl_power -h"
+Terminal=true
+StartupNotify=false
+Icon=network-wireless
+Categories=X-SnapshOT-Wireless;

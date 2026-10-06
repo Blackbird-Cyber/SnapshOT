@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+# Passive mDNS/DNS-SD listener behind "mDNS listen (passive)" in 01 Recon &
+# Discovery. avahi-daemon is masked on SnapshOT (quiet on the wire, hook 0300),
+# so avahi-browse only reports "Daemon not running". This captures the
+# announcements other hosts already send to 224.0.0.251 / ff02::fb with tshark
+# instead; nothing is transmitted. It needs a real interface in promiscuous
+# mode: with no joined multicast group the NIC may drop mDNS frames, and the
+# "any" pseudo-interface cannot go promiscuous.
+#
+#   mdns-listen [interface]
+set -u
+iface=${1:-}
+if [ -z "$iface" ]; then
+    # Interfaces that are up, minus loopback; "eth0@if3" -> "eth0".
+    up=$(ip -o link show up 2>/dev/null | awk -F': ' '$2 != "lo" { sub(/@.*/, "", $2); print $2 }')
+    n=$(printf '%s\n' $up | grep -c .)
+    if [ "$n" -eq 0 ]; then
+        echo "mdns-listen: no interface is up. Quiet on the wire: bring one up first, e.g." >&2
+        echo "  nmcli device connect <iface>    or    sudo ip link set <iface> up" >&2
+        exit 1
+    elif [ "$n" -eq 1 ]; then
+        iface=$up
+    else
+        echo "Interfaces that are up:"
+        printf '  %s\n' $up
+        printf 'Listen on: '
+        read -r iface
+    fi
+fi
+[ -n "$iface" ] || { echo "mdns-listen: no interface given" >&2; exit 1; }
+
+echo "Passive mDNS/DNS-SD listen on $iface. avahi-daemon is masked; nothing is sent."
+echo "Ctrl-C stops the capture. Add -w <file>.pcapng to keep it as evidence."
+echo "$ tshark -i $iface -l -f 'udp port 5353'"
+exec tshark -i "$iface" -l -f 'udp port 5353'
