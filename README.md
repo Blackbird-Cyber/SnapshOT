@@ -151,7 +151,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
-| 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
+| 05 Wireless & SDR | aircrack-ng (airodump-ng), rtl-sdr (rtl_test, rtl_power), gqrx; receive-only |
 | 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
 | 08 Reference | offline reference folder, the build manifest |
@@ -175,6 +175,10 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
   systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
   and creates no automatic wired profile; IPv6 autoconfiguration and router
   advertisements are off. Interfaces come up only when the operator brings them up.
+- **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
+  listen; it answers "is something transmitting here that is not in the asset
+  inventory?" with a passive sweep. HackRF, GNU Radio and SoapySDR are deliberately
+  not installed.
 - **Encryption at rest.** The installer sets up LUKS2 on the root filesystem. `/boot`
   holds only the kernel, initramfs and GRUB files and is not encrypted.
 - **Small, fixed install.** No recommended packages, and no network during the

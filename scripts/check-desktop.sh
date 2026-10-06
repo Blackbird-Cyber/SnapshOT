@@ -33,6 +33,16 @@ while IFS= read -r f; do
     if [ -n "$err" ]; then echo "ERROR $f:"; printf "%s\n" "$err"; fail=1; fi
 done < <(find "$THEMES" "$MENU" -name "*.desktop" | sort)
 
+echo "== retired launchers =="
+# Dropped in snapshot-menu 0.2.4: the radio slice is receive-only (no HackRF, no
+# GNU Radio, no SoapySDR).
+for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop; do
+    if [ -e "$MENU/usr/share/applications/$gone" ]; then
+        echo "ERROR: retired launcher is back: $gone"; fail=1
+    fi
+done
+grep -rl 'gnuradio-grc.desktop' "$MENU/etc/xdg" && { echo "ERROR: menu still references gnuradio-grc.desktop"; fail=1; }
+
 echo "== vendor path policy =="
 # Every /opt/snapshot reference in a launcher must be the per-tool wrapper form
 # /opt/snapshot/<tool>/bin/<cmd> (e.g. /opt/snapshot/zeek/bin/zeek); the old
@@ -76,7 +86,6 @@ stub() { printf '[Desktop Entry]\nType=Application\nName=%s\nExec=%s\nIcon=%s\nC
     "$2" "${2%% *}" "$2" "$3" > "$STAGE/data/applications/$1"; }
 stub org.wireshark.Wireshark.desktop Wireshark "Network;Monitor;Qt;"
 stub dk.gqrx.gqrx.desktop gqrx "AudioVideo;Audio;Qt;HamRadio;"
-stub gnuradio-grc.desktop "GNU Radio Companion" "Development;HamRadio;Science;"
 stub org.sigrok.PulseView.desktop PulseView "Development;Electronics;"
 stub cherrytree.desktop CherryTree "GNOME;GTK;Utility;"
 stub org.flameshot.Flameshot.desktop Flameshot "Graphics;"
@@ -128,7 +137,9 @@ expected = {
     "02 - Traffic Analysis":          ["snapshot-tshark.desktop", "org.wireshark.Wireshark.desktop"],
     "03 - Protocol Tools":            ["snapshot-mbpoll.desktop"],
     "04 - Firmware & Hardware":       ["snapshot-binwalk.desktop", "org.sigrok.PulseView.desktop"],
-    "05 - Wireless & SDR":            ["snapshot-aircrack-ng.desktop", "dk.gqrx.gqrx.desktop", "gnuradio-grc.desktop"],
+    "05 - Wireless & SDR":            ["snapshot-aircrack-ng.desktop", "snapshot-airodump-ng.desktop",
+                                       "snapshot-rtl-sdr.desktop", "snapshot-rtl-power.desktop",
+                                       "dk.gqrx.gqrx.desktop"],
     "06 - Forensics & Response":      ["snapshot-autopsy.desktop", "snapshot-sleuthkit.desktop",
                                        "snapshot-fieldkit-prep.desktop", "snapshot-fieldkit-import.desktop",
                                        "snapshot-fieldkit-folder.desktop", "snapshot-fieldkit-guide.desktop"],
@@ -159,7 +170,7 @@ if ua is None:
 else:
     leaked = set(ids_recursive(ua)) & {
         "org.wireshark.Wireshark.desktop", "dk.gqrx.gqrx.desktop",
-        "org.sigrok.PulseView.desktop", "gnuradio-grc.desktop",
+        "org.sigrok.PulseView.desktop",
         "cherrytree.desktop", "org.flameshot.Flameshot.desktop",
         "org.keepassxc.KeePassXC.desktop",
     }

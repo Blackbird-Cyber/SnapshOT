@@ -55,7 +55,6 @@
       <Or>
         <Category>X-SnapshOT-Wireless</Category>
         <Filename>dk.gqrx.gqrx.desktop</Filename>
-        <Filename>gnuradio-grc.desktop</Filename>
       </Or>
     </Include>
   </Menu>

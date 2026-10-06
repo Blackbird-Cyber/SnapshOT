@@ -70,7 +70,7 @@ in from `applications-merged/snapshot.menu`; Xfce (garcon) finds that directory 
 stripping the `xfce-` menu prefix.
 
 Each folder collects its `X-SnapshOT-*` launchers plus the matching upstream GUI
-tool (e.g. Wireshark in *Traffic Analysis*, gqrx/GRC in *Wireless & SDR*). Those
+tool (e.g. Wireshark in *Traffic Analysis*, gqrx in *Wireless & SDR*). Those
 upstream tools are `<Exclude>`d from the relevant **Usual Applications** sub-menu
 so they are not listed twice. (LibreOffice Writer is intentionally left in both
 *Office* and *Reporting*.)
@@ -81,6 +81,10 @@ The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
 Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
+05 Wireless & SDR is receive-only (snapshot-menu 0.2.4): airodump-ng for the
+passive 802.11 survey, rtl_test and rtl_power for RTL-SDR dongles, and gqrx. The
+HackRF, GNU Radio Companion and SoapySDR entries were dropped with their
+packages; the image never transmits on radio.
 
 ### Adding a launcher
 
