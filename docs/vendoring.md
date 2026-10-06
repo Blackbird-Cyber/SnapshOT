@@ -19,7 +19,7 @@ does not provide at the version we need.
   runtimes/cpython-3.11.16/        bin/python3, lib/..., MANIFEST   (shared, immutable)
   runtimes/temurin-jdk-21.0.12.1/  (only once an enabled tool references it)
   runtimes/temurin-jre-21.0.12.1/  (amd64; Autopsy)
-  ics-python/   MANIFEST  venv/  bin/{ics-python,uadiscover,...,pymodbus-console}
+  ics-python/   MANIFEST  venv/  bin/{ics-python,uadiscover,...,uahistoryread}
   opcua-client/ MANIFEST  venv/  bin/opcua-client            (amd64 images only)
   plcscan/      MANIFEST  app/   bin/plcscan                 (runtime python, no venv)
   redpoint-nse/ MANIFEST  scripts/*.nse  LICENSE  (+ symlinks into nmap's script dir)
@@ -213,7 +213,7 @@ Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
 | artifact | amd64 | arm64 |
 |---|---|---|
 | CPython 3.11.16 runtime (download) | ~30 MiB | ~30 MiB |
-| ics-python wheelhouse (39 wheels) | ~13 MiB | ~13 MiB |
+| ics-python wheelhouse (20 wheels) | ~7.3 MiB | ~7.5 MiB |
 | opcua-client wheelhouse (19 wheels, incl. PyQt5) | ~74 MiB | n/a |
 | plcscan + Redpoint archives | ~76 KiB | ~76 KiB |
 | Temurin JRE 21 (download / on disk) | ~50 MiB / 158 MiB | n/a |
@@ -285,7 +285,7 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 |---|---|
 | CPython runtimes (python-build-standalone) | PSF-2.0 (bundles OpenSSL etc. under their own terms) |
 | Temurin JDK 21, Temurin JRE 21 | GPL-2.0-with-Classpath-Exception |
-| ics-python wheels | per package (from wheel metadata / bundled LICENSE): pymodbus BSD-3-Clause, pymodbus-repl MIT, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
+| ics-python wheels | per package (from wheel metadata / bundled LICENSE): pymodbus BSD-3-Clause, pyserial BSD-3-Clause, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
 | opcua-client | GPL (opcua-client, unversioned) + GPL-3.0 (PyQt5) |
 | plcscan (eloraux fork) | GPL-3.0 |
 | Redpoint NSE | Nmap license (same as Nmap; see bundled `LICENSE`) |
@@ -299,6 +299,12 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 - **cpppo** — every release pins `greenery<3.0`, and no greenery below 3.0
   publishes a wheel, so it cannot be installed under the wheels-only,
   `--require-hashes` contract. Dropped; **pycomm3 already covers EtherNet/IP**.
+- **pymodbus-repl** (`pymodbus.console`, the `pymodbus-console` command) — dead
+  upstream: its last release, 2.0.4 (August 2024), imports `ModbusAsciiFramer`
+  from `pymodbus.transaction`, which pymodbus 3.7.3 and later no longer export,
+  so it only runs with pymodbus 3.7.0-3.7.2. Dropped rather than holding pymodbus
+  back at 3.7.2; **`mbpoll` (Debian) is the interactive Modbus client**, and the
+  pymodbus library (with pyserial for `ModbusSerialClient`) stays in `ics-python`.
 - **GRASSMARLIN** — archived; Java 8 + JavaFX and an x86-only JNetPcap native lib.
   Unsupported on this image.
 - **zeek / ICSNPP** — zeek ships as an OBS `.deb` into `/opt/zeek` and pulls apt
