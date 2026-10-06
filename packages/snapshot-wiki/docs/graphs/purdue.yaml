@@ -1,0 +1,42 @@
+# The Purdue reference model and where SnapshOT attaches.
+# Format: docs/wiki.md, "Graphs". Rendered by <div class="snapshot-graph" data-graph="purdue">.
+# Node urls are docs/ paths and must exist.
+title: Purdue levels, zones and where SnapshOT attaches
+layout: hierarchical
+direction: UD
+
+groups:
+  enterprise: {color: blue, shape: box, label: "Enterprise zone (levels 4 and 5)"}
+  dmz: {color: amber, shape: box, label: "Industrial DMZ (level 3.5)"}
+  operations: {color: teal, shape: box, label: "Site operations zone (level 3)"}
+  control: {color: purple, shape: box, label: "Control zone (levels 1 and 2)"}
+  process: {color: green, shape: box, label: "Physical process (level 0)"}
+  wireless: {color: cobalt, shape: box, label: "Wireless links"}
+  snapshot: {color: red, shape: dot, label: "Where SnapshOT attaches"}
+
+nodes:
+  - {id: l5, level: 0, group: enterprise, label: "Level 5\nEnterprise network", title: "Corporate IT, email, internet access."}
+  - {id: l4, level: 1, group: enterprise, label: "Level 4\nSite business systems", title: "Site IT: business planning, logistics, file and print."}
+  - {id: dmz, level: 2, group: dmz, label: "Level 3.5\nIndustrial DMZ", title: "Brokers data between IT and OT: historian replicas, patch and remote-access servers. No traffic crosses it directly."}
+  - {id: l3, level: 3, group: operations, label: "Level 3\nSite operations\nhistorian, domain, MES", title: "Plant-wide operations: historian, OT domain services, engineering file servers."}
+  - {id: l2, level: 4, group: control, label: "Level 2\nSupervisory control\nHMI, SCADA, engineering workstation", title: "Operators' HMIs, SCADA servers and the engineering workstations that program controllers."}
+  - {id: l1, level: 5, group: control, label: "Level 1\nBasic control\nPLC, RTU, safety controller", title: "Controllers that run the process logic, including safety instrumented systems."}
+  - {id: l0, level: 6, group: process, label: "Level 0\nPhysical process\nsensors, actuators, drives", title: "The equipment that measures and moves the process."}
+  - {id: wifi, level: 6, group: wireless, label: "Wireless links\nplant Wi-Fi, radio telemetry", title: "Wireless bridges, handheld HMIs and radio links to remote sites."}
+  - {id: span3, level: 3, group: snapshot, label: "SPAN / TAP", url: tools/traffic/tshark.md, title: "Passive capture on a mirror port or TAP at level 3: historian, domain and DMZ conversations."}
+  - {id: span2, level: 4, group: snapshot, label: "SPAN / TAP", url: tools/traffic/tshark.md, title: "Passive capture at level 2: HMI polling, engineering sessions, program downloads."}
+  - {id: serial, level: 5, group: snapshot, label: "Serial\nRS-485 / RS-232", url: tools/protocols/mbpoll.md, title: "A serial adapter on a controller's console or fieldbus port, engineer present."}
+  - {id: radio, level: 7, group: snapshot, label: "Wireless survey\nreceive only", url: lifecycle/playbooks/wireless-survey.md, title: "Receive-only survey of Wi-Fi and radio links around cells and remote sites."}
+
+edges:
+  - {from: l5, to: l4}
+  - {from: l4, to: dmz, dashes: true, label: "conduit (firewall)"}
+  - {from: dmz, to: l3, dashes: true, label: "conduit (firewall)"}
+  - {from: l3, to: l2, dashes: true, label: "conduit"}
+  - {from: l2, to: l1, dashes: true, label: "conduit"}
+  - {from: l1, to: l0, label: "I/O and fieldbus"}
+  - {from: l1, to: wifi, dashes: true}
+  - {from: span3, to: l3, color: red}
+  - {from: span2, to: l2, color: red}
+  - {from: serial, to: l1, color: red}
+  - {from: radio, to: wifi, color: red}

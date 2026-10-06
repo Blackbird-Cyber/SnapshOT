@@ -157,7 +157,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 05 Wireless & SDR | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx; strictly receive-only |
 | 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
-| 08 Reference | offline reference folder, the build manifest |
+| 08 Reference | offline reference folder, the build manifest, the SnapshOT Wiki |
 
 Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
 [`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
@@ -172,6 +172,24 @@ GRASSMARLIN's case x86-only Java 8); Ghidra is pinned but disabled because it an
 add about 650 MB. See [docs/vendoring.md](docs/vendoring.md). Everything else comes from
 the Debian package lists in [`config/package-lists/`](config/package-lists/).
 
+**The SnapshOT Wiki** documents every tool above against the OT incident-response
+lifecycle (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS): what each tool does, how it
+behaves on the wire, a quick start for using it, and where it fits in each phase, with
+rules of engagement, playbooks, protocol primers and a guide to the platform itself. It
+is a static site of about 13 MB in `/usr/share/snapshot/wiki` (package `snapshot-wiki`),
+and works with no network: search, tags and the interactive graphs run offline. Open it
+from **08 Reference > SnapshOT Wiki** or the Whisker favourites; it is also the
+browser's home page. See [docs/wiki.md](docs/wiki.md).
+
+**Firefox ESR**, the one package in
+[`config/package-lists/snapshot-reference.list.chroot`](config/package-lists/snapshot-reference.list.chroot),
+shows the wiki and is the browser for PLC, HMI and switch web interfaces; it is in
+Usual Applications > Internet. `snapshot-wiki` locks it down: an enterprise policy and
+system preferences stop it making any connection on its own (no telemetry, updates, Safe
+Browsing, DNS over HTTPS or Remote Settings), and its password manager is off in favour
+of KeePassXC. The price is listed under [Status and known issues](#status-and-known-issues).
+Firefox adds about 275 MiB to the image.
+
 ## Security posture
 
 - **Quiet on the wire.** avahi and systemd-timesyncd are masked, and ModemManager is
@@ -179,7 +197,9 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
   check connectivity and creates no automatic wired profile; IPv6 autoconfiguration
   and router advertisements are off. Interfaces come up only when the operator brings
   them up. avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive
-  tshark listener on udp 5353 instead.
+  tshark listener on udp 5353 instead. Firefox ESR runs under an enterprise policy that
+  stops it calling home (`scripts/check-firefox-quiet.sh` captures no packet while it
+  shows the wiki).
 - **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
   listen; it answers "is something transmitting here that is not in the asset
   inventory?" with a passive sweep, and airodump-ng is the only 802.11 entry. HackRF,
@@ -217,6 +237,8 @@ python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes
 scripts/check-installer.sh                     # validate the installer configuration
 scripts/check-desktop.sh                       # validate the desktop menu and launchers
 scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
+scripts/check-wiki.sh                          # build and validate the SnapshOT Wiki
+scripts/check-firefox-quiet.sh                 # prove Firefox ESR sends nothing on its own (slow)
 scripts/test-vendor-hooks.sh [arch]            # install the fetched vendor layer in a trixie container and smoke-test it
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
@@ -234,12 +256,12 @@ refreshes the download table above.
 | Path | Contents |
 |---|---|
 | [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
-| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `calamares-settings-snapshot` (the installer) |
+| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `snapshot-wiki` (the offline wiki and the Firefox ESR policy), `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
 | [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py` and `vendor-install.py`, the installer, desktop and field kit checks, the vendor layer test, reproducibility test, update USB, release |
+| [`scripts/`](scripts/) | build, `vendor.py` and `vendor-install.py`, the installer, desktop, field kit and wiki checks, the Firefox network check, the vendor layer test, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
-| [`docs/`](docs/) | build, vendoring, desktop, field kit, offline install and field updates |
+| [`docs/`](docs/) | build, vendoring, desktop, field kit, wiki, offline install and field updates |
 
 ## Status and known issues
 
@@ -255,6 +277,14 @@ refreshes the download table above.
   SnapshOT ships it without the Windows binaries those modules call.
 - No hibernation: swap, when chosen, is a file inside the encrypted root and the
   installer writes no resume parameter.
+- Firefox ESR receives no certificate revocation or intermediate-certificate updates,
+  add-on blocklists or security-list updates: Remote Settings is held off so the browser
+  never calls home, and the pinned ESR 140 has no policy for it, so its hosts resolve to
+  loopback ([docs/wiki.md](docs/wiki.md)). Re-image rather than update in place.
+- In the vendor layer, the pymodbus console launcher fails at start-up (the pinned
+  pymodbus-repl does not match pymodbus 3.11), and pymodbus's serial client is missing
+  `pyserial`; the pymodbus library works over Modbus TCP, and `mbpoll` covers Modbus RTU
+  ([docs/vendoring.md](docs/vendoring.md#known-issues)).
 - Product and support URLs and the package maintainer address are `example.invalid`
   placeholders.
 

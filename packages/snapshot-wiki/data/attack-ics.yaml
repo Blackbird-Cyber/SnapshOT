@@ -1,0 +1,230 @@
+# MITRE ATT&CK for ICS, as the SnapshOT Wiki uses it.
+#
+# Source: attack.mitre.org/tactics/ics/ and attack.mitre.org/techniques/ics/,
+# ATT&CK v19, read on 2026-10-06. Ids, names and the tactic descriptions are
+# copied verbatim; `field_view` is SnapshOT's own text.
+#
+# (c) 2026 The MITRE Corporation. This work is reproduced and distributed with
+# the permission of The MITRE Corporation. ATT&CK is a registered trademark of
+# The MITRE Corporation.
+#
+# tactics     the 12 ICS tactics in matrix order
+#   slug         used in tool pages (`attack_ics:`), data/lifecycle.yaml and URLs
+#                (lifecycle/attack-ics/<slug>.html, generated)
+#   id           TAxxxx
+#   name         as MITRE writes it
+#   description  MITRE's one-line description
+#   field_view   what a field kit like SnapshOT can see or check for this tactic
+# techniques  every ICS technique and sub-technique id -> name. Tool pages may
+#             only use ids listed here (`attack_techniques:`). Copied in full so
+#             authors never need to add one; v19 moved several techniques into
+#             the T16xx range (T1691 to T1695), and the older ids for those
+#             (among them T0839 Module Firmware and T0857 System Firmware, now
+#             T1693.002 and T1693.001) are revoked and not listed. 97 entries:
+#             79 techniques and 18 sub-techniques, checked against the table at
+#             attack.mitre.org/techniques/ics/ on 2026-10-06.
+attack_version: "19"
+source: https://attack.mitre.org/matrices/ics/
+
+tactics:
+  - slug: initial-access
+    id: TA0108
+    name: Initial Access
+    description: The adversary is trying to get into your ICS environment.
+    field_view: >-
+      Look at the ways in: remote access paths, internet-facing devices, transient
+      laptops and removable media. Passive capture at the boundary shows sessions
+      that should not exist; host collection shows how media and remote tools were used.
+
+  - slug: execution
+    id: TA0104
+    name: Execution
+    description: The adversary is trying to run code or manipulate system functions, parameters, and data in an unauthorized way.
+    field_view: >-
+      Evidence lives on engineering workstations and HMIs (processes, scripts,
+      command history) and on the wire as controller commands. Host collection and
+      protocol decoding are the main sources.
+
+  - slug: persistence
+    id: TA0110
+    name: Persistence
+    description: The adversary is trying to maintain their foothold in your ICS environment.
+    field_view: >-
+      Compare controller logic, firmware and host start-up items against a known-good
+      baseline. Differences found during eradication are the persistence to remove.
+
+  - slug: privilege-escalation
+    id: TA0111
+    name: Privilege Escalation
+    description: The adversary is trying to gain higher-level permissions.
+    field_view: >-
+      Mostly visible on hosts: new accounts, changed credentials and exploited
+      services. Field kit collection and disk forensics are the sources.
+
+  - slug: evasion
+    id: TA0103
+    name: Evasion
+    description: The adversary is trying to avoid security defenses.
+    field_view: >-
+      Look for gaps: deleted logs, devices whose mode or alarms changed, traffic that
+      imitates normal engineering sessions. A passive baseline makes the imitation stand out.
+
+  - slug: discovery
+    id: TA0102
+    name: Discovery
+    description: The adversary is locating information to assess and identify their targets in your environment.
+    field_view: >-
+      Scans and broadcast discovery are loud on a quiet OT network and show up
+      clearly in passive capture. SnapshOT's own active tools look exactly like this,
+      so announce them to the site before use.
+
+  - slug: lateral-movement
+    id: TA0109
+    name: Lateral Movement
+    description: The adversary is trying to move through your ICS environment.
+    field_view: >-
+      Sessions between zones that the architecture does not expect, remote service
+      logins and program downloads from unusual sources. Capture at the conduits
+      between zones.
+
+  - slug: collection
+    id: TA0100
+    name: Collection
+    description: The adversary is trying to gather data of interest and domain knowledge on your ICS environment to inform their goal.
+    field_view: >-
+      Bulk reads of registers, tags and project files from a controller look like
+      polling from an unexpected host. Decode the protocol to see what was read.
+
+  - slug: command-and-control
+    id: TA0101
+    name: Command and Control
+    description: The adversary is trying to communicate with and control compromised systems, controllers, and platforms with access to your ICS environment.
+    field_view: >-
+      Outbound or cross-zone sessions on common ports, beacons at regular
+      intervals and tunnels through allowed protocols. Long passive captures and
+      IDS rules find them.
+
+  - slug: inhibit-response-function
+    id: TA0107
+    name: Inhibit Response Function
+    description: The adversary is trying to prevent your safety, protection, quality assurance, and operator intervention functions from responding to a failure, hazard, or unsafe state.
+    field_view: >-
+      Suppressed alarms, blocked messages, devices restarted or put in a different
+      mode. Confirm with the process owner and the safety system's own records,
+      not only with network evidence.
+
+  - slug: impair-process-control
+    id: TA0106
+    name: Impair Process Control
+    description: The adversary is trying to manipulate, disable, or damage physical control processes.
+    field_view: >-
+      Unauthorized writes, changed parameters and modified firmware. Protocol
+      decoding shows the writes; comparing values and firmware with a baseline shows
+      what changed.
+
+  - slug: impact
+    id: TA0105
+    name: Impact
+    description: The adversary is trying to manipulate, interrupt, or destroy your ICS systems, data, and their surrounding environment.
+    field_view: >-
+      Loss of view, control, safety or production, as seen by operators. The field
+      kit documents the state of systems and evidence for recovery and the report.
+
+techniques:
+  T0800: "Activate Firmware Update Mode"
+  T0801: "Monitor Process State"
+  T0802: "Automated Collection"
+  T0806: "Brute Force I/O"
+  T0807: "Command-Line Interface"
+  T0809: "Data Destruction"
+  T0811: "Data from Information Repositories"
+  T0813: "Denial of Control"
+  T0814: "Denial of Service"
+  T0815: "Denial of View"
+  T0816: "Device Restart/Shutdown"
+  T0817: "Drive-by Compromise"
+  T0819: "Exploit Public-Facing Application"
+  T0820: "Exploitation for Evasion"
+  T0821: "Modify Controller Tasking"
+  T0822: "External Remote Services"
+  T0823: "Graphical User Interface"
+  T0826: "Loss of Availability"
+  T0827: "Loss of Control"
+  T0828: "Loss of Productivity and Revenue"
+  T0829: "Loss of View"
+  T0830: "Adversary-in-the-Middle"
+  T0831: "Manipulation of Control"
+  T0832: "Manipulation of View"
+  T0834: "Native API"
+  T0835: "Manipulate I/O Image"
+  T0836: "Modify Parameter"
+  T0837: "Loss of Protection"
+  T0838: "Modify Alarm Settings"
+  T0840: "Network Connection Enumeration"
+  T0842: "Network Sniffing"
+  T0843: "Program Download"
+  T0843.001: "Download All"
+  T0843.002: "Online Edit"
+  T0843.003: "Program Append"
+  T0845: "Program Upload"
+  T0846: "Remote System Discovery"
+  T0846.001: "Port Scan"
+  T0846.002: "Broadcast Discovery"
+  T0846.003: "Multicast Discovery"
+  T0847: "Replication Through Removable Media"
+  T0848: "Rogue Master"
+  T0849: "Masquerading"
+  T0851: "Rootkit"
+  T0852: "Screen Capture"
+  T0853: "Scripting"
+  T0858: "Change Operating Mode"
+  T0859: "Valid Accounts"
+  T0860: "Wireless Compromise"
+  T0861: "Point & Tag Identification"
+  T0862: "Supply Chain Compromise"
+  T0863: "User Execution"
+  T0864: "Transient Cyber Asset"
+  T0865: "Spearphishing Attachment"
+  T0866: "Exploitation of Remote Services"
+  T0867: "Lateral Tool Transfer"
+  T0868: "Detect Operating Mode"
+  T0869: "Standard Application Layer Protocol"
+  T0871: "Execution through API"
+  T0872: "Indicator Removal on Host"
+  T0873: "Project File Infection"
+  T0873.001: "Siemens Project File Format"
+  T0874: "Hooking"
+  T0877: "I/O Image"
+  T0878: "Alarm Suppression"
+  T0879: "Damage to Property"
+  T0880: "Loss of Safety"
+  T0881: "Service Stop"
+  T0882: "Theft of Operational Information"
+  T0883: "Internet Accessible Device"
+  T0884: "Connection Proxy"
+  T0885: "Commonly Used Port"
+  T0886: "Remote Services"
+  T0887: "Wireless Sniffing"
+  T0888: "Remote System Information Discovery"
+  T0889: "Modify Program"
+  T0890: "Exploitation for Privilege Escalation"
+  T0892: "Change Credential"
+  T0893: "Data from Local System"
+  T0894: "System Binary Proxy Execution"
+  T0895: "Autorun Image"
+  T1691: "Block Operational Technology Message"
+  T1691.001: "Command Message"
+  T1691.002: "Reporting Message"
+  T1692: "Unauthorized Message"
+  T1692.001: "Command Message"
+  T1692.002: "Reporting Message"
+  T1693: "Modify Firmware"
+  T1693.001: "System Firmware"
+  T1693.002: "Module Firmware"
+  T1694: "Insecure Credentials"
+  T1694.001: "Default Credentials"
+  T1694.002: "Hardcoded Credentials"
+  T1695: "Block Communications"
+  T1695.001: "Serial COM"
+  T1695.002: "Ethernet"
+  T1695.003: "Wi-Fi"

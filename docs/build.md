@@ -2,10 +2,13 @@
 
 ## Requirements
 A Debian trixie host (or the `docker/` container) with `live-build`, `dpkg-dev`,
-`debhelper`, `xorriso`, `squashfs-tools`. live-build runs as root. The vendor
-step needs **Docker and network** but nothing extra on the host: it builds the
-Python wheelhouses inside per-arch trixie containers using the pinned
-interpreter, so no `pip-tools` (or `uv`) is installed on the host.
+`debhelper`, `xorriso`, `squashfs-tools`, and `mkdocs-material`, `python3-pymdownx`
+and `python3-yaml` (the Build-Depends of `packages/snapshot-wiki`, whose site is built
+when `scripts/build.sh` runs `dpkg-buildpackage`; the `docker/` image has them).
+live-build runs as root. The vendor step needs **Docker and network** but
+nothing extra on the host: it builds the Python wheelhouses inside per-arch
+trixie containers using the pinned interpreter, so no `pip-tools` (or `uv`) is
+installed on the host.
 
 The container path works on macOS too: `docker/build-in-docker.sh` copies the
 tree into the container, builds there (live-build cannot build a chroot on a
@@ -51,6 +54,17 @@ runs `dpkg-parsechangelog` on every `packages/*/debian/changelog`,
 `desktop-file-validate` on the installer's `.desktop` files, runs the sudo
 hook (which checks its sudoers file with `visudo -cf`), and asserts that the
 exec sequence in `settings.conf` runs `packages` before `initramfscfg`.
+
+## Checking the wiki
+`packages/snapshot-wiki` builds the SnapshOT Wiki with MkDocs during
+`dpkg-buildpackage` (the builder image carries `mkdocs-material`,
+`python3-pymdownx` and `python3-yaml`). Before a build, after changing any page
+or launcher:
+```
+scripts/check-wiki.sh             # strict build, links, launcher coverage, offline-only assets
+scripts/check-firefox-quiet.sh    # optional, slow: Firefox ESR sends nothing on its own
+```
+See [`docs/wiki.md`](wiki.md).
 
 ## How offline works
 - All apt mirrors point at the snapshot timestamp; the live squashfs holds the

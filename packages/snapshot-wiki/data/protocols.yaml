@@ -1,0 +1,55 @@
+# Protocol vocabulary for tool pages (`protocols:`) and protocol primers.
+#
+# slug     the value tool pages use; a primer for it lives at
+#          docs/tools/protocol-primers/<slug>.md (optional; the hook links to it
+#          from facts boxes and the generated protocols page when it exists)
+# name     display name
+# family   ics | it | link | radio | hardware (groups the generated page)
+# ports    where it is usually found; "layer 2" for non-IP protocols
+#
+# Only add a protocol here when a tool page needs it. Ports are the well-known
+# defaults; sites change them.
+protocols:
+  # Industrial
+  - {slug: modbus, name: Modbus, family: ics, ports: "TCP 502; RTU and ASCII over RS-232/RS-485"}
+  - {slug: s7comm, name: S7comm, family: ics, ports: "TCP 102 (ISO-TSAP)"}
+  - {slug: ethernet-ip, name: EtherNet/IP and CIP, family: ics, ports: "TCP 44818, UDP 44818, UDP 2222 (I/O)"}
+  - {slug: opc-ua, name: OPC UA, family: ics, ports: "TCP 4840 (opc.tcp default)"}
+  - {slug: bacnet, name: BACnet, family: ics, ports: "UDP 47808 (BACnet/IP); MS/TP over RS-485"}
+  - {slug: dnp3, name: DNP3, family: ics, ports: "TCP and UDP 20000; serial"}
+  - {slug: iec-104, name: IEC 60870-5-104, family: ics, ports: "TCP 2404"}
+  - {slug: iec-61850, name: IEC 61850 (MMS and GOOSE), family: ics, ports: "TCP 102 (MMS); layer 2 (GOOSE, Sampled Values)"}
+  - {slug: profinet, name: PROFINET, family: ics, ports: "layer 2 (DCP, RT); UDP 34964 (CM)"}
+  - {slug: omron-fins, name: Omron FINS, family: ics, ports: "UDP and TCP 9600"}
+  - {slug: niagara-fox, name: Niagara Fox, family: ics, ports: "TCP 1911"}
+  - {slug: pcworx, name: Phoenix Contact PC WORX, family: ics, ports: "TCP 1962"}
+  - {slug: hart-ip, name: HART-IP, family: ics, ports: "UDP and TCP 5094"}
+  - {slug: mqtt, name: MQTT, family: ics, ports: "TCP 1883; 8883 with TLS"}
+  # IT protocols common on OT networks
+  - {slug: http, name: HTTP and HTTPS, family: it, ports: "TCP 80, 443 (device web interfaces)"}
+  - {slug: snmp, name: SNMP, family: it, ports: "UDP 161; traps UDP 162"}
+  - {slug: ssh, name: SSH, family: it, ports: "TCP 22"}
+  - {slug: telnet, name: Telnet, family: it, ports: "TCP 23"}
+  - {slug: ftp, name: FTP, family: it, ports: "TCP 21"}
+  - {slug: tftp, name: TFTP, family: it, ports: "UDP 69"}
+  - {slug: smb, name: SMB, family: it, ports: "TCP 445"}
+  - {slug: rdp, name: RDP, family: it, ports: "TCP 3389"}
+  - {slug: vnc, name: VNC, family: it, ports: "TCP 5900"}
+  - {slug: dns, name: DNS, family: it, ports: "UDP and TCP 53"}
+  - {slug: dhcp, name: DHCP, family: it, ports: "UDP 67, 68"}
+  - {slug: netbios, name: NetBIOS name service, family: it, ports: "UDP 137"}
+  - {slug: mdns, name: mDNS and DNS-SD, family: it, ports: "UDP 5353"}
+  - {slug: llmnr, name: LLMNR, family: it, ports: "UDP 5355"}
+  - {slug: tcp-ip, name: TCP/IP fingerprinting, family: it, ports: "any (passive OS and stack fingerprints)"}
+  # Link layer
+  - {slug: arp, name: ARP, family: link, ports: "layer 2"}
+  - {slug: lldp, name: LLDP, family: link, ports: "layer 2"}
+  # Radio
+  - {slug: wifi, name: Wi-Fi (IEEE 802.11), family: radio, ports: "2.4, 5 and 6 GHz"}
+  - {slug: rf, name: Radio spectrum (SDR), family: radio, ports: "receiver dependent"}
+  # Hardware and bench
+  - {slug: serial, name: "Serial (RS-232, RS-485, UART)", family: hardware, ports: "COM ports, USB serial adapters"}
+  - {slug: jtag, name: JTAG and SWD, family: hardware, ports: "debug header"}
+  - {slug: spi, name: SPI flash, family: hardware, ports: "SOIC clip or programmer"}
+  - {slug: i2c, name: I2C, family: hardware, ports: "bus header"}
+  - {slug: can, name: CAN bus, family: hardware, ports: "CAN transceiver"}

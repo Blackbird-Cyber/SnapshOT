@@ -1,0 +1,93 @@
+# SnapshOT Wiki: built by debian/rules with `mkdocs build --strict -d build/site`
+# and installed to /usr/share/snapshot/wiki (opened from file://).
+#
+# The navigation is NOT written here: hooks/snapshot_wiki.py generates it from
+# data/*.yaml and the pages under docs/, so authors never edit this file to add a
+# page. See docs/wiki.md in the repository for the authoring guide.
+site_name: SnapshOT Wiki
+site_description: Offline documentation of every SnapshOT tool against the OT incident-response lifecycle.
+site_author: Blackbird Cyber
+copyright: Blackbird Cyber
+
+docs_dir: docs
+use_directory_urls: false
+strict: true
+
+# docs/graphs/*.yaml is graph data the hook turns into assets/graphs/*.js.
+exclude_docs: |
+  graphs/
+# The tags index is linked from pages, not from the navigation tabs.
+not_in_nav: |
+  /tags.md
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  font: false
+  logo: assets/img/snapshot-mark.svg
+  favicon: assets/img/favicon.png
+  palette:
+    - scheme: slate
+      primary: custom
+      accent: custom
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+
+extra:
+  generator: false
+
+extra_css:
+  - assets/css/snapshot.css
+
+hooks:
+  - hooks/snapshot_wiki.py
+
+plugins:
+  - search:
+      lang: en
+  - tags
+  # Last: rewrites links for file:// and inlines the search index.
+  - offline
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: false
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn

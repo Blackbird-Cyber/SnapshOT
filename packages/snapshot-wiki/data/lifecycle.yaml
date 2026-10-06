@@ -1,0 +1,207 @@
+# The SnapshOT engagement lifecycle: SANS ICS PICERL, read for OT field work, and
+# the vocabularies tool pages use. The hook validates every tool page against
+# this file and generates the phase, tactic and matrix sections from it.
+#
+# phases            the six PICERL phases in order. `id` is fixed: it is the phase
+#                   page's file name (docs/lifecycle/phases/<id>.md) and the key in
+#                   a tool page's `phases:` mapping.
+#   number, name    "Phase <number> of 6", display name
+#   summary         one line; the lede of the phase page and the graph tooltip
+#   ot_reading      why this phase differs on a plant floor (shown on the matrix
+#                   and the lifecycle overview)
+#   csf             NIST CSF 2.0 functions this phase serves (ids below)
+#   tactics         ATT&CK for ICS tactic slug -> one line: why the tactic matters
+#                   in this phase (rendered at <!-- snapshot:phase-tactics -->)
+#   anchors         crosswalk row (rendered at <!-- snapshot:phase-crosswalk -->)
+#     sp800_82r3      what NIST SP 800-82r3 says this phase must account for
+#     sp800_61r3      how NIST SP 800-61r3 frames it
+#     sans_controls   numbers from `sans_controls` below
+# csf_functions     NIST CSF 2.0 functions (tool pages use the ids in `csf:`)
+# sans_controls     the SANS Five ICS Cybersecurity Critical Controls
+# wire_classes      what a tool does on the wire (tool pages: `wire:`)
+# attack_roles      how a tool relates to an ATT&CK tactic (tool pages: `attack_role:`)
+
+phases:
+  - id: preparation
+    number: 1
+    name: Preparation
+    summary: Know the process, the assets and who may touch what; stage the kit and agree the rules of engagement before anything is connected.
+    ot_reading: >-
+      On a plant floor the process owner, not the responder, decides what may be
+      touched. Preparation records the safe states, the engineer who must be
+      present for any write, the maintenance windows and a known-good baseline,
+      so that later phases can act quickly without risking the process.
+    csf: [govern, identify, protect]
+    tactics:
+      initial-access: Know the remote access paths, vendor connections and transient devices an intruder could use, so their sessions are recognisable later.
+      lateral-movement: Record the zones, the conduits between them and the sessions that normally cross them; that baseline is what makes movement stand out.
+    anchors:
+      sp800_82r3: An OT incident response plan with roles, the process owner's authority, safe states and the communications plan.
+      sp800_61r3: Preparation is continuous governance and risk management, not a one-off step before an incident.
+      sans_controls: [1, 2, 3]
+
+  - id: identification
+    number: 2
+    name: Identification
+    summary: Detect and scope the incident from passive evidence first, confirm assets and sessions, and triage by cyber-physical impact.
+    ot_reading: >-
+      Identification starts with listening: a SPAN or TAP capture, decoded
+      industrial protocols and operator reports. Active queries come second, one
+      host at a time and with approval, because a fragile controller can fall over
+      under a scan. Triage asks what the incident means for the physical process,
+      not only for the hosts.
+    csf: [detect]
+    tactics:
+      discovery: Scans and broadcast discovery inside the control network are a strong early signal; tell the site about your own before you run them.
+      collection: Unexpected polling of controllers, project uploads and bulk tag reads show an adversary learning the process.
+      command-and-control: Cross-zone or outbound sessions, regular beacons and tunnels on allowed ports show a controlled foothold.
+      lateral-movement: Remote service logins and program downloads from unusual hosts show movement towards the controllers.
+      evasion: Deleted logs, changed device modes and traffic imitating engineering sessions; compare against the baseline.
+    anchors:
+      sp800_82r3: Detection draws on network monitoring, safety system alarms and operator reports, and triage weighs safety and process impact.
+      sp800_61r3: Detect (DE) covers continuous monitoring and adverse event analysis that declares and scopes an incident.
+      sans_controls: [3]
+
+  - id: containment
+    number: 3
+    name: Containment
+    summary: Take the pre-authorised actions that stop the spread without endangering the process, and preserve evidence while doing it.
+    ot_reading: >-
+      Containment in OT is a negotiation with physics. Pulling a cable can trip a
+      process; isolating a conduit may force manual operation. Only actions agreed
+      in preparation are taken, with the process owner, and each is verified from
+      both sides of the boundary.
+    csf: [respond]
+    tactics:
+      command-and-control: Cut the channel the adversary uses, then confirm from captures that it stays cut.
+      lateral-movement: Isolate the conduits the adversary used and verify the segmentation holds.
+      inhibit-response-function: Make sure safety, alarm and protection functions still respond while systems are isolated or in manual.
+      impair-process-control: Stop unauthorized writes reaching controllers; switch to manual or local control where the plan allows.
+    anchors:
+      sp800_82r3: Containment balances safety, process continuity and evidence; isolation options are decided before an incident.
+      sp800_61r3: Respond (RS) covers incident management, analysis, mitigation and reporting.
+      sans_controls: [1, 2, 4]
+
+  - id: eradication
+    number: 4
+    name: Eradication
+    summary: Remove the adversary's footholds from hosts, logic and firmware, comparing everything against a verified known-good state.
+    ot_reading: >-
+      Eradication touches the things that run the process: controller logic,
+      firmware and engineering workstations. Every change is made by or with the
+      engineer responsible, in a window, and checked against a verified known-good
+      copy rather than against whatever is running.
+    csf: [respond]
+    tactics:
+      persistence: Find and remove start-up items, modified logic and implanted firmware that would survive a restart.
+      execution: Remove the scripts, tools and services the adversary used to run code or send commands.
+      privilege-escalation: Remove added accounts and reset credentials the adversary obtained or changed.
+      impair-process-control: Confirm parameters, set points and firmware match the known-good baseline before returning to automatic control.
+    anchors:
+      sp800_82r3: Eradication restores logic, configuration and firmware from verified sources with the asset owner.
+      sp800_61r3: Respond (RS) mitigation removes the threat and closes the access paths used.
+      sans_controls: [1, 5]
+
+  - id: recovery
+    number: 5
+    name: Recovery
+    summary: Restore from verified images, validate the process communications with the process owner and watch for recurrence.
+    ot_reading: >-
+      Recovery is complete when the process owner says the process is safe and
+      producing, not when the hosts are clean. Restored systems are brought back in
+      stages, their communications are checked against the baseline and monitoring
+      stays in place for recurrence.
+    csf: [recover]
+    tactics:
+      impact: Restore view, control and production, and document what was lost for the report.
+      inhibit-response-function: Prove alarms, safety and protection functions work before returning to normal operation.
+      impair-process-control: Verify the controllers run the expected logic and values once they are back in automatic.
+    anchors:
+      sp800_82r3: Recovery restores operations in stages with the process owner and verifies safety functions before normal operation.
+      sp800_61r3: Recover (RC) covers recovery plan execution and recovery communication.
+      sans_controls: [1, 3]
+
+  - id: lessons-learned
+    number: 6
+    name: Lessons Learned
+    summary: Build the timeline, write the report, name the control gaps and hand over, so the next preparation starts from what happened.
+    ot_reading: >-
+      The report goes to people who run a plant: it explains the incident in terms
+      of the process, the safety margins used and the controls that would have
+      changed the outcome. Mapping the incident to ATT&CK for ICS gives the gaps a
+      shared vocabulary.
+    csf: [govern, identify]
+    tactics:
+      initial-access: Record how the adversary got in and which control would have stopped it.
+      execution: Record how code ran or commands were issued, and from where.
+      persistence: Record every foothold found and how it was removed.
+      privilege-escalation: Record which credentials and permissions were abused.
+      evasion: Record what hid the activity and which evidence was missing.
+      discovery: Record what the adversary learned about the network and when it was visible.
+      lateral-movement: Record the path through the zones and which conduits allowed it.
+      collection: Record what process data, logic or documents were taken.
+      command-and-control: Record the channels used and why they were not blocked.
+      inhibit-response-function: Record any safety, alarm or protection function that was affected.
+      impair-process-control: Record any write, parameter or firmware change and its effect on the process.
+      impact: Record the consequence for safety, production and equipment.
+    anchors:
+      sp800_82r3: Lessons learned update the OT security program, the architecture and the response plan.
+      sp800_61r3: Improvement is continuous and feeds back into Govern and Identify.
+      sans_controls: [1, 2, 3, 4, 5]
+
+csf_functions:
+  - id: govern
+    name: Govern
+    summary: Strategy, roles, policy and oversight of cybersecurity risk.
+  - id: identify
+    name: Identify
+    summary: Understanding the assets, the risks and what to improve.
+  - id: protect
+    name: Protect
+    summary: Safeguards that manage the risks.
+  - id: detect
+    name: Detect
+    summary: Finding and analysing possible attacks and compromises.
+  - id: respond
+    name: Respond
+    summary: Actions taken on a detected incident.
+  - id: recover
+    name: Recover
+    summary: Restoring the assets and operations an incident affected.
+
+sans_controls:
+  - number: 1
+    name: ICS Incident Response
+  - number: 2
+    name: Defensible Architecture
+  - number: 3
+    name: ICS Network Visibility and Monitoring
+  - number: 4
+    name: Secure Remote Access
+  - number: 5
+    name: Risk-Based Vulnerability Management
+
+wire_classes:
+  - id: passive
+    name: Passive
+    summary: Never transmits; listens, reads files or works offline.
+  - id: active
+    name: Active
+    summary: Sends queries or probes, but only reads; can still upset a fragile device.
+  - id: writes
+    name: Writes
+    summary: Can change device state, configuration, firmware or media; engineer present and approval required.
+
+attack_roles:
+  - id: detects
+    name: Detects
+    summary: Produces evidence that the tactic is happening.
+  - id: investigates
+    name: Investigates
+    summary: Helps scope or explain the tactic after it is suspected.
+  - id: resembles
+    name: Resembles
+    summary: Its own traffic or actions look like the tactic; tell the SOC and the site before use.
+  - id: none
+    name: None
+    summary: No direct relationship to an ATT&CK for ICS tactic.

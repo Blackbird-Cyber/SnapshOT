@@ -1,0 +1,36 @@
+snapshot-wiki (0.1.0) unstable; urgency=low
+
+  * Initial packaging: the SnapshOT Wiki, a MkDocs Material site built at
+    package build time (mkdocs build --strict) and installed to
+    /usr/share/snapshot/wiki for offline use from file://.
+  * hooks/snapshot_wiki.py validates the page front-matter against data/
+    (menu folders, PICERL phases, ATT&CK for ICS tactics and techniques,
+    protocols), generates the navigation, the tool, folder, tactic, protocol
+    and matrix pages, the facts boxes and the graph data.
+  * Vendor vis-network 10.1.2 and the iframe-worker 1.0.4 shim (offline
+    search on file://); see assets/vendor/ORIGIN.md.
+  * Graphs: zoom in, zoom out and full-screen buttons at the top right; the
+    mouse wheel scrolls the page and zooms only in full screen.
+  * Ship /etc/firefox/policies/policies.json and
+    /etc/firefox-esr/snapshot-quiet.js so Firefox ESR makes no unsolicited
+    connections and opens the wiki as its home page. Remote Settings, which
+    the pinned ESR 140 has no policy for, is kept off the wire by resolving
+    its three hosts to loopback (network.dns.localDomains), as are the
+    new-tab feeds that download its attachments; scripts/check-firefox-quiet.sh,
+    run against the image's pinned firefox-esr, captures no packet in 45
+    seconds and finds no policy the pinned Firefox does not know.
+  * Divert xfce4-helpers' /etc/xdg/xfce4/helpers.rc and link it to
+    /usr/share/snapshot-wiki/xfce4-helpers.rc (the same keys, WebBrowser
+    pinned to debian-sensible-browser); not shipped at the diverted path,
+    which would collide with xfce4-helpers' conffile. Ship
+    /etc/xdg/mimeapps.list with firefox-esr.desktop for HTML and http(s)
+    links. Depend on sensible-utils, which provides sensible-browser (it is
+    Priority important and already in the debootstrap base; the dependency
+    keeps the default-browser chain from resting on that).
+  * The tool pages follow snapshot-menu 0.2.7's launcher set: 05 Wireless &
+    SDR is receive-only (airodump-ng; rtl-sdr with its dongle check and
+    rtl_power; Gqrx), and 01 Recon & Discovery documents the passive mDNS
+    listener, with avahi-browse kept as the active route behind the masked
+    daemon.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000

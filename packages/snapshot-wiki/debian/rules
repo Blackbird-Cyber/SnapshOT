@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+# The wiki is built here, at package build time, so mkdocs never enters the
+# image: the .deb carries only the static site. --strict turns every content
+# problem the hook reports (bad front-matter, broken link) into a build failure.
+%:
+	dh $@
+
+override_dh_auto_build:
+	mkdocs build --strict --clean -d build/site
+
+override_dh_auto_clean:
+	rm -rf build
+
+override_dh_auto_install:
+	mkdir -p debian/snapshot-wiki/usr/share/snapshot/wiki
+	cp -a build/site/. debian/snapshot-wiki/usr/share/snapshot/wiki/
+	cp -a rootfs/. debian/snapshot-wiki/

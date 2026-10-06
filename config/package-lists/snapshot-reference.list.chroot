@@ -1,0 +1,6 @@
+# Reference: the browser for the SnapshOT Wiki (snapshot-wiki, in the branding
+# list) and for the web interfaces of PLCs, HMIs, switches and gateways on an
+# engagement. snapshot-wiki locks it down with an enterprise policy so it makes
+# no network connections on its own (docs/wiki.md). Recommends are off, so its
+# only recommend (libavcodec) is not installed.
+firefox-esr
