@@ -1,3 +1,16 @@
+snapshot-menu (0.2.8) unstable; urgency=low
+
+  * 03 Protocol Tools drops "pymodbus console"
+    (snapshot-pymodbus-console.desktop). It ran pymodbus-console from the
+    vendor layer, which stopped at start-up with "ImportError: cannot import
+    name 'ModbusAsciiFramer' from 'pymodbus.transaction'": pymodbus-repl
+    2.0.4, its last release (August 2024), only runs with pymodbus
+    3.7.0-3.7.2, while the vendor layer pins pymodbus 3.11.3. The vendor
+    layer no longer ships pymodbus-repl. mbpoll stays the interactive Modbus
+    client, and the pymodbus library remains in the ICS Python shell.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 17:32:25 -0400
+
 snapshot-menu (0.2.7) unstable; urgency=low
 
   * Add "SnapshOT Wiki" (snapshot-wiki.desktop) to 08 Reference: opens
