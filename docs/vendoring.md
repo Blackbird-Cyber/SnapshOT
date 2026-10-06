@@ -198,11 +198,18 @@ in a zip.
   Solr keeps its pid file and logs under `~/.autopsy/dev` instead of the
   install tree;
 - it restores the exec bits (the zip stores no unix modes);
-- it prunes the Windows/macOS-only payload (GStreamer, PhotoRec, Tesseract,
-  plaso, Volatility, 7-Zip, LEAPP and other `.exe`/`.dll`/`.dylib` files),
-  about 900 MiB. RegRipper (`rr`, `rr-full`) stays because Autopsy runs it with
-  perl on Linux, and the JavaFX mac/win jars stay because module manifests name
-  them;
+- it prunes the Windows/macOS-only payload (GStreamer, PhotoRec, the Tesseract
+  OCR engine, plaso, Volatility, 7-Zip, LEAPP and other `.exe`/`.dll`/`.dylib`
+  files), about 885 MiB. RegRipper (`rr`, `rr-full`) stays because Autopsy runs
+  it with perl on Linux, and the JavaFX mac/win jars stay because module
+  manifests name them;
+- it keeps `autopsy/Tesseract-OCR/tessdata/` (the OCR language packs, 14 MiB
+  of plain data). Autopsy's core installer copies that folder into the user
+  directory on the first start, on every OS; without it the copy throws
+  `NullPointerException: srcDir` and the rest of core start-up is skipped (two
+  error dialogs, no Welcome window, JavaFX and the module installers not
+  started) until the next launch. OCR itself stays unsupported on Linux: the
+  engine is a Windows executable and is pruned;
 - it copies the Sleuth Kit license texts to `licenses/sleuthkit/`.
 
 Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
@@ -217,7 +224,7 @@ Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
 | opcua-client wheelhouse (19 wheels, incl. PyQt5) | ~74 MiB | n/a |
 | plcscan + Redpoint archives | ~76 KiB | ~76 KiB |
 | Temurin JRE 21 (download / on disk) | ~50 MiB / 158 MiB | n/a |
-| Autopsy 4.23.1 zip (download / installed after the prune) | 1.16 GiB / ~910 MiB | n/a |
+| Autopsy 4.23.1 zip (download / installed after the prune) | 1.16 GiB / ~925 MiB | n/a |
 | sleuthkit-jni (source / build output) | 4.7 MiB / 0.9 MiB | n/a |
 
 Autopsy already pushes the amd64 ISO past GitHub's 2 GiB asset limit, so
@@ -320,3 +327,16 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 
 These stay in the lock as `enabled: false` stanzas so the shape is recorded; they
 are validated but never fetched.
+
+## Known issues
+
+- **Autopsy may keep running after its window closes.** On the amd64 live
+  image (QEMU), closing Autopsy's main window left its launcher (`nbexec`) and
+  its Java process running; the embedded Solr stopped.
+  `pgrep -af 'nbexec|temurin'` shows them; end them with `kill` before
+  starting Autopsy again. Not fixed yet. At that point `messages.log` records
+  `NoClassDefFoundError: jdk/swing/interop/SwingInterOpUtils` from JavaFX's
+  Swing bridge (`JFXPanel`): the Temurin JRE image (49 modules) does not
+  include `jdk.unsupported.desktop`, which that bridge needs, so Autopsy's
+  JavaFX panels fail, the likely cause of the hang. A runtime with that module
+  (the Temurin JDK, or a jlinked image) is the probable fix.

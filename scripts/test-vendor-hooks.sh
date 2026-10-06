@@ -226,8 +226,11 @@ if [ "$TEST_ARCH" = amd64 ]; then
     grep -q '^default_options="--nosplash ' "$c" && pass "default_options has --nosplash" || bad "no --nosplash"
     for f in bin/autopsy platform/lib/nbexec autopsy/solr/bin/autopsy-solr autopsy/markmckinnon/mm_artifact_parser_x64_linux; do
         [ -x "$APP/$f" ] && pass "$f executable" || bad "$f not executable"; done
-    for d in gstreamer photorec_exec Tesseract-OCR plaso Volatility 7-Zip iLeapp aLeapp ewfexport_exec; do
+    for d in gstreamer photorec_exec plaso Volatility 7-Zip iLeapp aLeapp ewfexport_exec; do
         [ ! -e "$APP/autopsy/$d" ] && pass "pruned autopsy/$d" || bad "autopsy/$d still present"; done
+    # The core installer copies Tesseract-OCR/tessdata on first start; only the engine goes.
+    [ "$(ls "$APP/autopsy/Tesseract-OCR")" = tessdata ] && [ -s "$APP/autopsy/Tesseract-OCR/tessdata/eng.traineddata" ] \
+        && pass "autopsy/Tesseract-OCR keeps only tessdata/" || bad "autopsy/Tesseract-OCR is not just tessdata/"
     left="$(find "$APP" -type f \( -iname '*.exe' -o -iname '*.dylib' -o \( -iname '*.dll' ! -path '*/platform/modules/lib/*' \) \))"
     [ -z "$left" ] && pass "no Windows/macOS binaries left" || { bad "Windows/macOS binaries left"; printf '%s\n' "$left" | head | sed 's/^/    /'; }
     for f in autopsy/rr/rip.pl autopsy/rr-full/rip.pl autopsy/modules/lib/amd64/libheifconvert.so; do have "$APP/$f"; done

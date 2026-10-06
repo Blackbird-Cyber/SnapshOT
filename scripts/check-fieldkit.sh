@@ -21,14 +21,15 @@
 #      Plus the /proc/net decoder on a fixture, a deleted running binary and
 #      a listening socket.
 #   3. snapshot-fieldkit-prep on a loop device (privileged debian:trixie):
-#      refuses a non-removable disk, the boot medium, the root disk and a
-#      partition; prepares exFAT and FAT32; --refresh keeps results/, the
-#      operator's user-supplied/ tools and files at the root, restores the kit.
-#   4. snapshot-fieldkit-import as a normal user: copies, verifies, makes the
-#      copy read-only, writes the import manifest and an append-only
-#      chain-of-custody log; refuses root; a tampered collection is reported
-#      as TAMPER, not imported, exit 1; --take-stick removes only what it
-#      imported.
+#      --help prints only the header comment; refuses a non-removable disk,
+#      the boot medium, the root disk and a partition; prepares exFAT and
+#      FAT32; --refresh keeps results/, the operator's user-supplied/ tools
+#      and files at the root, restores the kit.
+#   4. snapshot-fieldkit-import as a normal user: --help prints only the
+#      header comment; copies, verifies, makes the copy read-only, writes the
+#      import manifest and an append-only chain-of-custody log; refuses root;
+#      a tampered collection is reported as TAMPER, not imported, exit 1;
+#      --take-stick removes only what it imported.
 #   5. PowerShell, in mcr.microsoft.com/dotnet/sdk:8.0 (pwsh 7; the
 #      powershell image is arm/v7 only): parse, scripts/fieldkit/ps2-lint.ps1
 #      on the collector and on its own sample, PSScriptAnalyzer with the
@@ -330,6 +331,8 @@ DEV=$(losetup -f --show -P /tmp/stick.img) || { echo "FAIL losetup"; exit 1; }
 trap 'umount /mnt/s 2>/dev/null; losetup -d "$DEV"' EXIT
 echo "loop device: $DEV"
 mkdir -p /mnt/s
+out=$(snapshot-fieldkit-prep --help 2>&1) && [ "${out%%:*}" = snapshot-fieldkit-prep ] && ! grep -q '^set ' <<<"$out" \
+    && ok "--help prints the header comment only" || bad "--help ends with: $(tail -n 1 <<<"$out")"
 
 # expect_refusal <message> <env...> -- <args...>
 expect_refusal() {
@@ -438,6 +441,8 @@ ok()  { echo "ok   $1"; }
 bad() { echo "FAIL $1"; fail=1; }
 useradd -m tester
 as_tester() { runuser -u tester -- "$@"; }
+out=$(as_tester snapshot-fieldkit-import --help 2>&1) && [ "${out%%:*}" = snapshot-fieldkit-import ] && ! grep -q '^set ' <<<"$out" \
+    && ok "--help prints the header comment only" || bad "--help ends with: $(tail -n 1 <<<"$out")"
 
 # A stick: the kit plus collections of every kind.
 cp -r /usr/share/snapshot/fieldkit /stick

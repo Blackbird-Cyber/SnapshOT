@@ -25,7 +25,7 @@ set -euo pipefail
 . /usr/share/snapshot-fieldkit/snapshot-fieldkit-common.sh
 
 usage() {
-    sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 DEVICE=; SRCPATH=; CASE=; EXAMINER=; TAKE=0; YES=0

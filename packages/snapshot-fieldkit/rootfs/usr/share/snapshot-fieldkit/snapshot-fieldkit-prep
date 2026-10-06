@@ -21,7 +21,7 @@ set -euo pipefail
 . /usr/share/snapshot-fieldkit/snapshot-fieldkit-common.sh
 
 usage() {
-    sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 ARGS=("$@")

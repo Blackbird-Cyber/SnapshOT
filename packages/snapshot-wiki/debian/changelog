@@ -3,6 +3,9 @@ snapshot-wiki (0.1.1) unstable; urgency=low
   * pymodbus page: the console launcher is gone (pymodbus-repl dropped from
     the vendor layer) and the serial client works (pyserial vendored), so
     the known-issues admonition goes and the Modbus RTU example returns.
+  * /etc/xdg/mimeapps.list: open text/plain in org.xfce.mousepad.desktop.
+    With no default, exo-open opened the Field Kit guide
+    (fieldkit-guide.txt) in LibreOffice Writer.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 17:34:34 -0400
 
