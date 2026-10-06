@@ -97,10 +97,17 @@
       }
     };
     if (hierarchical) {
+      // Levels are rows top-down and columns left-right; space them so the
+      // graph keeps a readable aspect ratio either way.
+      var horizontal = data.direction === "LR" || data.direction === "RL";
       opts.layout = {
         hierarchical: { enabled: true, direction: data.direction || "UD",
-                        sortMethod: "directed", levelSeparation: 120, nodeSpacing: 170,
-                        treeSpacing: 200, parentCentralization: true }
+                        sortMethod: "directed",
+                        levelSeparation: horizontal ? 260 : 120,
+                        nodeSpacing: horizontal ? 45 : 170,
+                        treeSpacing: horizontal ? 45 : 200,
+                        blockShifting: true, edgeMinimization: true,
+                        parentCentralization: true }
       };
     }
     return opts;
