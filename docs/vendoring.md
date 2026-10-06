@@ -332,5 +332,11 @@ are validated but never fetched.
 
 - **Autopsy may keep running after its window closes.** On the amd64 live
   image (QEMU), closing Autopsy's main window left its launcher (`nbexec`) and
-  its Java process running. `pgrep -af 'nbexec|temurin'` shows them; end them
-  with `kill` before starting Autopsy again. Not fixed yet.
+  its Java process running; the embedded Solr stopped.
+  `pgrep -af 'nbexec|temurin'` shows them; end them with `kill` before
+  starting Autopsy again. Not fixed yet. At that point `messages.log` records
+  `NoClassDefFoundError: jdk/swing/interop/SwingInterOpUtils` from JavaFX's
+  Swing bridge (`JFXPanel`): the Temurin JRE image (49 modules) does not
+  include `jdk.unsupported.desktop`, which that bridge needs, so Autopsy's
+  JavaFX panels fail, the likely cause of the hang. A runtime with that module
+  (the Temurin JDK, or a jlinked image) is the probable fix.
