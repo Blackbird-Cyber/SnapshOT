@@ -1,3 +1,11 @@
+snapshot-menu (0.2.4) unstable; urgency=low
+
+  * Add "SnapshOT Wiki" (snapshot-wiki.desktop) to 08 Reference: opens
+    file:///usr/share/snapshot/wiki/index.html (package snapshot-wiki) in
+    the preferred web browser through exo-open --launch WebBrowser.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000
+
 snapshot-menu (0.2.3) unstable; urgency=low
 
   * Add 06 Forensics & Response (snapshot-forensics.directory,

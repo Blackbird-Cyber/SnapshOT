@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=SnapshOT Wiki
+Comment=Tool and lifecycle documentation, offline
+Exec=exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html
+Terminal=false
+Icon=snapshot
+Categories=X-SnapshOT-Reference;
+Keywords=wiki;help;docs;lifecycle;attack;

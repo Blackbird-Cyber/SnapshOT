@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Static checks for the SnapshOT desktop packages (snapshot-themes, snapshot-menu).
+# Static checks for the SnapshOT desktop packages (snapshot-themes, snapshot-menu,
+# and the desktop files snapshot-wiki ships).
 # Runs in a debian:trixie container so the validators and pyxdg match the target.
 #
 #   scripts/check-desktop.sh
@@ -24,6 +25,7 @@ apt-get install -y -qq --no-install-recommends \
 
 THEMES=/snapshot/packages/snapshot-themes/rootfs
 MENU=/snapshot/packages/snapshot-menu/rootfs
+WIKI=/snapshot/packages/snapshot-wiki/rootfs
 fail=0
 
 echo "== desktop-file-validate =="
@@ -31,7 +33,7 @@ while IFS= read -r f; do
     out="$(desktop-file-validate "$f" 2>&1 || true)"
     err="$(printf "%s\n" "$out" | grep -viE "warning|hint" | grep -v "^$" || true)"
     if [ -n "$err" ]; then echo "ERROR $f:"; printf "%s\n" "$err"; fail=1; fi
-done < <(find "$THEMES" "$MENU" -name "*.desktop" | sort)
+done < <(find "$THEMES" "$MENU" "$WIKI" -name "*.desktop" | sort)
 
 echo "== vendor path policy =="
 # Every /opt/snapshot reference in a launcher must be the per-tool wrapper form
@@ -55,7 +57,7 @@ while IFS= read -r f; do
     if ! xmllint --noout --nonet "$f" 2>/tmp/xmlerr; then
         echo "ERROR $f:"; cat /tmp/xmlerr; fail=1
     fi
-done < <(find "$THEMES" "$MENU" \( -name "*.xml" -o -name "*.menu" \) | sort)
+done < <(find "$THEMES" "$MENU" "$WIKI" \( -name "*.xml" -o -name "*.menu" \) | sort)
 
 echo "== staging menu tree =="
 STAGE=/tmp/stage
@@ -82,6 +84,7 @@ stub cherrytree.desktop CherryTree "GNOME;GTK;Utility;"
 stub org.flameshot.Flameshot.desktop Flameshot "Graphics;"
 stub org.keepassxc.KeePassXC.desktop KeePassXC "Utility;Security;Qt;"
 stub libreoffice-writer.desktop "LibreOffice Writer" "Office;WordProcessor;"
+stub firefox-esr.desktop "Firefox ESR" "Network;WebBrowser;"
 stub qt5ct.desktop "Qt5 Settings" "Settings;DesktopSettings;Qt;"
 stub qt6ct.desktop "Qt6 Settings" "Settings;DesktopSettings;Qt;"
 
@@ -135,7 +138,7 @@ expected = {
     "07 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
                                        "org.flameshot.Flameshot.desktop", "org.keepassxc.KeePassXC.desktop",
                                        "libreoffice-writer.desktop"],
-    "08 - Reference":                 ["snapshot-build-manifest.desktop"],
+    "08 - Reference":                 ["snapshot-build-manifest.desktop", "snapshot-wiki.desktop"],
 }
 for name, want in expected.items():
     if name not in top:
@@ -165,6 +168,10 @@ else:
     }
     if leaked:
         problems.append("Usual Applications still lists: " + ", ".join(sorted(leaked)))
+    # Firefox ESR is a general browser, not a SnapshOT tool: it stays in
+    # Usual Applications (Network); the wiki launcher is the Reference entry.
+    if "firefox-esr.desktop" not in set(ids_recursive(ua)):
+        problems.append("Usual Applications does not list firefox-esr.desktop")
 
 if problems:
     print("MENU CHECK FAILED:")
