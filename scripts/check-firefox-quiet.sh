@@ -37,8 +37,10 @@ fail=0
 echo "== installing the wiki and snapshot-wiki's /etc files =="
 cp -a /snapshot/packages/snapshot-wiki /tmp/wiki && rm -rf /tmp/wiki/build
 ( cd /tmp/wiki && mkdocs build --strict -q -d /usr/share/snapshot/wiki )
-# The divert is the package's job; here the copy simply replaces the file.
 cp -a /tmp/wiki/rootfs/. /
+# What snapshot-wiki's preinst and postinst do with xfce4-helpers' helpers.rc.
+dpkg-divert --quiet --add --rename --divert /etc/xdg/xfce4/helpers.rc.distrib /etc/xdg/xfce4/helpers.rc
+ln -sfn /usr/share/snapshot-wiki/xfce4-helpers.rc /etc/xdg/xfce4/helpers.rc
 ls /etc/firefox/policies/policies.json /etc/firefox-esr/snapshot-quiet.js \
    /etc/xdg/xfce4/helpers.rc /etc/xdg/mimeapps.list
 

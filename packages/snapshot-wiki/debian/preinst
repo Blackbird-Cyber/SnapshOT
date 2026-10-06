@@ -4,6 +4,12 @@ set -e
 # (the same keys, WebBrowser pinned to debian-sensible-browser, which resolves
 # to firefox-esr through x-www-browser) is what exo-open reads. Works in either
 # install order.
+#
+# Unlike snapshot-menu's root menu, the replacement is not shipped at the
+# diverted path: helpers.rc is a conffile of xfce4-helpers, and a second
+# conffile at the same path makes dpkg ask "deleted since installation?" when
+# xfce4-helpers is already configured. The package ships
+# /usr/share/snapshot-wiki/xfce4-helpers.rc and postinst links it into place.
 DIV=/etc/xdg/xfce4/helpers.rc
 case "$1" in
     install|upgrade)

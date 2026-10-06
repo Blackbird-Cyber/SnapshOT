@@ -15,9 +15,11 @@ snapshot-wiki (0.1.0) unstable; urgency=low
     (DisableRemoteSettingsAndAcceptSecurityConsequences), as are the new-tab
     feeds that download its attachments; scripts/check-firefox-quiet.sh
     captures no packet in 45 seconds.
-  * Divert xfce4-helpers' /etc/xdg/xfce4/helpers.rc to pin
-    WebBrowser=debian-sensible-browser, and ship /etc/xdg/mimeapps.list with
-    firefox-esr.desktop for HTML and http(s) links. Depend on sensible-utils,
-    which the image did not include.
+  * Divert xfce4-helpers' /etc/xdg/xfce4/helpers.rc and link it to
+    /usr/share/snapshot-wiki/xfce4-helpers.rc (the same keys, WebBrowser
+    pinned to debian-sensible-browser); not shipped at the diverted path,
+    which would collide with xfce4-helpers' conffile. Ship
+    /etc/xdg/mimeapps.list with firefox-esr.desktop for HTML and http(s)
+    links. Depend on sensible-utils, which the image did not include.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000

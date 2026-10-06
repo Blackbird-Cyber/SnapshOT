@@ -1,0 +1,18 @@
+#
+# Default helpers.rc for Xfce's Preferred Applications
+#
+# Copyright (c) 2005-2006 Benedikt Meurer <benny@xfce.org>
+#
+# SnapshOT (snapshot-wiki): /etc/xdg/xfce4/helpers.rc is a symlink to this file.
+# xfce4-helpers' own copy is diverted to /etc/xdg/xfce4/helpers.rc.distrib. The
+# keys are xfce4-helpers' own. WebBrowser stays debian-sensible-browser because
+# xfce4-helpers' firefox helper only knows the binaries firefox, firefox-gtk2,
+# firefox-gtk, mozilla-firefox and org.mozilla.firefox, not firefox-esr;
+# sensible-browser (sensible-utils, a dependency of snapshot-wiki) runs
+# x-www-browser, which firefox-esr provides. "exo-open --launch WebBrowser"
+# (the SnapshOT Wiki launcher) reads this file.
+
+WebBrowser=debian-sensible-browser
+MailReader=thunderbird
+TerminalEmulator=debian-x-terminal-emulator
+FileManager=thunar

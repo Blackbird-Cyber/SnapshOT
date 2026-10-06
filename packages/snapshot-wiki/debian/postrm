@@ -1,8 +1,13 @@
 #!/bin/sh
 set -e
+# Mirror of preinst/postinst: drop our symlink, then remove the divert so
+# xfce4-helpers' helpers.rc comes back.
 DIV=/etc/xdg/xfce4/helpers.rc
 case "$1" in
     remove|abort-install|disappear)
+        if [ -L "$DIV" ] && [ "$(readlink "$DIV")" = /usr/share/snapshot-wiki/xfce4-helpers.rc ]; then
+            rm -f "$DIV"
+        fi
         dpkg-divert --package snapshot-wiki --remove --rename \
             --divert "$DIV.distrib" "$DIV"
         ;;
