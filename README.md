@@ -23,7 +23,7 @@
 SnapshOT is a Debian 13 (trixie) live image built with `live-build`, in the way Kali
 is built, but pinned to a single snapshot.debian.org timestamp so that every build of a
 release resolves the same packages. It boots to an Xfce desktop with OT/ICS discovery,
-traffic, protocol, firmware, radio and reporting tools, and installs to disk with LUKS2
+traffic, protocol, firmware, radio, forensics and reporting tools, and installs to disk with LUKS2
 encryption without any network. Between clients the laptop is wiped and re-imaged.
 
 ## Download
@@ -142,7 +142,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 - **Desktop:** v0.1.0 ships a light Xfce desktop with the SnapshOT wallpaper, a
   SnapshOT menu with a category per tool group, and the SnapshOT GRUB and Plymouth
   themes. The next release brings the Kali-style desktop: the SnapshOT-Dark theme,
-  Papirus-Dark icons, one top panel with the Whisker menu, and the tools in seven
+  Papirus-Dark icons, one top panel with the Whisker menu, and the tools in eight
   numbered folders ([docs/desktop.md](docs/desktop.md)):
 
 | Folder | Tools |
@@ -152,8 +152,9 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
 | 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
-| 06 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe, The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
-| 07 Reference | offline reference folder, the build manifest |
+| 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
+| 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
+| 08 Reference | offline reference folder, the build manifest |
 
 Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
 [`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
@@ -205,6 +206,7 @@ and compares the two ISOs, running diffoscope when they differ.
 python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes and tools for the vendor layer
 scripts/check-installer.sh                     # validate the installer configuration
 scripts/check-desktop.sh                       # validate the desktop menu and launchers
+scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
 sudo scripts/build.sh                          # directly on a Debian trixie host
@@ -221,12 +223,12 @@ refreshes the download table above.
 | Path | Contents |
 |---|---|
 | [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
-| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `calamares-settings-snapshot` (the installer) |
+| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
 | [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py`, the installer and desktop checks, reproducibility test, update USB, release |
+| [`scripts/`](scripts/) | build, `vendor.py`, the installer, desktop and field kit checks, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
-| [`docs/`](docs/) | build, vendoring, desktop, offline install and field updates |
+| [`docs/`](docs/) | build, vendoring, desktop, field kit, offline install and field updates |
 
 ## Status and known issues
 

@@ -2,13 +2,14 @@
 
 The live and installed systems boot into Xfce 4.20 with a dark, Kali-style
 desktop: the **SnapshOT-Dark** GTK/xfwm4 theme, **Papirus-Dark** icons, one top
-panel with a **Whisker** menu, and the SnapshOT tools grouped into seven numbered
+panel with a **Whisker** menu, and the SnapshOT tools grouped into eight numbered
 engagement-phase folders. Two packages own all of this:
 
 - `packages/snapshot-themes` — the theme, icons, fonts and every system-wide Xfce
   default (`/etc/xdg`), the Qt defaults and the LightDM greeter.
-- `packages/snapshot-menu` — the tool launchers, the seven folders and the root
-  Xfce menu.
+- `packages/snapshot-menu` — the tool launchers, the eight folders and the root
+  Xfce menu. All launchers live here, including those for tools other SnapshOT
+  packages ship (the field kit's in `snapshot-fieldkit`).
 
 ## Where the defaults live
 
@@ -28,7 +29,7 @@ there sets the desktop up for every new user with no per-user seeding:
 | `xfce4/terminal/terminalrc` | xfce4-terminal colours |
 | `qt5ct/qt5ct.conf`, `qt6ct/qt6ct.conf` | dark Qt (Fusion + SnapshOT-Dark palette) |
 | `menus/xfce-applications.menu` | the root menu layout (snapshot-menu) |
-| `menus/applications-merged/snapshot.menu` | the seven SnapshOT folders |
+| `menus/applications-merged/snapshot.menu` | the eight SnapshOT folders |
 
 The wallpaper is **not** set in `xfce4-desktop.xml`: xfdesktop keys backdrops by
 monitor name, so a fixed stanza would miss differently-named monitors. Instead
@@ -62,9 +63,9 @@ install, so they ship directly with no divert.
 
 ## The menu
 
-The diverted root `xfce-applications.menu` owns the single `<Layout>`: the seven
+The diverted root `xfce-applications.menu` owns the single `<Layout>`: the eight
 `SnapshOT-*` folders at the top, then **Usual Applications** (the stock Xfce
-categories, nested) and **Settings**. The seven folder `<Menu>` blocks are merged
+categories, nested) and **Settings**. The eight folder `<Menu>` blocks are merged
 in from `applications-merged/snapshot.menu`; Xfce (garcon) finds that directory by
 stripping the `xfce-` menu prefix.
 
@@ -73,6 +74,13 @@ tool (e.g. Wireshark in *Traffic Analysis*, gqrx/GRC in *Wireless & SDR*). Those
 upstream tools are `<Exclude>`d from the relevant **Usual Applications** sub-menu
 so they are not listed twice. (LibreOffice Writer is intentionally left in both
 *Office* and *Reporting*.)
+
+The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
+04 Firmware & Hardware, 05 Wireless & SDR, 06 Forensics & Response, 07 Reporting
+& Documentation and 08 Reference. 06 Forensics & Response holds the field kit
+launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
+Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
+Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
 
 ### Adding a launcher
 
@@ -108,7 +116,7 @@ run that script; it strips the trademarked logo assets and recolours the accent 
 - runs `desktop-file-validate` on every `.desktop` (the `X-SnapshOT-*` category
   hints are expected),
 - runs `xmllint --noout` on every `.xml`/`.menu`,
-- parses the staged menu with `python3-xdg` and asserts the seven folders are
+- parses the staged menu with `python3-xdg` and asserts the eight folders are
   populated and that Usual Applications does not re-list the pulled-in tools.
 
 It exits non-zero on any error.
