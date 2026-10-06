@@ -24,10 +24,11 @@ upstream: https://osmocom.org/projects/rtl-sdr/wiki
 ## What it is
 
 rtl-sdr is the command-line toolset for the low-cost RTL2832U software-defined
-radio dongles. `rtl_test` finds a dongle, reports its tuner and gains, and
-measures its clock error; `rtl_power` sweeps a frequency range and logs the power
-in each bin to CSV, which makes a spectrum survey; `rtl_sdr` records raw I/Q
-samples to a file; `rtl_fm` demodulates narrowband signals. The dongles are
+radio dongles. `rtl_eeprom` finds a dongle and reads its tuner and EEPROM
+identity; `rtl_test` reports its gains and measures its clock error;
+`rtl_power` sweeps a frequency range and logs the power in each bin to CSV,
+which makes a spectrum survey; `rtl_sdr` records raw I/Q samples to a file;
+`rtl_fm` demodulates narrowband signals. The dongles are
 receive-only: they cannot transmit. Their usable range is roughly 24 MHz to
 1.7 GHz depending on the tuner, and they see about 2 MHz of spectrum at a time,
 which is why `rtl_power` steps across a wide band in hops.
@@ -112,9 +113,10 @@ playbook follows up as possible Wireless Compromise (T0860).
 ## Quick start
 
 ```sh
-# What the menu launcher runs: find the dongle and report its tuner and gains
-# (-t benchmarks only E4000 tuners; on other tuners it stops after the report)
-rtl_test -t
+# What the menu launcher runs: find the dongle, name its tuner and read its
+# EEPROM identity (vendor and product ids, manufacturer, product, serial);
+# with no options rtl_eeprom only reads
+rtl_eeprom
 # Measure the dongle's clock error in ppm (Ctrl+C to stop)
 rtl_test -p
 # Sweep the 433 MHz ISM band in 1 kHz bins, single shot, to CSV
