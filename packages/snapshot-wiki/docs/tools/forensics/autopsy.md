@@ -153,19 +153,28 @@ img_stat ~/cases/site-a/images/hmi01.E01
 prints its report and then `Segmentation fault` as it closes the image, a fault
 in the trixie build that does not touch the image.
 
-Then, in Autopsy:
+Then, in Autopsy (the labels are those of the upstream 4.23 user guide):
 
-1. **New Case**: the case name, `~/cases/site-a/analysis/autopsy` as the base
-   directory, and the case number and examiner.
-2. **Add Data Source** > *Disk Image or VM File*: pick the image and set the time
-   zone of the original host. Use *Logical Files* for a folder, such as an
-   imported field kit collection.
+1. **New Case**, on the welcome screen: the case name,
+   `~/cases/site-a/analysis/autopsy` as the base directory, then the case
+   number and examiner.
+2. **Add Data Source**: let Autopsy generate a host from the data source name,
+   choose **Disk Image or VM File**, pick the image and set the time zone of
+   the original host (FAT file systems record local times). Choose **Logical
+   Files** instead for a folder, such as an imported field kit collection.
 3. **Ingest modules**: start with hash lookup, file type identification,
    extension mismatch, embedded files, keyword search and Recent Activity; add
-   the PhotoRec carver when deleted files matter. Ingest runs in the background.
-4. **Review**: the results tree, keyword hits and the **Timeline**. Tag each item
-   that supports a finding.
-5. **Generate Report**: the HTML report of the tagged items for the case file.
+   the PhotoRec carver when deleted files matter. Ingest runs in the
+   background, and results appear in the tree as they are found.
+4. **Review**: the tree on the left holds the data sources, the views by file
+   type and date, and the results of each ingest module; the **Timeline**
+   (Tools menu or toolbar) puts file and artifact times in order.
+5. **Tag**: right-click each item that supports a finding and add a file or
+   result tag (**Bookmark**, or **Notable item**); Ctrl+B bookmarks the
+   selected file directly.
+6. **Generate Report** (toolbar): choose **HTML Report** and the tagged
+   results only, so the report holds exactly the items the findings cite. It
+   is written to the case's `Reports` folder.
 
 ## Output and evidence
 
