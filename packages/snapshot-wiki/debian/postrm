@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+DIV=/etc/xdg/xfce4/helpers.rc
+case "$1" in
+    remove|abort-install|disappear)
+        dpkg-divert --package snapshot-wiki --remove --rename \
+            --divert "$DIV.distrib" "$DIV"
+        ;;
+esac
+#DEBHELPER#
+exit 0

@@ -1,0 +1,52 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: snapshot-wiki
+
+Files: *
+Copyright: 2026 Blackbird Cyber
+License: GPL-3.0+
+ Placeholder. Final license set in Phase 6.
+
+Files: data/attack-ics.yaml
+Copyright: 2026 The MITRE Corporation
+License: ATT&CK-Terms-of-Use
+ The ATT&CK for ICS tactic and technique ids, names and tactic descriptions are
+ copied from attack.mitre.org. This work is reproduced and distributed with the
+ permission of The MITRE Corporation. ATT&CK is a registered trademark of The
+ MITRE Corporation. Terms of use: https://attack.mitre.org/resources/legal-and-branding/terms-of-use/
+
+Files: assets/vendor/vis-network.min.js
+Copyright: 2011-2017 Almende B.V.
+           2017-2019 visjs contributors
+License: Apache-2.0 or MIT
+ vis-network 10.1.2 standalone UMD build, from the npm tarball recorded in
+ assets/vendor/ORIGIN.md. It bundles third-party code under compatible licences
+ (listed in the file's header). Both licence texts are in
+ assets/vendor/LICENSE-vis-network and are installed next to the file.
+ .
+ On Debian systems, the full text of the Apache License version 2.0 can be
+ found in `/usr/share/common-licenses/Apache-2.0'.
+
+Files: assets/vendor/iframe-worker-shim.js
+Copyright: 2020-2022 Martin Donath <martin.donath@squidfunk.com>
+License: MIT
+ iframe-worker 1.0.4 shim, from the npm tarball recorded in
+ assets/vendor/ORIGIN.md.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.

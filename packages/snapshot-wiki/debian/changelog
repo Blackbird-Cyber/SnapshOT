@@ -1,0 +1,20 @@
+snapshot-wiki (0.1.0) unstable; urgency=low
+
+  * Initial packaging: the SnapshOT Wiki, a MkDocs Material site built at
+    package build time (mkdocs build --strict) and installed to
+    /usr/share/snapshot/wiki for offline use from file://.
+  * hooks/snapshot_wiki.py validates the page front-matter against data/
+    (menu folders, PICERL phases, ATT&CK for ICS tactics and techniques,
+    protocols), generates the navigation, the tool, folder, tactic, protocol
+    and matrix pages, the facts boxes and the graph data.
+  * Vendor vis-network 10.1.2 and the iframe-worker 1.0.4 shim (offline
+    search on file://); see assets/vendor/ORIGIN.md.
+  * Ship /etc/firefox/policies/policies.json and
+    /etc/firefox-esr/snapshot-quiet.js so Firefox ESR makes no unsolicited
+    connections and opens the wiki as its home page.
+  * Divert xfce4-helpers' /etc/xdg/xfce4/helpers.rc to pin
+    WebBrowser=debian-sensible-browser, and ship /etc/xdg/mimeapps.list with
+    firefox-esr.desktop for HTML and http(s) links. Depend on sensible-utils,
+    which the image did not include.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000

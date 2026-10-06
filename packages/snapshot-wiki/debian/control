@@ -1,0 +1,22 @@
+Source: snapshot-wiki
+Section: doc
+Priority: optional
+Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Build-Depends: debhelper-compat (= 13), mkdocs-material, python3-pymdownx, python3-yaml
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: snapshot-wiki
+Architecture: all
+Depends: ${misc:Depends}, firefox-esr | www-browser, sensible-utils
+Description: SnapshOT Wiki: offline tool and lifecycle documentation
+ A static site, built with MkDocs Material at package build time and installed
+ to /usr/share/snapshot/wiki, documenting every SnapshOT tool against the OT
+ incident-response lifecycle (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS).
+ It opens from file:// with no network: search, tags and the interactive graphs
+ work offline.
+ .
+ The package also makes Firefox ESR the quiet default browser: an enterprise
+ policy and system preferences that stop it making unsolicited connections, and
+ the Xfce and XDG default-browser settings (diverting xfce4-helpers'
+ /etc/xdg/xfce4/helpers.rc).

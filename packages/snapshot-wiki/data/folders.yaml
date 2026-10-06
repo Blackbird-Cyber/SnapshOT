@@ -1,0 +1,75 @@
+# The eight SnapshOT menu folders, in menu order.
+#
+# slug        directory under docs/tools/ and the value of a tool page's `folder:`
+# number      the two-digit prefix shown in the menu
+# name        the folder name without the number (the menu shows "NN - name")
+# directory   the .directory file in packages/snapshot-menu (checked by
+#             scripts/check-wiki.sh against its Name=)
+# category    the X-SnapshOT-* category the folder's launchers carry
+# color       node colour of the folder's tools in the generated graphs
+#             (the SnapshOT terminal palette, readable on the ink background)
+# summary     one line shown on the generated folder page
+folders:
+  - slug: recon
+    number: "01"
+    name: Recon & Discovery
+    directory: snapshot-recon.directory
+    category: X-SnapshOT-Recon
+    color: "#49AEE6"
+    summary: Find the hosts, services and controllers on a segment, passively first and actively only with approval.
+
+  - slug: traffic
+    number: "02"
+    name: Traffic Analysis
+    directory: snapshot-traffic.directory
+    category: X-SnapshOT-Traffic
+    color: "#47D4B9"
+    summary: Capture, decode, replay and inspect network traffic, including the industrial protocols on it.
+
+  - slug: protocols
+    number: "03"
+    name: Protocol Tools
+    directory: snapshot-protocols.directory
+    category: X-SnapshOT-Protocols
+    color: "#FEA44C"
+    summary: Speak Modbus, S7comm, EtherNet/IP, OPC UA and BACnet to a device, to read it or, with approval, to write to it.
+
+  - slug: firmware
+    number: "04"
+    name: Firmware & Hardware
+    directory: snapshot-firmware.directory
+    category: X-SnapshOT-Firmware
+    color: "#9755B3"
+    summary: Acquire and examine firmware, talk to serial consoles and debug ports, and capture signals on a bench.
+
+  - slug: wireless
+    number: "05"
+    name: Wireless & SDR
+    directory: snapshot-wireless.directory
+    category: X-SnapshOT-Wireless
+    color: "#277FFF"
+    summary: Survey Wi-Fi and the radio spectrum around a site, receive first and transmit only where it is lawful and approved.
+
+  - slug: forensics
+    number: "06"
+    name: Forensics & Response
+    directory: snapshot-forensics.directory
+    category: X-SnapshOT-Forensics
+    color: "#FF3B45"
+    summary: Collect evidence from hosts with the field kit and examine disks and images without changing them.
+
+  - slug: reporting
+    number: "07"
+    name: Reporting & Documentation
+    directory: snapshot-reporting.directory
+    category: X-SnapshOT-Reporting
+    color: "#E6E6E6"
+    summary: Take notes, capture screens, keep secrets, write the report and wipe media between clients.
+
+  - slug: reference
+    number: "08"
+    name: Reference
+    directory: snapshot-reference.directory
+    category: X-SnapshOT-Reference
+    color: "#8A8D91"
+    summary: Offline reference data, the build manifest of this image and this wiki.

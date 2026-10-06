@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+# Divert xfce4-helpers' default Preferred Applications file so SnapshOT's copy
+# (the same keys, WebBrowser pinned to debian-sensible-browser, which resolves
+# to firefox-esr through x-www-browser) is what exo-open reads. Works in either
+# install order.
+DIV=/etc/xdg/xfce4/helpers.rc
+case "$1" in
+    install|upgrade)
+        dpkg-divert --package snapshot-wiki --add --rename \
+            --divert "$DIV.distrib" "$DIV"
+        ;;
+esac
+#DEBHELPER#
+exit 0

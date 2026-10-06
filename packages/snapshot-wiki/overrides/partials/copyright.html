@@ -1,0 +1,11 @@
+{#-
+  SnapshOT Wiki footer: the package version from debian/changelog (set by
+  hooks/snapshot_wiki.py), never a build timestamp. Replaces Material's
+  partials/copyright.html, which also drops the "Made with Material" link.
+-#}
+<div class="md-copyright">
+  <div class="md-copyright__highlight">
+    SnapshOT Wiki {{ config.extra.snapshot_version }}
+  </div>
+  Offline documentation for the SnapshOT image. {{ config.copyright }}.
+</div>
