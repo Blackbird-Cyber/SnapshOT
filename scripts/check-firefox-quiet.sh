@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 # Prove Firefox ESR stays quiet on the wire with snapshot-wiki's policy, in a
-# debian:trixie container (slow: about two minutes; not part of the build).
+# debian:trixie container with the image's Debian snapshot pin
+# (config/snapshot.env), so the Firefox ESR tested is the one the image ships
+# (slow: about two minutes; not part of the build).
 #
 #   scripts/check-firefox-quiet.sh
 #
 # It installs firefox-esr, builds the wiki into /usr/share/snapshot/wiki and
 # copies snapshot-wiki's /etc files into place, then:
-#   1. screenshots about:policies to build/firefox-quiet/about-policies.png
-#      (for review) and fails if Firefox logs any policy error;
+#   1. fails if policies.json names a policy the installed (pinned) Firefox
+#      ESR's own schema does not know, and screenshots about:policies to
+#      build/firefox-quiet/about-policies.png for review;
 #   2. checks the default-browser chain the wiki launcher uses: helpers.rc's
 #      WebBrowser helper -> its binary -> x-www-browser -> firefox-esr;
 #   3. runs Firefox headless on the wiki for 45 seconds under
@@ -28,10 +31,31 @@ docker run --rm -i --platform "$PLATFORM" --cap-add NET_RAW --cap-add NET_ADMIN 
     -v "$ROOT":/snapshot:ro -v "$OUT":/out "$IMAGE" bash -s <<'CONTAINER'
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
+# Install from the image's own snapshot pin, not today's trixie: the policy
+# file must be judged by the Firefox ESR the image ships (a newer ESR knows
+# policies the pinned one rejects as unknown).
+. /snapshot/config/snapshot.env
+# The base image has no CA bundle, and the snapshot mirror is HTTPS only.
 apt-get update -qq
-apt-get install -y -qq --no-install-recommends \
+apt-get install -y -qq --no-install-recommends ca-certificates >/dev/null
+cat > /etc/apt/sources.list.d/debian.sources <<SOURCES
+Types: deb
+URIs: ${SNAPSHOT_MIRROR_DEBIAN}
+Suites: ${SNAPSHOT_DIST} ${SNAPSHOT_DIST}-updates
+Components: main
+Check-Valid-Until: no
+
+Types: deb
+URIs: ${SNAPSHOT_MIRROR_SECURITY}
+Suites: ${SNAPSHOT_DIST}-security
+Components: main
+Check-Valid-Until: no
+SOURCES
+apt-get update -qq -o Acquire::Retries=5
+apt-get install -y -qq --no-install-recommends -o Acquire::Retries=5 \
     firefox-esr xfce4-helpers sensible-utils tcpdump \
     mkdocs-material python3-pymdownx python3-yaml fonts-cantarell fonts-firacode >/dev/null
+echo "firefox-esr $(dpkg-query -W -f='${Version}' firefox-esr) from snapshot ${SNAPSHOT_DEBIAN_PIN}"
 fail=0
 
 echo "== installing the wiki and snapshot-wiki's /etc files =="
@@ -62,10 +86,25 @@ if [ -s /out/about-policies.png ]; then
 else
     echo "ERROR: no about:policies screenshot"; fail=1
 fi
-if grep -A1 -E 'Policies:' /tmp/policies.log | grep -v -E '^--$|Policies:' | grep .; then
-    echo "ERROR: Firefox reported the policy errors above"; fail=1
-else
+# Firefox lists a policy it does not know under about:policies > Errors but
+# logs nothing, so compare policies.json with the installed Firefox's own
+# policy schema (omni.ja: modules/policies/schema.sys.mjs).
+if python3 - /etc/firefox/policies/policies.json <<'PY'
+import json, re, sys, zipfile
+policies = json.load(open(sys.argv[1]))["policies"]
+z = zipfile.ZipFile("/usr/lib/firefox-esr/browser/omni.ja")
+schema = z.read("modules/policies/schema.sys.mjs").decode("utf-8", "replace")
+known = set(re.findall(r'^\s{4}"?([A-Za-z0-9]+)"?\s*:\s*\{', schema, re.M))
+unknown = [k for k in policies if k not in known]
+print(f"{len(policies)} policies in policies.json, {len(known)} in this Firefox's schema")
+for k in unknown:
+    print(f"ERROR: unknown policy for this Firefox: {k}")
+sys.exit(1 if unknown or len(known) < 50 else 0)
+PY
+then
     echo "no policy errors"
+else
+    echo "ERROR: policies.json has policies this Firefox ESR does not know"; fail=1
 fi
 
 echo "== default browser chain =="

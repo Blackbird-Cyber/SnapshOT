@@ -298,7 +298,7 @@ Then open `packages/snapshot-wiki/build/site/index.html` in a browser
 |---|---|---|
 | `scripts/check-wiki.sh` | about 20 s | strict build, two identical builds, nothing remote in the site, offline search index, graph data for every graph, launcher coverage (each tool launcher listed by exactly one tool page, in its own folder), `status` against `vendor/sources.lock`, `data/folders.yaml` against the menu's `.directory` files, a page for every phase, `policies.json`, the wiki launcher, no em-dashes |
 | `scripts/check-wiki.sh --partial` | about 20 s | the same, but links to pages not written yet, undocumented launchers and missing phase pages are warnings, for use while content is being written |
-| `scripts/check-firefox-quiet.sh` | about 80 s | the `about:policies` screenshot (`build/firefox-quiet/about-policies.png`) with no policy errors, the default-browser chain, and zero packets in 45 seconds of Firefox on the wiki |
+| `scripts/check-firefox-quiet.sh` | about 2 min | with the firefox-esr of the image's Debian snapshot pin: every policy in `policies.json` known to that Firefox's own schema, the `about:policies` screenshot (`build/firefox-quiet/about-policies.png`), the default-browser chain, and zero packets in 45 seconds of Firefox on the wiki |
 | `scripts/check-desktop.sh` | about 10 s | includes the wiki launcher in 08 - Reference and Firefox in Usual Applications |
 
 All run in `debian:trixie` containers and exit non-zero on failure.
@@ -312,7 +312,7 @@ engagement. `snapshot-wiki` makes it quiet:
 - `/etc/firefox/policies/policies.json` is the enterprise policy. Debian's
   firefox-esr reads this path (checked with `about:policies`;
   `/etc/firefox-esr/policies/` is not read). It turns off telemetry, studies,
-  Nimbus rollouts, Remote Settings, application and extension updates,
+  application and extension updates,
   Firefox accounts, DNS over HTTPS, captive-portal and connectivity checks,
   prefetching and speculative connections, Safe Browsing, search suggestions,
   sponsored and new-tab content, the password manager (KeePassXC is the store)
@@ -322,6 +322,17 @@ engagement. `snapshot-wiki` makes it quiet:
   refuses ("not allowed for stability reasons": `toolkit.telemetry.*`,
   Normandy, the health report). Debian's firefox-esr reads every `*.js` in
   `/etc/firefox-esr/`; its own `firefox-esr.js` is left alone.
+- **Remote Settings** (and the Nimbus rollouts it delivers) has no policy in
+  the pinned Firefox ESR 140: `DisableRemoteSettingsAndAcceptSecurityConsequences`
+  and `DisableRemoteImprovements` arrive in a later ESR, and 140 lists them as
+  unknown policies in `about:policies`. `snapshot-quiet.js` therefore resolves
+  its three hosts (`firefox.settings.services.mozilla.com`,
+  `firefox-settings-attachments.cdn.mozilla.net`,
+  `content-signature-2.cdn.mozilla.net`) to loopback with
+  `network.dns.localDomains`, so no query or connection leaves the machine.
+  When the pin moves to an ESR that knows those policies, add them back to
+  `policies.json`; `check-firefox-quiet.sh` fails on any policy the pinned
+  Firefox does not know.
 - **Consequence of disabling Remote Settings:** Firefox does not receive
   certificate revocation and intermediate updates, add-on blocklists or
   updated search and security lists. That is the price of a browser that never

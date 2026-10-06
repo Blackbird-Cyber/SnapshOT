@@ -22,9 +22,16 @@ pref("app.normandy.enabled", false, locked);
 pref("app.normandy.api_url", "", locked);
 pref("app.shield.optoutstudies.enabled", false, locked);
 
-// Remote Settings (blocklists, certificate data, search configuration updates)
-// is switched off by the DisableRemoteSettingsAndAcceptSecurityConsequences
-// policy; release builds ignore a services.settings.server override. These two
-// keep its certificate consumers from asking for it.
+// Remote Settings (blocklists, certificate data, search configuration and the
+// Nimbus rollouts that ride on it). The pinned Firefox ESR 140 has no policy
+// for it: DisableRemoteSettingsAndAcceptSecurityConsequences and
+// DisableRemoteImprovements arrive in a later ESR, and 140 reports them as
+// unknown policies. Release builds ignore a services.settings.server override,
+// so its three hosts resolve to loopback inside Firefox instead and no DNS
+// query or connection leaves the machine. Without this, a new profile on ESR
+// 140 contacts firefox.settings.services.mozilla.com within seconds of
+// starting (found with scripts/check-firefox-quiet.sh against the pinned
+// firefox-esr). The two prefs below keep its certificate consumers from asking.
+pref("network.dns.localDomains", "firefox.settings.services.mozilla.com,firefox-settings-attachments.cdn.mozilla.net,content-signature-2.cdn.mozilla.net", locked);
 pref("security.remote_settings.crlite_filters.enabled", false, locked);
 pref("security.remote_settings.intermediates.enabled", false, locked);

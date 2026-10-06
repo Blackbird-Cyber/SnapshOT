@@ -15,8 +15,8 @@ ESR"); this is the operator's summary.
 firefox-esr reads (confirmed with `about:policies`; the `/etc/firefox-esr/policies/`
 path is **not** read). It turns off, among other things:
 
-- telemetry, studies and Nimbus rollouts;
-- Remote Settings, and application and extension updates;
+- telemetry and studies;
+- application and extension updates;
 - Firefox accounts and push;
 - DNS over HTTPS, captive-portal and connectivity checks, prefetching and
   speculative connections;
@@ -29,7 +29,10 @@ It sets this wiki as the home page. **JavaScript and `file://` stay on**: the
 wiki needs both. A few preferences the policy engine refuses to set ("not allowed
 for stability reasons": the `toolkit.telemetry.*` keys, Normandy and the health
 report) are set instead in `/etc/firefox-esr/snapshot-quiet.js`, which Debian's
-firefox-esr reads alongside its own defaults.
+firefox-esr reads alongside its own defaults. The same file keeps Remote Settings,
+and the Nimbus rollouts it delivers, off: the Firefox ESR on this image has no policy for it, so its three Mozilla
+hosts resolve to the laptop itself inside Firefox (`network.dns.localDomains`),
+and no query for them leaves the machine.
 
 The repository's `scripts/check-firefox-quiet.sh` proves the result: no packet
 leaves the machine while Firefox shows the wiki.
