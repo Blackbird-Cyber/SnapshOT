@@ -4,8 +4,10 @@
 set -e
 
 # Mask chatty/auto services (files may not all exist; ignore failures).
-for unit in avahi-daemon.service avahi-daemon.socket systemd-timesyncd.service \
-             modemmanager.service; do
+# modemmanager is not in the image (nothing pulls it in with recommends off).
+# If it is ever added, its unit is ModemManager.service: unit names are
+# case-sensitive, so masking "modemmanager.service" would mask nothing.
+for unit in avahi-daemon.service avahi-daemon.socket systemd-timesyncd.service; do
     systemctl mask "$unit" 2>/dev/null || true
 done
 
