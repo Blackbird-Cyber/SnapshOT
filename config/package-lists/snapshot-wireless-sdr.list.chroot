@@ -1,16 +1,16 @@
 # Wireless survey and software-defined radio: RECEIVE ONLY. The image is for
 # incident response and threat hunting, so the radio slice answers one question
 # ("is something transmitting here that is not in the asset inventory?") and
-# never transmits itself. rtl-sdr (rtl_test, rtl_power sweeps to CSV) and gqrx
-# work with receive-only RTL2832U dongles; gqrx pulls the gr-osmosdr *library*
-# it needs on its own. Dropped on purpose (snapshot-menu 0.2.4): gnuradio and
-# gr-osmosdr (flowgraph tooling nobody builds during an incident, ~350 MiB with
-# SciPy/PyQt), soapysdr-tools (only useful with per-device modules and GNU Radio)
-# and hackrf (transmit-capable hardware; red-team gear, not IR). The aircrack-ng
-# package is here only for airodump-ng's passive 802.11 survey; Debian does not
-# split it, so aireplay-ng and the cracker come along, but the menu exposes
-# airodump-ng alone. (kismet is not in trixie: upstream apt repo only, not
-# pinned here.)
+# never transmits itself. rtl-sdr (rtl_eeprom dongle check, rtl_power sweeps to
+# CSV) and gqrx work with receive-only RTL2832U dongles; gqrx pulls the
+# gr-osmosdr *library* it needs on its own. Dropped on purpose (snapshot-menu
+# 0.2.4): gnuradio and gr-osmosdr (flowgraph tooling nobody builds during an
+# incident, ~350 MiB with SciPy/PyQt), soapysdr-tools (only useful with
+# per-device modules and GNU Radio) and hackrf (transmit-capable hardware;
+# red-team gear, not IR). The aircrack-ng package is here only for airodump-ng's
+# passive 802.11 survey; Debian does not split it, so aireplay-ng and the
+# cracker come along, but the menu exposes airodump-ng alone. (kismet is not in
+# trixie: upstream apt repo only, not pinned here.)
 aircrack-ng
 rtl-sdr
 gqrx-sdr

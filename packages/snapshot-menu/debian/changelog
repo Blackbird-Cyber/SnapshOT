@@ -1,3 +1,16 @@
+snapshot-menu (0.2.6) unstable; urgency=low
+
+  * 05 Wireless & SDR: "rtl-sdr (rtl_test)" becomes "rtl-sdr (dongle check)"
+    (snapshot-rtl-sdr.desktop) and runs rtl_eeprom instead of rtl_test -t.
+    The -t benchmark exists only for the Elonics E4000 tuner; on the common
+    R820T/R828D dongles it printed the gain table and then "No E4000 tuner
+    found, aborting." rtl_eeprom with no options is a read-only dump: it
+    lists the dongles, opens the first, names its tuner, prints the EEPROM
+    identity (vendor and product ids, manufacturer, product, serial) and
+    exits, on every tuner.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 15:04:26 -0400
+
 snapshot-menu (0.2.4) unstable; urgency=low
 
   * 05 Wireless & SDR is receive-only. Drop the HackRF (snapshot-hackrf.desktop)

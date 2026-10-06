@@ -151,7 +151,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
-| 05 Wireless & SDR | airodump-ng, rtl-sdr (rtl_test, rtl_power), gqrx; strictly receive-only |
+| 05 Wireless & SDR | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx; strictly receive-only |
 | 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
 | 08 Reference | offline reference folder, the build manifest |
