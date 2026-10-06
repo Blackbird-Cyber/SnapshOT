@@ -103,7 +103,7 @@ in from `applications-merged/snapshot.menu`; Xfce (garcon) finds that directory 
 stripping the `xfce-` menu prefix.
 
 Each folder collects its `X-SnapshOT-*` launchers plus the matching upstream GUI
-tool (e.g. Wireshark in *Traffic Analysis*, gqrx/GRC in *Wireless & SDR*). Those
+tool (e.g. Wireshark in *Traffic Analysis*, gqrx in *Wireless & SDR*). Those
 upstream tools are `<Exclude>`d from the relevant **Usual Applications** sub-menu
 so they are not listed twice. (LibreOffice Writer is intentionally left in both
 *Office* and *Reporting*.)
@@ -114,9 +114,19 @@ The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
 Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
+05 Wireless & SDR is strictly receive-only (snapshot-menu 0.2.4): airodump-ng
+for the passive 802.11 survey, a dongle check (rtl_eeprom, since snapshot-menu
+0.2.6; rtl_test -t only benchmarked E4000 tuners) and rtl_power for RTL-SDR
+dongles, and gqrx. The HackRF, GNU Radio Companion and SoapySDR entries were
+dropped with their packages, and the aircrack-ng key-cracking entry went with
+them (the package stays because airodump-ng lives in it); the image never
+transmits on radio.
+01 Recon & Discovery's *mDNS listen (passive)* runs the package's `mdns-listen`
+helper, a tshark capture on udp 5353 on the one interface that is up (or one the
+operator picks), because avahi-daemon is masked and avahi-browse cannot work.
 
 08 Reference holds the offline reference folder, the build manifest and the
-**SnapshOT Wiki** (`snapshot-wiki.desktop`, snapshot-menu 0.2.4), which runs
+**SnapshOT Wiki** (`snapshot-wiki.desktop`, snapshot-menu 0.2.7), which runs
 `exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`. The
 Whisker favourites list it after the two terminals (snapshot-themes 0.2.1).
 Firefox ESR itself is a general browser, not a SnapshOT tool, so it stays in
@@ -127,7 +137,8 @@ Usual Applications (Internet).
 1. Add a `.desktop` file under
    `packages/snapshot-menu/rootfs/usr/share/applications/`. CLI tools use
    `Terminal=true` and `Exec=/usr/share/snapshot-menu/exec-in-shell "<cmd>"`
-   (which keeps the output on screen). A vendor-layer tool is always reached by
+   (which keeps the output on screen; Ctrl-C stops the tool and still leaves the
+   operator in the shell). A vendor-layer tool is always reached by
    its absolute per-tool wrapper path `/opt/snapshot/<tool>/bin/<cmd>` in both
    `Exec` and `TryExec`, never `/opt/snapshot/venv/...` or a bare path — the
    wrapper sets the tool's runtime up and the `TryExec` hides the entry when the
@@ -155,6 +166,9 @@ run that script; it strips the trademarked logo assets and recolours the accent 
 
 - runs `desktop-file-validate` on every `.desktop` (the `X-SnapshOT-*` category
   hints are expected), including snapshot-wiki's files,
+- fails if a launcher retired in snapshot-menu 0.2.4 is back (HackRF, SoapySDR,
+  aircrack-ng, avahi-browse) or the menu still pulls in GNU Radio Companion, and
+  checks that the `exec-in-shell` and `mdns-listen` helpers are executable and parse,
 - runs `xmllint --noout` on every `.xml`/`.menu`,
 - parses the staged menu with `python3-xdg` and asserts the eight folders are
   populated (the wiki launcher in 08 - Reference), that Usual Applications does

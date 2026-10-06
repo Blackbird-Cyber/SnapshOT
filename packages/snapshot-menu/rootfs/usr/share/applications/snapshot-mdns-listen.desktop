@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=mDNS listen (passive)
+Comment=Capture the mDNS/DNS-SD announcements other hosts send (udp 5353) with tshark; avahi-daemon stays masked
+Exec=/usr/share/snapshot-menu/exec-in-shell /usr/share/snapshot-menu/mdns-listen
+Terminal=true
+StartupNotify=false
+Icon=utilities-terminal
+Categories=X-SnapshOT-Recon;

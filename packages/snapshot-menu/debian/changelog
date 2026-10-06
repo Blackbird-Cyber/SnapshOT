@@ -1,8 +1,55 @@
-snapshot-menu (0.2.4) unstable; urgency=low
+snapshot-menu (0.2.7) unstable; urgency=low
 
   * Add "SnapshOT Wiki" (snapshot-wiki.desktop) to 08 Reference: opens
     file:///usr/share/snapshot/wiki/index.html (package snapshot-wiki) in
     the preferred web browser through exo-open --launch WebBrowser.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 16:40:03 -0400
+
+snapshot-menu (0.2.6) unstable; urgency=low
+
+  * 05 Wireless & SDR: "rtl-sdr (rtl_test)" becomes "rtl-sdr (dongle check)"
+    (snapshot-rtl-sdr.desktop) and runs rtl_eeprom instead of rtl_test -t.
+    The -t benchmark exists only for the Elonics E4000 tuner; on the common
+    R820T/R828D dongles it printed the gain table and then "No E4000 tuner
+    found, aborting." rtl_eeprom with no options is a read-only dump: it
+    lists the dongles, opens the first, names its tuner, prints the EEPROM
+    identity (vendor and product ids, manufacturer, product, serial) and
+    exits, on every tuner.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 15:04:26 -0400
+
+snapshot-menu (0.2.5) unstable; urgency=low
+
+  * 01 Recon & Discovery: "nmap ICS scripts" (snapshot-nmap-ics.desktop) now
+    also matches the Redpoint scripts the vendor layer links into nmap. NSE
+    name patterns are case-sensitive, so bacnet* only found nmap's own
+    bacnet-info; the pattern gains BACnet*, modicon*, codesys*, proconos*,
+    cspv4* and atg* and lists all 20 ICS scripts on the image instead of 14.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 15:04:26 -0400
+
+snapshot-menu (0.2.4) unstable; urgency=low
+
+  * 05 Wireless & SDR is receive-only. Drop the HackRF (snapshot-hackrf.desktop)
+    and SoapySDR (snapshot-soapysdr.desktop) launchers and stop pulling GNU
+    Radio Companion (gnuradio-grc.desktop) into the folder; the hackrf,
+    gnuradio, gr-osmosdr and soapysdr-tools packages leave the image with them.
+    SoapySDRUtil --find never found a device anyway (no soapysdr0.8-module-*
+    was installed).
+  * Add "rtl_power (RF spectrum sweep)" (snapshot-rtl-power.desktop): a passive
+    wideband power sweep to CSV with an RTL-SDR dongle.
+  * Drop the aircrack-ng key-cracking launcher (snapshot-aircrack-ng.desktop);
+    airodump-ng is the only 802.11 entry. The aircrack-ng package stays
+    because airodump-ng ships in it.
+  * 01 Recon & Discovery: replace "avahi-browse (mDNS)"
+    (snapshot-avahi-browse.desktop), which only printed "Daemon not running"
+    because avahi-daemon is masked, with "mDNS listen (passive)"
+    (snapshot-mdns-listen.desktop). The new mdns-listen helper captures the
+    mDNS/DNS-SD announcements other hosts send on udp 5353 with tshark, on the
+    one interface that is up or one the operator picks. Nothing is sent.
+  * exec-in-shell traps SIGINT, so Ctrl-C stops the launched tool and still
+    leaves the operator in the shell instead of closing the terminal.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000
 

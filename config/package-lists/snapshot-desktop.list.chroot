@@ -25,7 +25,7 @@ xfce4-power-manager
 xfce4-power-manager-plugins
 # Screen lock / screensaver (xflock4 target; Kali ships this too).
 xfce4-screensaver
-# Dark Qt for the Qt tools (Wireshark, gqrx, PulseView, GRC, KeePassXC). qt5ct
+# Dark Qt for the Qt tools (Wireshark, gqrx, PulseView, KeePassXC). qt5ct
 # ships /etc/X11/Xsession.d/99qt5ct which exports QT_QPA_PLATFORMTHEME=qt5ct;
 # qt6ct honours the same key.
 qt5ct

@@ -10,7 +10,7 @@ network. Search, tags and the interactive graphs all work offline.
 Three things open it:
 
 - the launcher **08 - Reference > SnapshOT Wiki**, `snapshot-wiki.desktop` in
-  `packages/snapshot-menu` (0.2.4), which runs
+  `packages/snapshot-menu` (0.2.7), which runs
   `exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`;
 - the same launcher in the Whisker favourites, after the two terminals
   (`favorites=` in `packages/snapshot-themes`' `whiskermenu/defaults.rc`,

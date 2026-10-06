@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="branding/exports/snapshot-lockup-on-black.png" width="520" alt="SnapshOT">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="branding/exports/snapshot-lockup-red-transparent.png">
+    <img src="branding/exports/snapshot-lockup-black-transparent.png" width="520" alt="SnapshOT">
+  </picture>
 </p>
 
 <p align="center">
@@ -147,11 +150,11 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 
 | Folder | Tools |
 |---|---|
-| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, avahi-browse |
+| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, passive mDNS listen (tshark) |
 | 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
 | 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
-| 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
+| 05 Wireless & SDR | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx; strictly receive-only |
 | 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
 | 08 Reference | offline reference folder, the build manifest, the SnapshOT Wiki |
@@ -189,19 +192,26 @@ Firefox adds about 275 MiB to the image.
 
 ## Security posture
 
-- **Quiet on the wire.** avahi, systemd-timesyncd and ModemManager are masked;
-  systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
-  and creates no automatic wired profile; IPv6 autoconfiguration and router
-  advertisements are off. Interfaces come up only when the operator brings them up.
-  Firefox ESR runs under an enterprise policy that stops it calling home
-  (`scripts/check-firefox-quiet.sh` captures no packet while it shows the wiki).
+- **Quiet on the wire.** avahi and systemd-timesyncd are masked, and ModemManager is
+  not installed; systemd-resolved has LLMNR and mDNS off; NetworkManager does not
+  check connectivity and creates no automatic wired profile; IPv6 autoconfiguration
+  and router advertisements are off. Interfaces come up only when the operator brings
+  them up. avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive
+  tshark listener on udp 5353 instead. Firefox ESR runs under an enterprise policy that
+  stops it calling home (`scripts/check-firefox-quiet.sh` captures no packet while it
+  shows the wiki).
+- **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
+  listen; it answers "is something transmitting here that is not in the asset
+  inventory?" with a passive sweep, and airodump-ng is the only 802.11 entry. HackRF,
+  GNU Radio and SoapySDR are deliberately not installed, and there is no key-cracking
+  launcher.
 - **Encryption at rest.** The installer sets up LUKS2 on the root filesystem. `/boot`
   holds only the kernel, initramfs and GRUB files and is not encrypted.
 - **Small, fixed install.** No recommended packages, and no network during the
   install: Calamares copies the live image.
 - **One client per image.** Re-image between engagements instead of updating in place;
-  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror for the
-  exception.
+  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror (one stick
+  serves amd64 and arm64 laptops) for the exception.
 - **Scope.** SnapshOT is a defensive and assessment platform for authorized OT
   engagements only. The default toolset is OT-focused and passive-first.
 
@@ -229,6 +239,7 @@ scripts/check-desktop.sh                       # validate the desktop menu and l
 scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
 scripts/check-wiki.sh                          # build and validate the SnapshOT Wiki
 scripts/check-firefox-quiet.sh                 # prove Firefox ESR sends nothing on its own (slow)
+scripts/test-vendor-hooks.sh [arch]            # install the fetched vendor layer in a trixie container and smoke-test it
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
 sudo scripts/build.sh                          # directly on a Debian trixie host
@@ -248,7 +259,7 @@ refreshes the download table above.
 | [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `snapshot-wiki` (the offline wiki and the Firefox ESR policy), `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
 | [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py`, the installer, desktop, field kit and wiki checks, the Firefox network check, reproducibility test, update USB, release |
+| [`scripts/`](scripts/) | build, `vendor.py` and `vendor-install.py`, the installer, desktop, field kit and wiki checks, the Firefox network check, the vendor layer test, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
 | [`docs/`](docs/) | build, vendoring, desktop, field kit, wiki, offline install and field updates |
 
