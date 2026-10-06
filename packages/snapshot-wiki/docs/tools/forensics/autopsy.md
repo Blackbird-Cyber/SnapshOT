@@ -60,7 +60,7 @@ support arm64 Linux; the launcher ships on both images and is hidden on arm64
 | Cases, disk images (raw, E01, AFF, VMDK, VHD) and logical files | Recent Activity is partial on Linux (upstream) |
 | Hash lookup, file type, extension mismatch, embedded files | LEAPP (mobile), plaso, OCR, YARA and HEIF are unsupported on Linux (upstream) |
 | Keyword search through its embedded Solr server | Video thumbnails are unsupported on Linux (upstream) |
-| PhotoRec carving, using the system `photorec` from [testdisk](testdisk-photorec.md) | SnapshOT prunes the release's Windows and macOS binaries, plaso, Volatility, Tesseract, 7-Zip and LEAPP among them |
+| PhotoRec carving, using the system `photorec` from [testdisk](testdisk-photorec.md) | SnapshOT prunes the release's Windows and macOS binaries, plaso, Volatility, the Tesseract OCR engine, 7-Zip and LEAPP among them |
 | RegRipper, run with perl | |
 | Timeline, tagging, reports; media played through the system GStreamer | |
 

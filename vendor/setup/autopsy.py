@@ -7,7 +7,8 @@ clamp. Does unix_setup.sh's job for a read-only tree: points autopsy.conf at
 the vendored JRE, puts the libtsk_jni.so built by vendor/recipes/sleuthkit-jni.sh
 into the TSK jar, keeps Solr's pid file and logs out of the install tree,
 restores the exec bits the zip does not store, and prunes the Windows/macOS-only
-payload. See docs/vendoring.md.
+payload except Tesseract-OCR/tessdata, which Autopsy's core installer copies
+on first start. See docs/vendoring.md.
 """
 import fnmatch
 import os
@@ -30,12 +31,22 @@ JNI_ENTRY = "NATIVELIBS/amd64/linux/libtsk_jni.so"   # os.arch on x86-64 Linux J
 # the system tool: photorec from testdisk, GStreamer). None is named in a module
 # manifest Class-Path; javafx-*-mac/-win and httpclient-win ARE, so they stay.
 PRUNE_DIRS = [
-    "autopsy/gstreamer", "autopsy/photorec_exec", "autopsy/Tesseract-OCR",
+    "autopsy/gstreamer", "autopsy/photorec_exec",
     "autopsy/plaso", "autopsy/Volatility", "autopsy/7-Zip",
     "autopsy/ewfexport_exec", "autopsy/tsk_logical_imager",
     "autopsy/ESEDatabaseView", "autopsy/thumbcache_parser",
     "autopsy/iLeapp", "autopsy/aLeapp",
 ]
+# Tesseract-OCR: the engine (tesseract.exe, its DLLs, doc/) goes, tessdata/
+# stays. Autopsy 4.23.1's core Installer.restored() calls
+# ensureOcrLanguagePacksFolderExists() on every OS: on the first start of a user
+# dir it locates Tesseract-OCR/tessdata in the install and copies it to the
+# user's OCR language pack folder. Without it the copy throws
+# NullPointerException: srcDir, which aborts the rest of core start-up (JavaFX,
+# 7-Zip, the module installers, the Welcome window). The language packs are
+# plain data (about 14 MiB); OCR stays unsupported on Linux, with no engine.
+TESSERACT = "autopsy/Tesseract-OCR"
+TESSERACT_KEEP = "tessdata"
 # rr and rr-full stay: on Linux ExtractRegistry runs `perl rr/rip.pl`.
 PRUNE_GLOBS = [
     "bin/*.exe", "platform/lib/*.exe", "platform/lib/*.dll",
@@ -53,6 +64,7 @@ REQUIRED = EXECUTABLES + [
     "etc/autopsy.conf", TSK_JAR, "autopsy/solr/bin/autopsy-solr",
     "autopsy/solr/bin/autopsy-solr.in.sh", "autopsy/rr/rip.pl",
     "autopsy/rr-full/rip.pl", "autopsy/modules/lib/amd64/libheifconvert.so",
+    TESSERACT + "/" + TESSERACT_KEEP + "/eng.traineddata",
 ]
 SOLR_BLOCK = '''
 # --- SnapshOT (vendor/setup/autopsy.py) -------------------------------------
@@ -78,15 +90,35 @@ def p(rel):
     return os.path.join(APP, rel)
 
 
+def tree_size(path):
+    if os.path.isfile(path):
+        return os.path.getsize(path)
+    return sum(os.path.getsize(os.path.join(dp, f))
+               for dp, _, fns in os.walk(path) for f in fns)
+
+
 def prune():
     freed = 0
     for d in PRUNE_DIRS:
         if not os.path.isdir(p(d)):
             log("note: %s not in this release" % d)
             continue
-        for dp, _, fns in os.walk(p(d)):
-            freed += sum(os.path.getsize(os.path.join(dp, f)) for f in fns)
+        freed += tree_size(p(d))
         shutil.rmtree(p(d))
+    if not os.path.isdir(p(os.path.join(TESSERACT, TESSERACT_KEEP))):
+        die("%s/%s not in this release" % (TESSERACT, TESSERACT_KEEP))
+    for fn in sorted(os.listdir(p(TESSERACT))):
+        if fn == TESSERACT_KEEP:
+            continue
+        f = p(os.path.join(TESSERACT, fn))
+        freed += tree_size(f)
+        if os.path.isdir(f) and not os.path.islink(f):
+            shutil.rmtree(f)
+        else:
+            os.remove(f)
+    log("kept %s/%s (%.1f MiB of OCR language data)" % (
+        TESSERACT, TESSERACT_KEEP,
+        tree_size(p(os.path.join(TESSERACT, TESSERACT_KEEP))) / 2**20))
     for dp, _, fns in os.walk(APP):
         for fn in fns:
             rel = os.path.relpath(os.path.join(dp, fn), APP)
