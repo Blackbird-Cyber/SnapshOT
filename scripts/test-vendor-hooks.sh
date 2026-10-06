@@ -70,13 +70,25 @@ if "$OPT/bin/ics-python" -c 'import pymodbus, pycomm3, bacpypes3, BAC0, asyncua,
     pass "ics-python imports pymodbus/pycomm3/bacpypes3/BAC0/asyncua/snap7"
 else bad "ics-python import failed"; sed 's/^/    /' /tmp/imp; fi
 
-# C. pymodbus.console present (amendment 1: pymodbus-repl)
-have "$OPT/ics-python/venv/bin/pymodbus.console"
-have "$OPT/ics-python/bin/pymodbus-console"
+# B2. pyserial is there for pymodbus's ModbusSerialClient (Modbus RTU/ASCII);
+# without it the client raises RuntimeError. Constructing needs no real port.
+ser="$("$OPT/bin/ics-python" -c 'import serial; from pymodbus.client import ModbusSerialClient; ModbusSerialClient("/dev/null"); print("serial-ok", serial.__version__)' 2>/tmp/ser)"; rc=$?
+if [ "$rc" -eq 0 ] && printf '%s\n' "$ser" | grep -qx 'serial-ok 3\.5'; then
+    pass "ics-python: pyserial 3.5 + pymodbus ModbusSerialClient OK"
+else bad "ics-python pyserial/ModbusSerialClient check failed (exit $rc)"; printf '%s\n' "$ser" | sed 's/^/    /'; sed 's/^/    /' /tmp/ser; fi
 
-# D. uadiscover --help
-if "$OPT/bin/uadiscover" --help >/dev/null 2>&1; then pass "uadiscover --help exits 0"
-else bad "uadiscover --help nonzero"; fi
+# C. pymodbus-repl is dropped (its last release, 2.0.4, runs only with pymodbus
+# 3.7.0-3.7.2), so no pymodbus console may be installed
+for f in "$OPT/ics-python/venv/bin/pymodbus.console" "$OPT/ics-python/bin/pymodbus-console" \
+         "$OPT/bin/pymodbus-console"; do
+    [ ! -e "$f" ] && [ ! -L "$f" ] && pass "no $f" || bad "$f still installed"
+done
+
+# D. every ics-python console command runs --help through its /opt/snapshot/bin wrapper
+for c in uadiscover uals uaread uawrite uasubscribe uaclient uaserver uacall uahistoryread; do
+    if "$OPT/bin/$c" --help >/dev/null 2>/tmp/help.err; then pass "$c --help exits 0"
+    else bad "$c --help nonzero"; tail -n 5 /tmp/help.err | sed 's/^/    /'; fi
+done
 
 # E. plcscan -h
 if "$OPT/bin/plcscan" -h >/dev/null 2>&1; then pass "plcscan -h exits 0"
