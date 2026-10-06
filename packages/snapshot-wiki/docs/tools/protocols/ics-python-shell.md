@@ -117,6 +117,32 @@ libraries; the system `python3` does not. Its wrappers are also linked into
 command-line tools (`uadiscover`, `uaread` and the rest) also work by bare name
 in a terminal.
 
+A first script: save this as `~/cases/site-a/modbus/read-plc01.py` and run it
+with the third command above. It only reads: ten holding registers from unit id
+1 of a Modbus/TCP device, through [pymodbus](pymodbus.md).
+
+```python
+# Read-only check of PLC01 (192.0.2.10, unit id 1): ten holding registers.
+from pymodbus.client import ModbusTcpClient
+
+client = ModbusTcpClient("192.0.2.10", timeout=3, retries=1)
+client.connect()
+reply = client.read_holding_registers(0, count=10, device_id=1)
+if reply.isError():
+    print("error:", reply)
+else:
+    for offset, value in enumerate(reply.registers):
+        print(f"register {offset}: {value}")
+client.close()
+```
+
+The same lines typed into the interactive shell give the same answer, which is
+handy while finding the right registers; once they are right, keep them as a
+script, since the script is the record of what was sent. The library pages
+([pycomm3](pycomm3.md), [asyncua](asyncua.md), [BACpypes3](bacpypes3.md),
+[BAC0](bac0.md), [python-snap7](python-snap7.md)) have read examples for the
+other protocols. A script that writes is run only with the engineer present.
+
 ## Output and evidence
 
 Save each script in the case folder of the protocol it speaks (`modbus/`,

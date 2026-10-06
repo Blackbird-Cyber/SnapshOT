@@ -104,7 +104,26 @@ site.
 
 ## Quick start
 
+A short read script first: it joins the segment as device 999, asks one device
+for its I-Am, then reads two properties.
+
 ```sh
+# Who-Is to one device, then read its name and one object's present-value
+/opt/snapshot/ics-python/bin/ics-python -c '
+import asyncio
+from bacpypes3.argparse import SimpleArgumentParser
+from bacpypes3.app import Application
+from bacpypes3.pdu import Address
+async def main():
+    args = SimpleArgumentParser().parse_args(["--address", "192.0.2.100/24", "--instance", "999"])
+    app = Application.from_args(args)
+    dev = Address("192.0.2.40")
+    for i_am in await app.who_is(1000, 1099, dev):
+        print(i_am.iAmDeviceIdentifier, i_am.vendorID)
+    print(await app.read_property(dev, "device,1001", "object-name"))
+    print(await app.read_property(dev, "analog-value,1", "present-value"))
+    app.close()
+asyncio.run(main())'
 # The console's options (local address, device instance, BBMD and foreign device)
 /opt/snapshot/ics-python/bin/ics-python -m bacpypes3 --help
 # Open the BACpypes3 console as a device on the segment
@@ -128,9 +147,10 @@ write 192.0.2.40 analog-value,1 present-value 21.0
 ```
 
 `192.0.2.100/24` is the laptop's documentation address on the segment and
-`192.0.2.40` a documentation device address. BACnet/IP uses UDP 47808. Type
-`help` in the console for the other commands (`whohas`, `iam`, and the BBMD
-table reads and writes).
+`192.0.2.40` a documentation device address; the device instance (1001) comes
+from its I-Am. BACnet/IP uses UDP 47808. Type `help` in the console for the
+other commands (`whohas`, `iam`, and the BBMD table reads and writes); `exit`
+leaves it.
 
 ## Output and evidence
 

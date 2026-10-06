@@ -107,7 +107,8 @@ adversary using the same library, so BACnet work is announced to the site.
 import asyncio, BAC0
 async def main():
     async with BAC0.start(ip="192.0.2.100/24", ping=False) as bacnet:
-        print(await bacnet.who_is("192.0.2.40"))
+        for i_am in await bacnet.who_is("192.0.2.40"):
+            print(i_am.iAmDeviceIdentifier, i_am.pduSource)
         print(await bacnet.readMultiple(
             "192.0.2.40 device 1001 objectName vendorName firmwareRevision"))
 asyncio.run(main())'
@@ -116,7 +117,8 @@ asyncio.run(main())'
 import asyncio, BAC0
 async def main():
     async with BAC0.start(ip="192.0.2.100/24", ping=False) as bacnet:
-        print(await bacnet.who_is(low_limit=1000, high_limit=1099))
+        for i_am in await bacnet.who_is(low_limit=1000, high_limit=1099):
+            print(i_am.iAmDeviceIdentifier, i_am.pduSource)
 asyncio.run(main())'
 # Read one object's present-value
 /opt/snapshot/ics-python/bin/ics-python -c '
@@ -128,9 +130,11 @@ asyncio.run(main())'
 ```
 
 `192.0.2.100/24` is the laptop's documentation address on the segment and
-`192.0.2.40` a documentation device address. BACnet/IP uses UDP 47808. Object
-types and properties are written in BACnet's camel case (`analogValue`,
-`presentValue`) or with dashes (`analog-value`, `present-value`).
+`192.0.2.40` a documentation device address; each I-Am prints the device's
+instance (`device,1001`) and address. BACnet/IP uses UDP 47808. Object types
+and properties are written in BACnet's camel case (`analogValue`,
+`presentValue`) or with dashes (`analog-value`, `present-value`). BAC0 also
+prints its own start and stop messages around the results.
 
 ## Output and evidence
 

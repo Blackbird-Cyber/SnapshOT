@@ -16,25 +16,28 @@ csf: [detect, respond, recover]
 attack_ics: [discovery, collection, impair-process-control]
 attack_role: resembles
 attack_techniques: [T0888, T0801, T1692.001, T0836]
-protocols: [modbus, serial]
+protocols: [modbus]
 upstream: https://pymodbus.readthedocs.io/
 ---
 
 <!-- snapshot:facts -->
 
-!!! warning "Known issue on this build"
+!!! warning "Known issues on this build"
 
-    The pymodbus console launcher (`pymodbus-console`) fails to start on the
-    pinned package set with an ImportError from pymodbus-repl. The pymodbus
-    library itself works, in scripts and in the ICS Python shell. The fix is
-    tracked in the vendor layer.
+    - The pymodbus console launcher (`pymodbus-console`) fails to start on the
+      pinned package set with an ImportError from pymodbus-repl. The pymodbus
+      library itself works, in scripts and in the ICS Python shell.
+    - The serial client (`ModbusSerialClient`, for Modbus RTU and ASCII) needs
+      `pyserial`, which the vendor layer does not include, so it stops with an
+      error. Modbus TCP works; for a serial line, use [mbpoll](mbpoll.md).
 
 ## What it is
 
 pymodbus is a Modbus library for Python with a synchronous and an asynchronous
 client. It reads and writes coils, discrete inputs, input registers and holding
-registers over Modbus TCP or over a serial line (RTU and ASCII), and it decodes
-register pairs into 16, 32 and 64-bit integers, floats and strings. Where
+registers over Modbus TCP or, given `pyserial`, over a serial line (RTU and
+ASCII; not on this image, see the known issues), and it decodes register pairs
+into 16, 32 and 64-bit integers, floats and strings. Where
 [mbpoll](mbpoll.md) is a one-line command, pymodbus is used when a check needs a
 loop, a decode or a condition: scripts run in the [ICS Python
 shell](ics-python-shell.md). It also ships an interactive console, which the
@@ -45,9 +48,9 @@ menu launcher opens.
 Modbus is the most common protocol on the plant floor, and some Modbus questions
 need more than one request: read a block, convert it to engineering units, poll
 a handful of registers and compare them. pymodbus gives a responder a scriptable
-client for exactly that, on both TCP and RS-485 or RS-232 adapters, in the same
-vendored Python as the other ICS libraries. For a single read, mbpoll is
-quicker; for anything with logic in it, pymodbus is the tool.
+client for exactly that over Modbus TCP, in the same vendored Python as the
+other ICS libraries. For a single read, and for RS-485 or RS-232 adapters,
+mbpoll is the tool; for anything with logic in it, pymodbus is.
 
 ## On the wire
 
@@ -105,7 +108,7 @@ what was read or changed.
 ## Quick start
 
 ```sh
-# What the menu launcher runs (it fails on this build: see the known issue above)
+# What the menu launcher runs (it fails on this build: see the known issues above)
 /opt/snapshot/ics-python/bin/pymodbus-console --help
 # Read 10 holding registers from unit id 1 (a short script in the ICS shell)
 /opt/snapshot/ics-python/bin/ics-python -c '
@@ -132,9 +135,9 @@ print(c.read_holding_registers(99, count=1, device_id=1).registers); c.close()'
 ```
 
 `192.0.2.10` is a documentation address. Unit ids are passed as `device_id`,
-counts as `count=`. For serial (Modbus RTU), use
-`ModbusSerialClient("/dev/ttyUSB0", baudrate=9600, parity="N")`; the SnapshOT
-user is in group `dialout`, so serial ports need no `sudo`.
+counts as `count=`. For Modbus RTU on a serial line, use [mbpoll](mbpoll.md):
+pymodbus's serial client needs `pyserial`, which the vendor layer does not
+include, so `ModbusSerialClient` stops with an error on this image.
 
 ## Output and evidence
 

@@ -98,6 +98,8 @@ UA client, so the work is announced to the site's monitoring.
 
 ## Quick start
 
+The OPC UA Client is a GUI; the menu launcher opens the window (amd64 only).
+
 ```sh
 # What the menu launcher runs (amd64 only)
 /opt/snapshot/opcua-client/bin/opcua-client
@@ -107,10 +109,34 @@ UA client, so the work is announced to the site's monitoring.
 /opt/snapshot/ics-python/bin/uals -u opc.tcp://192.0.2.50:4840 -n i=85 -d 1 -l
 ```
 
-In the window, enter the server address (for example
-`opc.tcp://192.0.2.50:4840`) and connect, then expand the address space tree,
-select a node to see its attributes, and use the right-click menu to subscribe
-or, with the engineer present, to write a value. `192.0.2.50` is a documentation
+A first session, read-only. The labels below are those of the client release
+the vendor layer pins (its window is titled FreeOpcUa Client).
+
+1. **Check the endpoints first.** Run `uadiscover` (above) to see which
+   security modes and policies the server offers and whether it allows an
+   anonymous session.
+2. **Connect.** Open OPC UA Client from 03 Protocol Tools. Type the server
+   address into the box at the top, for example `opc.tcp://192.0.2.50:4840`.
+   If the server needs security or a user name, set them in **Connect
+   options**; then click **Connect**.
+3. **Browse.** The address space appears as a tree on the left. Expand
+   **Objects**, one branch at a time, to the device or tag you need.
+4. **Read a node.** Select it: the **Attributes** pane shows its NodeId, browse
+   name, data type, value and access level, and the **References** pane its
+   links to other nodes. Right-click the node and choose **Copy NodeId** to
+   paste it into the case notes or into a `uaread` command.
+5. **Watch it change.** Right-click a variable and choose **Subscribe to data
+   change**: it is listed in the **Subscriptions** pane and its value updates
+   as the server reports changes. **Add to Graph** plots it; **Subscribe to
+   events** on an object (the Server object, for example) lists its alarms and
+   events in the **Events** pane.
+6. **Disconnect.** Click **Disconnect** when done; it also ends the
+   subscriptions. Note in the case log how long the session was open.
+
+Do not double-click a value in the Attributes pane on a live server. The client
+writes the edited value to the server as soon as the edit is accepted, with no
+confirmation; a write needs the engineer present and the exact node and value
+agreed, as for [uawrite](opcua-cli-tools.md). `192.0.2.50` is a documentation
 address on the OPC UA default port 4840.
 
 ## Output and evidence
