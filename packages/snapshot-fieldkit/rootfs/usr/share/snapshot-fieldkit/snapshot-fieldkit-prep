@@ -1,0 +1,196 @@
+#!/usr/bin/env bash
+# snapshot-fieldkit-prep: turn a USB stick into a SnapshOT field kit, or
+# refresh the kit on a stick prepared before (its results/ stay).
+#
+#   snapshot-fieldkit-prep [--device /dev/sdX] [--fat32] [--label NAME] [--yes]
+#   snapshot-fieldkit-prep --refresh [--device /dev/sdX] [--yes]
+#   snapshot-fieldkit-prep --list
+#
+# Prepare ERASES the stick: one MBR partition, exFAT (default) or FAT32
+# (--fat32), label SNAPKIT, then the kit from /usr/share/snapshot/fieldkit,
+# an empty results/ and MANIFEST.sha256 over the kit. Refresh rewrites the kit
+# files and the manifest, keeps results/ and anything the operator put in
+# */user-supplied/, and removes stale kit files.
+#
+# It refuses the SnapshOT boot medium, the disk of the running system and any
+# disk that is not removable or USB. The operator picks the stick by typing
+# its name (sdb), and confirms an erase by typing ERASE; --yes skips both
+# prompts and needs --device. Runs as root (re-runs itself with sudo).
+set -euo pipefail
+# shellcheck source=snapshot-fieldkit-common.sh
+. /usr/share/snapshot-fieldkit/snapshot-fieldkit-common.sh
+
+usage() {
+    sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+ARGS=("$@")
+REFRESH=0; FAT32=0; LABEL=SNAPKIT; DEVICE=; YES=0; LIST=0
+while [ $# -gt 0 ]; do
+    case $1 in
+        --refresh) REFRESH=1 ;;
+        --fat32) FAT32=1 ;;
+        --label) [ $# -ge 2 ] || die "--label needs a value"; LABEL=$2; shift ;;
+        --label=*) LABEL=${1#*=} ;;
+        --device) [ $# -ge 2 ] || die "--device needs a value"; DEVICE=$2; shift ;;
+        --device=*) DEVICE=${1#*=} ;;
+        --yes|-y) YES=1 ;;
+        --list) LIST=1 ;;
+        -h|--help) usage; exit 0 ;;
+        *) usage >&2; die "unknown argument: $1" ;;
+    esac
+    shift
+done
+[[ $LABEL =~ ^[A-Za-z0-9_-]{1,11}$ ]] || die "label must be 1 to 11 characters of A-Z, 0-9, _ or -"
+[ "$FAT32" = 1 ] && LABEL=${LABEL^^}
+[ "$YES" = 0 ] || [ -n "$DEVICE" ] || die "--yes needs --device"
+[ -z "$DEVICE" ] || DEVICE=/dev/${DEVICE#/dev/}
+
+need lsblk util-linux; need jq jq; need findmnt util-linux
+
+print_candidates() {
+    local n=0 path size tran model serial
+    printf '  %-3s %-14s %-8s %-6s %-32s %s\n' '#' DEVICE SIZE BUS MODEL SERIAL
+    while IFS=$'\t' read -r path size tran model serial; do
+        n=$((n + 1))
+        printf '  %-3s %-14s %-8s %-6s %-32s %s\n' "$n" "$path" "$size" "$tran" "$model" "$serial"
+    done < <(candidates)
+    [ "$n" -gt 0 ]
+}
+
+if [ "$LIST" = 1 ]; then
+    print_candidates || say "  (no removable disk found)"
+    exit 0
+fi
+
+if [ "$(id -u)" -ne 0 ]; then
+    say "Partitioning and mounting the stick needs root: re-running with sudo."
+    exec sudo -- "$0" "${ARGS[@]}"
+fi
+need sfdisk fdisk; need wipefs util-linux; need sha256sum coreutils
+[ -d "$FIELDKIT_SRC" ] || die "kit source $FIELDKIT_SRC is missing (package snapshot-fieldkit)"
+
+# --- choose the stick ------------------------------------------------------
+if [ -z "$DEVICE" ]; then
+    say "Removable disks (the boot medium and the system disk are never listed):"
+    print_candidates || die "no removable disk found: plug the stick in, wait a few seconds and try again"
+    ask "Type the device name to use (for example sdb), or Enter to cancel: "
+    [ -n "$REPLY" ] || die "cancelled"
+    DEVICE=/dev/${REPLY#/dev/}
+    candidates | cut -f1 | grep -qx -- "$DEVICE" || die "$DEVICE is not one of the disks listed"
+    PICKED=1
+else
+    PICKED=0
+fi
+check_target "$DEVICE"
+DEVICE=$(readlink -f "$DEVICE")
+say ""
+say "Selected $DEVICE: $(disk_field "$DEVICE" size) $(disk_field "$DEVICE" vendor) $(disk_field "$DEVICE" model) serial $(disk_field "$DEVICE" serial)"
+lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT "$DEVICE" | sed 's/^/  /'
+if [ "$YES" = 0 ] && [ "$PICKED" = 0 ]; then
+    ask "Type the device name (${DEVICE#/dev/}) to confirm: "
+    [ "${REPLY#/dev/}" = "${DEVICE#/dev/}" ] || die "cancelled"
+fi
+
+MNT=; OWN_MOUNT=0
+cleanup() {
+    if [ "$OWN_MOUNT" = 1 ] && [ -n "$MNT" ]; then
+        umount "$MNT" 2>/dev/null || true
+        rmdir "$MNT" 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT
+
+mount_part() {
+    MNT=$(mktemp -d /run/snapshot-fieldkit.XXXXXX)
+    mount "$1" "$MNT" || die "cannot mount $1"
+    OWN_MOUNT=1
+}
+
+finish() {
+    local mode=$1 files mhash fs label
+    write_kit_manifest "$MNT"
+    files=$(wc -l < "$MNT/MANIFEST.sha256")
+    mhash=$(sha256sum "$MNT/MANIFEST.sha256" | cut -d' ' -f1)
+    sync
+    fs=$(blkid -o value -s TYPE "$PART" 2>/dev/null || true)
+    label=$(blkid -o value -s LABEL "$PART" 2>/dev/null || true)
+    if [ "$OWN_MOUNT" = 1 ]; then umount "$MNT"; rmdir "$MNT"; OWN_MOUNT=0; fi
+    say ""
+    say "Field kit ${mode}:"
+    say "  device      $DEVICE ($PART, ${fs:-?}, label ${label:-?})"
+    say "  kit         $(cat "$FIELDKIT_SRC/VERSION" 2>/dev/null | head -n 1 | tr -d '\r') from $FIELDKIT_SRC"
+    say "  version     $VERSION_LINE"
+    say "  files       $files in MANIFEST.sha256 (sha256 $mhash)"
+    say "Run windows\\collect-triage.cmd or linux/collect-triage.sh from the stick on the target."
+}
+
+VERSION_LINE=$(kit_version_line)
+
+# --- refresh ---------------------------------------------------------------
+if [ "$REFRESH" = 1 ]; then
+    need rsync rsync
+    PART=$(first_part "$DEVICE") || die "$DEVICE has no partition: prepare it instead (without --refresh)"
+    MNT=$(findmnt -n -r -o TARGET -S "$PART" | head -n 1 || true)
+    if [ -n "$MNT" ]; then
+        findmnt -n -r -o OPTIONS -S "$PART" | head -n 1 | grep -qE '(^|,)rw(,|$)' ||
+            die "$PART is mounted read-only at $MNT: unmount it (or eject it in the file manager) and retry"
+    else
+        mount_part "$PART"
+    fi
+    [ -f "$MNT/VERSION" ] && [ -f "$MNT/windows/Collect-Triage.ps1" ] ||
+        die "$PART does not hold a SnapshOT field kit (no VERSION or windows/Collect-Triage.ps1): prepare it instead"
+    say "Refreshing the kit on $PART (mounted at $MNT); results/ and */user-supplied/ are kept."
+    # P rules: never delete what sits at the stick root outside the kit, or
+    # the operator's tools in user-supplied/. results/ is excluded outright.
+    rsync -rt --modify-window=2 --delete \
+        --exclude=/results/ --filter='P /*' --filter='P /*/user-supplied/**' \
+        "$FIELDKIT_SRC/" "$MNT/"
+    mkdir -p "$MNT/results"
+    printf '%s\r\n' "$VERSION_LINE" > "$MNT/VERSION"
+    finish refreshed
+    exit 0
+fi
+
+# --- prepare -----------------------------------------------------------------
+if [ "$FAT32" = 1 ]; then
+    need mkfs.vfat dosfstools; PTYPE=c; FS=FAT32
+    say "FAT32: readable on every Windows down to XP, but no file over 4 GiB (large event logs or images)."
+else
+    need mkfs.exfat exfatprogs; PTYPE=7; FS=exFAT
+    say "exFAT: no 4 GiB file limit. Windows XP reads it only with update KB955704; use --fat32 for bare XP hosts."
+fi
+if [ "$YES" = 0 ]; then
+    ask "This ERASES everything on $DEVICE. Type ERASE to continue: "
+    [ "$REPLY" = ERASE ] || die "cancelled"
+fi
+
+while read -r p mp; do
+    [ -n "$mp" ] || continue
+    say "Unmounting $p ($mp)"
+    umount "$p" || die "cannot unmount $p: close any window using it and retry"
+done < <(lsblk -n -r -p -o PATH,MOUNTPOINT "$DEVICE")
+
+say "Partitioning $DEVICE (MBR, one $FS partition)"
+while read -r p; do
+    [ "$p" = "$DEVICE" ] || wipefs -a -q "$p" || true
+done < <(lsblk -n -r -p -o PATH "$DEVICE")
+wipefs -a -q "$DEVICE"
+printf 'label: dos\n,,%s\n' "$PTYPE" | sfdisk --quiet --wipe always "$DEVICE" >/dev/null
+partprobe "$DEVICE" 2>/dev/null || blockdev --rereadpt "$DEVICE" 2>/dev/null || true
+udevadm settle 2>/dev/null || true
+PART=$(first_part "$DEVICE") || die "the new partition on $DEVICE did not appear"
+wipefs -a -q "$PART" || true
+
+say "Formatting $PART as $FS, label $LABEL"
+if [ "$FAT32" = 1 ]; then mkfs.vfat -F 32 -n "$LABEL" "$PART" >/dev/null
+else mkfs.exfat -L "$LABEL" "$PART" >/dev/null
+fi
+udevadm settle 2>/dev/null || true
+
+mount_part "$PART"
+say "Copying the kit"
+cp -r --no-preserve=mode,ownership "$FIELDKIT_SRC/." "$MNT/"
+mkdir -p "$MNT/results"
+printf '%s\r\n' "$VERSION_LINE" > "$MNT/VERSION"
+finish prepared

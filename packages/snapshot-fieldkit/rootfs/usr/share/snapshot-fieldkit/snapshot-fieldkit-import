@@ -1,0 +1,300 @@
+#!/usr/bin/env bash
+# snapshot-fieldkit-import: copy field kit results into a case folder, with
+# integrity checks and a chain-of-custody record.
+#
+#   snapshot-fieldkit-import [--device /dev/sdX | --path DIR] [--case NAME]
+#                            [--examiner NAME] [--take-stick] [--yes]
+#
+# Runs as the operator, not root. The stick is read where udisks mounted it
+# (/media/<user>/SNAPKIT), or mounted read-only here through udisksctl, and
+# nothing is written to it. --path reads a kit root, a results/ folder or one
+# collection folder instead.
+#
+# Each <HOST>_<STAMP> collection is checked against its MANIFEST.sha256; a
+# mismatch is reported as TAMPER and that collection is not imported. The
+# rest go to ~/cases/<case>/fieldkit/<HOST>_<STAMP>/, are checked again there,
+# hashed into fieldkit/IMPORT-MANIFEST-<UTC>.sha256 and made read-only. Every
+# run appends to ~/cases/<case>/chain-of-custody.log (kept read-only between
+# imports): examiner, operator, stick identity, per-collection result.
+#
+# --take-stick then removes the imported (verified) collections from the
+# stick, remounting it read-write; tampered ones stay. Exit status 1 when any
+# collection failed verification.
+set -euo pipefail
+# shellcheck source=snapshot-fieldkit-common.sh
+. /usr/share/snapshot-fieldkit/snapshot-fieldkit-common.sh
+
+usage() {
+    sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+DEVICE=; SRCPATH=; CASE=; EXAMINER=; TAKE=0; YES=0
+while [ $# -gt 0 ]; do
+    case $1 in
+        --device) [ $# -ge 2 ] || die "--device needs a value"; DEVICE=$2; shift ;;
+        --device=*) DEVICE=${1#*=} ;;
+        --path) [ $# -ge 2 ] || die "--path needs a value"; SRCPATH=$2; shift ;;
+        --path=*) SRCPATH=${1#*=} ;;
+        --case) [ $# -ge 2 ] || die "--case needs a value"; CASE=$2; shift ;;
+        --case=*) CASE=${1#*=} ;;
+        --examiner) [ $# -ge 2 ] || die "--examiner needs a value"; EXAMINER=$2; shift ;;
+        --examiner=*) EXAMINER=${1#*=} ;;
+        --take-stick) TAKE=1 ;;
+        --yes|-y) YES=1 ;;
+        -h|--help) usage; exit 0 ;;
+        *) usage >&2; die "unknown argument: $1" ;;
+    esac
+    shift
+done
+[ -z "$DEVICE" ] || [ -z "$SRCPATH" ] || die "use --device or --path, not both"
+[ "$(id -u)" -ne 0 ] || die "run this as your own user, not root: the case folder is yours (~/cases) and udisks mounts the stick for you"
+need sha256sum coreutils; need lsblk util-linux; need jq jq; need findmnt util-linux
+
+if [ -z "$CASE" ]; then
+    ask "Case name (letters, digits, . _ -): "; CASE=$REPLY
+fi
+[[ $CASE =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]] || die "case name must be letters, digits, . _ or - (got '$CASE')"
+if [ -z "$EXAMINER" ]; then
+    ask "Examiner name (recorded in the chain-of-custody log): "; EXAMINER=$REPLY
+fi
+EXAMINER=$(printf '%s' "$EXAMINER" | tr -d '\000-\037')
+[ -n "${EXAMINER// /}" ] || die "an examiner name is required"
+
+CASES_ROOT=${SNAPSHOT_CASES_DIR:-$HOME/cases}
+CASE_DIR=$CASES_ROOT/$CASE
+DEST=$CASE_DIR/fieldkit
+COC=$CASE_DIR/chain-of-custody.log
+NOW=$(utc)
+STAMP=$(date -u +%Y%m%dT%H%M%SZ)
+
+PART=; MP=; MOUNTED_HERE=0; STICK_DESC="none (path import)"; MOUNT_DESC=
+cleanup() {
+    if [ "$MOUNTED_HERE" = 1 ] && [ -n "$PART" ]; then
+        udisksctl unmount -b "$PART" --no-user-interaction >/dev/null 2>&1 || true
+    fi
+}
+trap cleanup EXIT
+
+describe_disk() {
+    local part=$1 disk
+    disk=$(top_disks_of "$part" | head -n 1)
+    printf 'device=%s partition=%s label=%s uuid=%s fstype=%s vendor=%s model=%s serial=%s' \
+        "${disk:-?}" "$part" \
+        "$(lsblk -n -d -o LABEL "$part" 2>/dev/null | xargs)" "$(lsblk -n -d -o UUID "$part" 2>/dev/null | xargs)" \
+        "$(lsblk -n -d -o FSTYPE "$part" 2>/dev/null | xargs)" "$(lsblk -n -d -o VENDOR "$disk" 2>/dev/null | xargs)" \
+        "$(lsblk -n -d -o MODEL "$disk" 2>/dev/null | xargs)" "$(lsblk -n -d -o SERIAL "$disk" 2>/dev/null | xargs)"
+}
+
+mount_opts() { findmnt -n -r -o OPTIONS -S "$1" 2>/dev/null | head -n 1; }
+
+# --- find the results --------------------------------------------------------
+if [ -n "$SRCPATH" ]; then
+    [ -d "$SRCPATH" ] || die "$SRCPATH is not a directory"
+    SRCPATH=$(readlink -f "$SRCPATH")
+    if [ -d "$SRCPATH/results" ]; then RESULTS=$SRCPATH/results
+    elif [ -f "$SRCPATH/run.log" ] || [ -f "$SRCPATH/summary.txt" ]; then RESULTS=
+    else RESULTS=$SRCPATH
+    fi
+    src_dev=$(findmnt -n -o SOURCE --target "$SRCPATH" 2>/dev/null | head -n 1 || true)
+    src_dev=${src_dev%%\[*}
+    if [ -b "$src_dev" ]; then STICK_DESC="$(describe_disk "$src_dev") (backing --path)"; fi
+    MOUNT_DESC="path $SRCPATH"
+else
+    if [ -n "$DEVICE" ]; then
+        DEVICE=/dev/${DEVICE#/dev/}
+        [ -b "$DEVICE" ] || die "$DEVICE is not a block device"
+        if [ "$(disk_field "$DEVICE" type)" = part ]; then PART=$DEVICE
+        else PART=$(first_part "$DEVICE") || die "$DEVICE has no partition"
+        fi
+    else
+        mapfile -t parts < <(lsblk -n -r -p -o PATH,TYPE,LABEL | awk '$2 == "part" && $3 ~ /^SNAPKIT/ { print $1 }')
+        case ${#parts[@]} in
+            0) die "no field kit stick (label SNAPKIT) found: plug it in, or use --device or --path" ;;
+            1) PART=${parts[0]} ;;
+            *) say "Several field kit sticks:"; printf '  %s\n' "${parts[@]}"
+               ask "Type the partition to import from (for example sdb1): "
+               PART=/dev/${REPLY#/dev/}
+               printf '%s\n' "${parts[@]}" | grep -qx -- "$PART" || die "$PART is not one of them" ;;
+        esac
+    fi
+    if boot_disks | grep -qx -- "$(top_disks_of "$PART" | head -n 1)"; then
+        die "$PART is on the SnapshOT boot medium, not a field kit stick"
+    fi
+    STICK_DESC=$(describe_disk "$PART")
+    MP=$(findmnt -n -r -o TARGET -S "$PART" 2>/dev/null | head -n 1 || true)
+    if [ -n "$MP" ]; then
+        MOUNT_DESC="already mounted at $MP ($(mount_opts "$PART" | cut -d, -f1))"
+    else
+        command -v udisksctl >/dev/null 2>&1 ||
+            die "udisksctl not found (package udisks2): mount the stick read-only yourself and use --path"
+        say "Mounting $PART read-only through udisks"
+        udisksctl mount -b "$PART" -o ro >/dev/null || die "udisksctl could not mount $PART"
+        MOUNTED_HERE=1
+        MP=$(findmnt -n -r -o TARGET -S "$PART" | head -n 1)
+        MOUNT_DESC="mounted read-only at $MP by this import (udisks)"
+    fi
+    [ -d "$MP/results" ] || die "$MP has no results/ folder: is this a field kit stick?"
+    RESULTS=$MP/results
+fi
+
+if [ -n "$RESULTS" ]; then
+    mapfile -t COLLS < <(find "$RESULTS" -mindepth 1 -maxdepth 1 -type d | LC_ALL=C sort)
+else
+    COLLS=("$SRCPATH")
+fi
+[ "${#COLLS[@]}" -gt 0 ] || die "no collections under $RESULTS"
+mkdir -p "$DEST"
+
+# --- verify and copy ---------------------------------------------------------
+# verify <dir>: VSTATUS = verified | no-manifest | TAMPER, VNOTE = details.
+verify() {
+    local dir=$1 man list out rc listed actual extra bad
+    VSTATUS=; VNOTE=
+    man=$dir/MANIFEST.sha256
+    if [ ! -f "$man" ]; then
+        VSTATUS=no-manifest
+        VNOTE="hasher=$(summary_value "$dir" hasher)"
+        return 0
+    fi
+    list=$(mktemp); out=$(mktemp)
+    # CRLF (cmd fallback) is fine; lines that are not "<64 hex> <sp|*><path>"
+    # or that leave the folder are reported and not used.
+    tr -d '\r' < "$man" | grep -E '^[0-9A-Fa-f]{64} [ *][^/]' | grep -vE '(^|/|[ *])\.\.(/|$)' > "$list" || true
+    bad=$(( $(tr -d '\r' < "$man" | grep -c . || true) - $(wc -l < "$list") ))
+    rc=0
+    ( cd "$dir" && sha256sum -c --quiet --strict "$list" ) > "$out" 2>&1 || rc=$?
+    if [ "$rc" -ne 0 ] || [ ! -s "$list" ]; then
+        VSTATUS=TAMPER
+        VNOTE=$(tr '\n' ';' < "$out" | sed 's/;$//')
+        [ -s "$list" ] || VNOTE="manifest has no usable lines"
+    else
+        VSTATUS=verified
+        listed=$(sed -E 's/^[0-9A-Fa-f]{64} [ *]//' "$list" | LC_ALL=C sort)
+        actual=$(cd "$dir" && find . -type f ! -name 'MANIFEST.sha256*' | sed 's|^\./||' | LC_ALL=C sort)
+        extra=$(comm -13 <(printf '%s\n' "$listed") <(printf '%s\n' "$actual") | grep . | tr '\n' ',' | sed 's/,$//' || true)
+        [ -z "$extra" ] || VNOTE="UNLISTED files (not in the collector's manifest): $extra"
+    fi
+    [ "$bad" -le 0 ] || VNOTE="${VNOTE:+$VNOTE; }$bad manifest line(s) ignored"
+    rm -f "$list" "$out"
+}
+
+summary_value() {
+    [ -f "$1/summary.txt" ] || return 0
+    tr -d '\r' < "$1/summary.txt" | sed '1s/^\xEF\xBB\xBF//' | sed -n "s/^$2=//p" | head -n 1
+}
+
+banner() {
+    say ""
+    say "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    say "!! $*"
+    say "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+}
+
+REPORT=(); IMPORTED=(); TAKEN=()
+FAILED=0
+for coll in "${COLLS[@]}"; do
+    name=${coll##*/}
+    if [[ ! $name =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+        REPORT+=("collection $name: skipped (unexpected folder name)"); continue
+    fi
+    if [ ! -f "$coll/run.log" ] && [ ! -f "$coll/summary.txt" ]; then
+        REPORT+=("collection $name: skipped (no run.log or summary.txt)"); continue
+    fi
+    if [ -e "$DEST/$name" ]; then
+        say "$name: already imported into $DEST, skipped"
+        REPORT+=("collection $name: already imported, skipped"); continue
+    fi
+    verify "$coll"
+    if [ "$VSTATUS" = TAMPER ]; then
+        banner "TAMPER: $name does not match its MANIFEST.sha256. NOT imported."
+        say "   $VNOTE"
+        REPORT+=("collection $name: TAMPER, not imported ($VNOTE)")
+        FAILED=1; continue
+    fi
+    tmp=$DEST/.$name.partial
+    rm -rf "$tmp"
+    cp -r --preserve=timestamps "$coll" "$tmp"
+    if [ "$VSTATUS" = verified ]; then
+        verify "$tmp"
+        if [ "$VSTATUS" != verified ]; then
+            rm -rf "$tmp"
+            banner "COPY FAILED: $name changed on the way into the case folder. NOT imported."
+            REPORT+=("collection $name: copy verification failed, not imported ($VNOTE)")
+            FAILED=1; continue
+        fi
+    fi
+    mv "$tmp" "$DEST/$name"
+    files=$(find "$DEST/$name" -type f | wc -l)
+    bytes=$(find "$DEST/$name" -type f -printf '%s\n' | awk '{ s += $1 } END { print s + 0 }')
+    line="collection $name: $VSTATUS files=$files bytes=$bytes"
+    stampkind=$(summary_value "$DEST/$name" stamp)
+    [ "$stampkind" != local ] || line="$line stamp=local (cmd fallback without wmic: times are the target's local time, see its summary.txt)"
+    [ -z "$VNOTE" ] || line="$line; $VNOTE"
+    [ -z "$VNOTE" ] || [ "$VSTATUS" != verified ] || warn "$name: $VNOTE"
+    say "$name: $VSTATUS, $files files"
+    REPORT+=("$line")
+    IMPORTED+=("$name")
+done
+
+IMHASH=; IMFILE=
+if [ "${#IMPORTED[@]}" -gt 0 ]; then
+    IMFILE=IMPORT-MANIFEST-$STAMP.sha256
+    i=1
+    while [ -e "$DEST/$IMFILE" ]; do i=$((i + 1)); IMFILE=IMPORT-MANIFEST-$STAMP-$i.sha256; done
+    ( cd "$DEST" && find "${IMPORTED[@]}" -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum -- ) > "$DEST/$IMFILE"
+    IMHASH=$(sha256sum "$DEST/$IMFILE" | cut -d' ' -f1)
+    for n in "${IMPORTED[@]}"; do chmod -R a-w "$DEST/$n"; done
+    chmod a-w "$DEST/$IMFILE"
+fi
+
+# --- --take-stick ------------------------------------------------------------
+if [ "$TAKE" = 1 ] && [ "${#IMPORTED[@]}" -gt 0 ]; then
+    if [ "$YES" = 0 ]; then
+        ask "Remove the ${#IMPORTED[@]} imported collection(s) from the source? Type TAKE to confirm: "
+        [ "$REPLY" = TAKE ] || { warn "nothing removed from the source"; TAKE=0; }
+    fi
+fi
+if [ "$TAKE" = 1 ] && [ "${#IMPORTED[@]}" -gt 0 ]; then
+    if [ -n "$PART" ] && ! mount_opts "$PART" | grep -qE '(^|,)rw(,|$)'; then
+        say "Remounting $PART read-write to remove the imported collections"
+        udisksctl unmount -b "$PART" >/dev/null || die "cannot unmount $PART"
+        udisksctl mount -b "$PART" >/dev/null || die "cannot mount $PART read-write"
+        MOUNTED_HERE=1
+        MP=$(findmnt -n -r -o TARGET -S "$PART" | head -n 1)
+        RESULTS=$MP/results
+    fi
+    for n in "${IMPORTED[@]}"; do
+        if [ -n "$RESULTS" ]; then src=$RESULTS/$n; else src=$SRCPATH; fi
+        if rm -rf -- "$src"; then TAKEN+=("$n"); else warn "could not remove $src"; fi
+    done
+    sync
+fi
+
+# --- chain of custody ----------------------------------------------------------
+{
+    say "=== SnapshOT field kit import $NOW ==="
+    say "examiner: $EXAMINER"
+    say "operator: $(id -un) (uid $(id -u)) on $(hostname 2>/dev/null || cat /proc/sys/kernel/hostname)"
+    say "tool: snapshot-fieldkit-import $FIELDKIT_TOOL_VERSION"
+    say "source: ${RESULTS:-$SRCPATH}"
+    say "stick: $STICK_DESC"
+    say "mount: $MOUNT_DESC"
+    for r in "${REPORT[@]}"; do say "$r"; done
+    if [ -n "$IMFILE" ]; then say "import manifest: fieldkit/$IMFILE sha256=$IMHASH"
+    else say "import manifest: none (nothing imported)"; fi
+    if [ "${#TAKEN[@]}" -gt 0 ]; then say "taken from source: ${TAKEN[*]}"; else say "taken from source: none"; fi
+    if [ "$FAILED" = 0 ]; then say "result: ok"; else say "result: FAILED (see TAMPER / copy lines)"; fi
+    say ""
+} > "$CASE_DIR/.coc.$STAMP"
+# Append-only: writable only for the moment of the append.
+[ ! -e "$COC" ] || chmod u+w "$COC"
+cat "$CASE_DIR/.coc.$STAMP" >> "$COC"
+chmod a-w "$COC"
+rm -f "$CASE_DIR/.coc.$STAMP"
+
+say ""
+say "Imported ${#IMPORTED[@]} collection(s) into $DEST (read-only)."
+[ -z "$IMFILE" ] || say "Import manifest: $DEST/$IMFILE"
+say "Chain of custody: $COC"
+[ "$FAILED" = 0 ] || { say "Some collections FAILED verification: see above and the log."; exit 1; }
+exit 0
