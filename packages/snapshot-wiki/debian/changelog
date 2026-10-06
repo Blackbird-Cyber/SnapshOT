@@ -11,7 +11,10 @@ snapshot-wiki (0.1.0) unstable; urgency=low
     search on file://); see assets/vendor/ORIGIN.md.
   * Ship /etc/firefox/policies/policies.json and
     /etc/firefox-esr/snapshot-quiet.js so Firefox ESR makes no unsolicited
-    connections and opens the wiki as its home page.
+    connections and opens the wiki as its home page. Remote Settings is off
+    (DisableRemoteSettingsAndAcceptSecurityConsequences), as are the new-tab
+    feeds that download its attachments; scripts/check-firefox-quiet.sh
+    captures no packet in 45 seconds.
   * Divert xfce4-helpers' /etc/xdg/xfce4/helpers.rc to pin
     WebBrowser=debian-sensible-browser, and ship /etc/xdg/mimeapps.list with
     firefox-esr.desktop for HTML and http(s) links. Depend on sensible-utils,

@@ -22,11 +22,9 @@ pref("app.normandy.enabled", false, locked);
 pref("app.normandy.api_url", "", locked);
 pref("app.shield.optoutstudies.enabled", false, locked);
 
-// Remote Settings: Firefox otherwise fetches its startup bundle and polls for
-// changes. The data: URL is what Mozilla's own test profiles use to keep a
-// browser off the network.
-pref("services.settings.server", "data:,#remote-settings-dummy/v1", locked);
-
-// Certificate revocation lists and intermediates arrive through Remote Settings.
+// Remote Settings (blocklists, certificate data, search configuration updates)
+// is switched off by the DisableRemoteSettingsAndAcceptSecurityConsequences
+// policy; release builds ignore a services.settings.server override. These two
+// keep its certificate consumers from asking for it.
 pref("security.remote_settings.crlite_filters.enabled", false, locked);
 pref("security.remote_settings.intermediates.enabled", false, locked);
