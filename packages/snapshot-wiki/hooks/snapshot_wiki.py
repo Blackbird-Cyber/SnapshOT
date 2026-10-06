@@ -638,7 +638,7 @@ def gen_tools_index(w: Wiki) -> str:
                      ", ".join(w.phase[x]["name"] for x in phases_of(w, p)),
                      ", ".join(w.tactic[t]["name"] for t in m.get("attack_ics", []) if t in w.tactic),
                      STATUS.get(m.get("status"), "")])
-    out.append(table(["Tool", "Folder", "On the wire", "PICERL phases", "ATT&CK for ICS", "Status"], rows)
+    out.append(table(["Tool", "Folder", "Wire", "PICERL phases", "ATT&CK for ICS", "Status"], rows)
                if rows else "No tool pages yet.")
     out.append("\n\nThe same data as a graph is on the [lifecycle page]"
                f"({rel(src, 'lifecycle/index.md')}); the full cross-reference is the "
@@ -661,7 +661,7 @@ def gen_folder_index(w: Wiki, f: dict) -> str:
         rows.append([tool_link(p, src), text(m["summary"]), wire_badge(w, m["wire"]),
                      ", ".join(w.phase[x]["name"] for x in phases_of(w, p)),
                      STATUS.get(m.get("status"), "")])
-    out.append(table(["Tool", "What it does", "On the wire", "PICERL phases", "Status"], rows)
+    out.append(table(["Tool", "What it does", "Wire", "PICERL phases", "Status"], rows)
                if rows else "No tool pages in this folder yet.")
     return "\n".join(out) + "\n"
 
@@ -807,7 +807,8 @@ def header(w: Wiki, src: str, meta: dict, kind: str) -> str:
             badges.append(f'<span class="snapshot-pill snapshot-pill--red">{t["id"]}</span>')
             badges.append('<span class="snapshot-pill">ATT&amp;CK for ICS tactic</span>')
     if badges:
-        out.append('<div class="snapshot-badges" markdown>\n\n' + " ".join(badges) + "\n\n</div>\n")
+        out.append('<div class="snapshot-badges" markdown data-search-exclude>\n\n'
+                   + " ".join(badges) + "\n\n</div>\n")
     return "\n".join(out) + "\n"
 
 
@@ -869,7 +870,7 @@ def phase_tools(w: Wiki, src: str, phase: dict) -> str:
     rows = [[tool_cell(p, src), text(w.folder_label(p.meta["folder"])),
              wire_badge(w, p.meta["wire"]), text(p.meta["phases"][phase["id"]])]
             for p in w.tools() if phase["id"] in p.meta.get("phases", {})]
-    return table(["Tool", "Folder", "On the wire", "How it is used here"], rows) if rows else \
+    return table(["Tool", "Folder", "Wire", "How it is used here"], rows) if rows else \
         "No tool page lists this phase yet."
 
 
