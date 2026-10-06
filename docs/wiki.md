@@ -333,8 +333,9 @@ reads `/etc/xdg/xfce4/helpers.rc`. `snapshot-wiki` diverts xfce4-helpers' copy
 and links that path to `/usr/share/snapshot-wiki/xfce4-helpers.rc`: the same
 keys, with `WebBrowser=debian-sensible-browser`. xfce4-helpers' `firefox` helper
 cannot be used because its binaries list does not include `firefox-esr`;
-`sensible-browser` (from `sensible-utils`, a dependency, which the image did
-not have before) runs `x-www-browser`, which firefox-esr provides.
+`sensible-browser` (from `sensible-utils`: Priority important, so it is in the
+debootstrap base, and a dependency of `snapshot-wiki` as well) runs
+`x-www-browser`, which firefox-esr provides.
 `/etc/xdg/mimeapps.list` sends HTML and http(s) links to `firefox-esr.desktop`.
 See [desktop.md](desktop.md) for the divert.
 

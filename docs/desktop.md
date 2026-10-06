@@ -85,8 +85,9 @@ unchanged) with `WebBrowser=debian-sensible-browser`. The `firefox` helper in
 `X-XFCE-Binaries` are `firefox;firefox-gtk2;firefox-gtk;mozilla-firefox;org.mozilla.firefox;`,
 without `firefox-esr`. `debian-sensible-browser` runs `sensible-browser`, which
 runs `x-www-browser`, the alternative `firefox-esr` registers. `sensible-browser`
-comes from `sensible-utils`, which the image did not include until
-`snapshot-wiki` depended on it. `scripts/check-firefox-quiet.sh` checks this
+comes from `sensible-utils`, which is Priority important and so already in the
+debootstrap base (the arm64 ISO's `live/filesystem.packages` lists it);
+`snapshot-wiki` depends on it as well, so the chain does not rest on that. `scripts/check-firefox-quiet.sh` checks this
 chain.
 
 The other `/etc/xdg` files above (xfwm4.xml, xfce4-desktop.xml,
