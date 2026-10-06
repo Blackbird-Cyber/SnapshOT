@@ -8,7 +8,9 @@ mkdir -p "$(dirname "$OUT")"
     echo "SnapshOT build manifest"
     echo "version: ${SNAPSHOT_VERSION:-unknown} ${SNAPSHOT_ARCH:-unknown} git:${SNAPSHOT_GIT:-unknown}"
     echo "debian_snapshot: ${SNAPSHOT_DEBIAN_PIN:-unknown}"
-    echo "source_date_epoch: ${SOURCE_DATE_EPOCH:-unknown}"
+    # live-build passes SOURCE_DATE_EPOCH into the chroot; fall back to the
+    # value build.sh stamped into /etc/snapshot-release (sourced above).
+    echo "source_date_epoch: ${SOURCE_DATE_EPOCH:-${SNAPSHOT_SOURCE_DATE_EPOCH:-unknown}}"
     echo "kernel: $(ls /boot/vmlinuz-* 2>/dev/null | sed 's#.*/vmlinuz-##' | tr '\n' ' ')"
     echo
     echo "== dpkg packages =="

@@ -10,9 +10,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 DEST="${1:?usage: make-update-usb.sh <usb-mount> [pkg ...]}"; shift || true
 PKGS=("$@")
 command -v aptly >/dev/null 2>&1 || { echo "aptly not installed" >&2; exit 1; }
+# Both image architectures by default, so one stick serves amd64 and arm64
+# laptops (apt on the laptop fetches only its own architecture's index).
+# Override with e.g. SNAPSHOT_UPDATE_ARCHES=amd64 to halve the download.
+ARCHES="${SNAPSHOT_UPDATE_ARCHES:-amd64,arm64}"
 
 REPO="snapshot-$(date -u +%Y%m%d)"
-aptly mirror create -architectures=amd64 \
+aptly mirror create -architectures="${ARCHES}" \
     "$REPO" "${SNAPSHOT_MIRROR_DEBIAN}" "${SNAPSHOT_DIST}" main || true
 aptly mirror update "$REPO"
 SNAP="${REPO}-snap"
@@ -24,5 +28,5 @@ fi
 # Signed publish; key id from SNAPSHOT_GPG_KEY env or default keyring.
 aptly publish snapshot -distribution="${SNAPSHOT_DIST}" \
     ${SNAPSHOT_GPG_KEY:+-gpg-key="$SNAPSHOT_GPG_KEY"} "$SNAP" "file://${DEST}/snapshot-cache"
-echo "SnapshOT update mirror written to ${DEST}/snapshot-cache"
+echo "SnapshOT update mirror (${ARCHES}) written to ${DEST}/snapshot-cache"
 echo "On the laptop, add it with a pinned sources.list.d entry trusting only the SnapshOT key."
