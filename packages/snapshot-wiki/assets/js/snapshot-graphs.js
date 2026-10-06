@@ -46,7 +46,7 @@
 
   // vis-network colour object for a group: dots are filled, boxes are dark
   // cards with a coloured border so their labels stay readable.
-  function nodeStyle(group) {
+  function nodeStyle(group, big) {
     var c = group.color || MUTED;
     var shape = group.shape || "dot";
     var boxy = shape === "box" || shape === "ellipse" || shape === "database" || shape === "circle";
@@ -57,9 +57,9 @@
             hover: { background: SURFACE, border: LIGHT } }
         : { background: c, border: c, highlight: { background: c, border: LIGHT },
             hover: { background: c, border: LIGHT } },
-      font: { face: FONT, color: LIGHT, size: 13, strokeWidth: boxy ? 0 : 3, strokeColor: INK },
+      font: { face: FONT, color: LIGHT, size: big ? 17 : 13, strokeWidth: boxy ? 0 : 3, strokeColor: INK },
       borderWidth: boxy ? 1.5 : 1,
-      size: 11,
+      size: big ? 13 : 11,
       shapeProperties: { borderRadius: 4 }
     };
     if (boxy) style.margin = { top: 8, right: 10, bottom: 8, left: 10 };
@@ -67,9 +67,13 @@
   }
 
   function options(data) {
+    // Large force graphs (the lifecycle and ATT&CK graphs carry every tool)
+    // get larger labels and more room between nodes: fitting sixty nodes into
+    // the content column zooms out far enough to make 13px labels unreadable.
+    var big = !!(data.nodes && data.nodes.length > 40);
     var groups = {};
     Object.keys(data.groups || {}).forEach(function (name) {
-      groups[name] = nodeStyle(data.groups[name]);
+      groups[name] = nodeStyle(data.groups[name], big);
     });
     var hierarchical = data.layout === "hierarchical";
     var opts = {
@@ -90,8 +94,9 @@
                      navigationButtons: false, keyboard: false, multiselect: false },
       physics: hierarchical ? { enabled: false } : {
         solver: "forceAtlas2Based",
-        forceAtlas2Based: { gravitationalConstant: -45, centralGravity: 0.008,
-                            springLength: 90, springConstant: 0.05, avoidOverlap: 0.4 },
+        forceAtlas2Based: { gravitationalConstant: big ? -70 : -45, centralGravity: 0.008,
+                            springLength: big ? 110 : 90, springConstant: 0.05,
+                            avoidOverlap: big ? 0.8 : 0.4 },
         stabilization: { iterations: 400, fit: true },
         minVelocity: 0.75
       }

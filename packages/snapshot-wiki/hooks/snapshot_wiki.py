@@ -83,8 +83,10 @@ GENERATED_GRAPHS = ("lifecycle", "attack")
 # Page schemas and templates
 # ---------------------------------------------------------------------------
 
+# `package` is one name or, for a tool split over several Debian packages
+# (QEMU), a list of names; validate_tool checks the elements.
 TOOL_REQUIRED = {"title": str, "summary": str, "folder": str, "launchers": list,
-                 "ships_as": str, "package": str, "arch": list, "status": str,
+                 "ships_as": str, "package": (str, list), "arch": list, "status": str,
                  "wire": str, "phases": dict, "csf": list, "attack_ics": list,
                  "attack_role": str}
 TOOL_OPTIONAL = {"attack_techniques": list, "protocols": list, "upstream": str}
@@ -322,6 +324,11 @@ def classify(src: str, folders: dict) -> str:
 # 2. Validation
 # ---------------------------------------------------------------------------
 
+def type_name(kind) -> str:
+    kinds = kind if isinstance(kind, tuple) else (kind,)
+    return " or a ".join(k.__name__ for k in kinds)
+
+
 def check_keys(page: Page, required: dict, optional: dict) -> bool:
     ok = True
     for key, kind in required.items():
@@ -329,11 +336,11 @@ def check_keys(page: Page, required: dict, optional: dict) -> bool:
             problem(page.src, f"front-matter is missing '{key}'")
             ok = False
         elif not isinstance(page.meta[key], kind):
-            problem(page.src, f"'{key}' must be a {kind.__name__}")
+            problem(page.src, f"'{key}' must be a {type_name(kind)}")
             ok = False
     for key, kind in optional.items():
         if key in page.meta and not isinstance(page.meta[key], kind):
-            problem(page.src, f"'{key}' must be a {kind.__name__}")
+            problem(page.src, f"'{key}' must be a {type_name(kind)}")
             ok = False
     for key in page.meta:
         if key not in required and key not in optional:
@@ -376,6 +383,11 @@ def validate_tool(w: Wiki, page: Page) -> None:
             problem(page.src, f"launcher '{launcher}' is not a .desktop id")
     if m["ships_as"] not in SHIPS_AS:
         problem(page.src, f"ships_as must be one of {', '.join(SHIPS_AS)}")
+    packages = package_names(m)
+    if not packages or any(not isinstance(p, str) or not p.strip() for p in packages):
+        problem(page.src, "package must be a non-empty name or a list of non-empty names")
+    elif m["ships_as"] == "vendor" and isinstance(m["package"], list):
+        problem(page.src, "a vendor tool's package is its one vendor/sources.lock stanza")
     if not m["arch"] or any(a not in ARCHES for a in m["arch"]):
         problem(page.src, "arch must list amd64 and/or arm64")
     if m["status"] not in STATUS:
@@ -545,9 +557,11 @@ def build_nav(w: Wiki) -> list:
 # 4. Generated pages
 # ---------------------------------------------------------------------------
 
-def front(title: str, summary: str) -> str:
-    return "---\n" + yaml.safe_dump({"title": title, "summary": summary},
-                                     sort_keys=False, allow_unicode=True) + "---\n\n"
+def front(title: str, summary: str, hide: list[str] | None = None) -> str:
+    meta = {"title": title, "summary": summary}
+    if hide:
+        meta["hide"] = hide
+    return "---\n" + yaml.safe_dump(meta, sort_keys=False, allow_unicode=True) + "---\n\n"
 
 
 def wire_badge(w: Wiki, wire: str, from_src: str | None = None) -> str:
@@ -574,8 +588,26 @@ def phase_link(w: Wiki, phase: str, from_src: str, cls: str = "") -> str:
     return f'<span class="{cls}">{name}</span>' if cls else name
 
 
+def package_names(m: dict) -> list:
+    """`package` as a list: one name, or the names of a tool split over packages."""
+    value = m.get("package")
+    return list(value) if isinstance(value, list) else [value]
+
+
 def tool_link(page: Page, from_src: str) -> str:
     return f"[{page.title}]({rel(from_src, page.src)})"
+
+
+def tool_cell(page: Page, from_src: str) -> str:
+    """A tool link for the generated phase and tactic tables, marked when the
+    tool is not on this image or only on one architecture."""
+    marks = []
+    if page.meta.get("status") == "not-shipped":
+        marks.append('<span class="snapshot-pill snapshot-pill--muted">Not shipped</span>')
+    arch = page.meta.get("arch") or []
+    if len(arch) == 1:
+        marks.append(f'<span class="snapshot-pill">{html.escape(arch[0])} only</span>')
+    return " ".join([tool_link(page, from_src)] + marks)
 
 
 def page_link(w: Wiki, target: str, label: str, from_src: str) -> str:
@@ -682,9 +714,9 @@ def gen_tactic_page(w: Wiki, t: dict) -> str:
             continue
         techniques = ", ".join(f"{tid} {w.technique_name(tid)}"
                                for tid in m.get("attack_techniques", []) if tid in w.techniques)
-        rows.append([tool_link(p, src), w.role[m["attack_role"]]["name"],
+        rows.append([tool_cell(p, src), w.role[m["attack_role"]]["name"],
                      wire_badge(w, m["wire"]), text(techniques)])
-    out.append(table(["Tool", "Role", "On the wire", "Techniques on its page"], rows) if rows
+    out.append(table(["Tool", "Role", "Wire", "Techniques on its page"], rows) if rows
                else "No tool page maps to this tactic yet.")
     out.append("\n\nRoles: " + "; ".join(f"**{r['name']}**: {r['summary']}"
                                          for r in w.role.values() if r["id"] != "none"))
@@ -696,17 +728,25 @@ def gen_tactic_page(w: Wiki, t: dict) -> str:
     return "\n".join(out)
 
 
+def matrix_table(kind: str, headers: list[str], rows: list[list[str]]) -> str:
+    """A matrix table in a wrapper the theme compacts (turned column headers)."""
+    if not rows:
+        return "No tool pages yet."
+    return (f'<div class="snapshot-matrix snapshot-matrix--{kind}" markdown>\n\n'
+            + table(headers, rows) + "\n\n</div>")
+
+
 def gen_matrix(w: Wiki) -> str:
     src = "lifecycle/matrix.md"
     out = [front("Matrix", "Every tool against the six PICERL phases and the twelve ATT&CK "
-                 "for ICS tactics, generated from the tool pages.")]
+                 "for ICS tactics, generated from the tool pages.", hide=["toc"])]
     tools = w.tools()
     out.append("## Phases and tools\n")
     out.append("A dot means the tool page describes how the tool is used in that phase.\n")
     headers = ["Tool", "Wire"] + [phase_link(w, p["id"], src) for p in w.phases]
     rows = [[tool_link(p, src), wire_badge(w, p.meta["wire"])]
             + ["●" if ph["id"] in p.meta["phases"] else "" for ph in w.phases] for p in tools]
-    out.append(table(headers, rows) if rows else "No tool pages yet.")
+    out.append(matrix_table("phases", headers, rows))
     out.append("\n\n## Tactics and tools\n")
     out.append("**D** detects, **I** investigates, **R** resembles (the tool's own "
                "activity looks like the tactic; tell the site before using it).\n")
@@ -716,7 +756,7 @@ def gen_matrix(w: Wiki) -> str:
     rows = [[tool_link(p, src)] + [letter.get(p.meta["attack_role"], "")
                                    if t["slug"] in p.meta["attack_ics"] else ""
                                    for t in w.tactics] for p in tools]
-    out.append(table(headers, rows) if rows else "No tool pages yet.")
+    out.append(matrix_table("tactics", headers, rows))
     return "\n".join(out) + "\n"
 
 
@@ -782,7 +822,9 @@ def facts_box(w: Wiki, page_src: str, m: dict) -> str:
         where = page_link(w, VENDOR_LAYER_PAGE, kind, page_src)
         rows.append(["Ships as", f"{where}: `/opt/snapshot/{m['package']}/`"])
     else:
-        rows.append(["Ships as", f"{kind} `{m['package']}`"])
+        names = package_names(m)
+        noun = kind if len(names) == 1 else kind.replace("package", "packages", 1)
+        rows.append(["Ships as", f"{noun} " + ", ".join(f"`{p}`" for p in names)])
     rows.append(["Architectures", ", ".join(m["arch"]) + (" only" if len(m["arch"]) == 1 else "")])
     if m["status"] == "not-shipped":
         rows.append(["Status", "Not shipped: defined in the vendor lock but disabled; "
@@ -810,7 +852,9 @@ def facts_box(w: Wiki, page_src: str, m: dict) -> str:
     if m.get("upstream"):
         label = re.sub(r"^https?://", "", m["upstream"]).rstrip("/")
         rows.append(["Upstream", f"[{label}]({m['upstream']})"])
-    return ('<div class="snapshot-facts" markdown>\n\n'
+    # Excluded from the search index: every tool page has the same labels, and
+    # search results should quote the page's own prose.
+    return ('<div class="snapshot-facts" markdown data-search-exclude>\n\n'
             + table(["Fact", "Value"], rows) + "\n\n</div>\n")
 
 
@@ -822,7 +866,7 @@ def phase_tactics(w: Wiki, src: str, phase: dict) -> str:
 
 
 def phase_tools(w: Wiki, src: str, phase: dict) -> str:
-    rows = [[tool_link(p, src), text(w.folder_label(p.meta["folder"])),
+    rows = [[tool_cell(p, src), text(w.folder_label(p.meta["folder"])),
              wire_badge(w, p.meta["wire"]), text(p.meta["phases"][phase["id"]])]
             for p in w.tools() if phase["id"] in p.meta.get("phases", {})]
     return table(["Tool", "Folder", "On the wire", "How it is used here"], rows) if rows else \

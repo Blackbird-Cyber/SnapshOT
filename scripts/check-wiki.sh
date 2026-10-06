@@ -228,7 +228,8 @@ for f in folders:
                 elif folder in slugs and lid not in folder_files.get(folder, set()):
                     error(f"{src}: launcher {lid} is pulled into another folder, not {folder}")
         if meta.get("ships_as") == "vendor":
-            stanza = stanzas.get(meta.get("package"))
+            pkg = meta.get("package")
+            stanza = stanzas.get(pkg) if isinstance(pkg, str) else None
             if not stanza:
                 error(f"{src}: package {meta.get('package')!r} is not a vendor/sources.lock stanza")
             else:

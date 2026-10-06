@@ -94,6 +94,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* A wider grid than Material's 61rem, so command lines in code blocks fit the
+   content column between the two sidebars on a laptop screen. */
+.md-grid {
+  max-width: 68rem;
+}
+
 /* ---- Header and tabs: flat, ink, one hairline -------------------------- */
 
 .md-header,
@@ -370,6 +376,40 @@ body {
   border-top: 0;
 }
 
+/* The matrix: compact cells, column headers turned to read bottom to top, so
+   six phases or twelve tactics fit the content column without scrolling.
+   --phases keeps its first two columns (tool, wire) upright, --tactics its
+   first. */
+.md-typeset .snapshot-matrix table:not([class]) th,
+.md-typeset .snapshot-matrix table:not([class]) td {
+  min-width: 0;
+  padding: 0.5em 0.7em;
+}
+
+.md-typeset .snapshot-matrix table:not([class]) th {
+  vertical-align: bottom;
+}
+
+.md-typeset .snapshot-matrix--phases table:not([class]) th:nth-child(n+3),
+.md-typeset .snapshot-matrix--tactics table:not([class]) th:nth-child(n+2) {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  text-align: left;
+  padding: 0.8em 0.45em;
+}
+
+.md-typeset .snapshot-matrix--phases table:not([class]) td:nth-child(n+3),
+.md-typeset .snapshot-matrix--tactics table:not([class]) td:nth-child(n+2) {
+  text-align: center;
+  color: var(--snapshot-text);
+  font-weight: 700;
+}
+
+.md-typeset .snapshot-matrix table:not([class]) td:first-child {
+  white-space: nowrap;
+}
+
 /* ---- Badges ---------------------------------------------------------------- */
 
 .md-typeset .snapshot-badges p {
@@ -569,7 +609,9 @@ body {
   outline: none;
 }
 
-.md-typeset .snapshot-graph__legend {
+/* Material styles every .md-typeset ul as display: flow-root with indented
+   items, at [dir=ltr] specificity; the legend is a wrapped row instead. */
+[dir] .md-typeset ul.snapshot-graph__legend {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
@@ -580,7 +622,7 @@ body {
   color: var(--snapshot-muted);
 }
 
-.md-typeset .snapshot-graph__legend li {
+[dir] .md-typeset ul.snapshot-graph__legend > li {
   margin: 0;
   display: flex;
   align-items: center;

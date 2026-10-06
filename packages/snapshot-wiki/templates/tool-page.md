@@ -9,7 +9,8 @@ summary: ONE LINE                 # match the launcher's Comment= where one exis
 folder: FOLDER                    # recon | traffic | protocols | firmware | wireless | forensics | reporting | reference
 launchers: [snapshot-TOOL.desktop]  # SnapshOT ids, upstream ids (org.wireshark.Wireshark.desktop), or []
 ships_as: apt                     # apt | vendor | upstream-gui | snapshot
-package: PACKAGE                  # apt package, vendor/sources.lock stanza name, or our package name
+package: PACKAGE                  # apt package, vendor/sources.lock stanza name, or our package name;
+                                  # a list for a tool split over packages: [qemu-system-x86, qemu-utils]
 arch: [amd64, arm64]              # or one of them
 status: shipped                   # shipped | not-shipped (use templates/tool-page-not-shipped.md)
 wire: passive                     # passive (never transmits) | active (sends, reads only) | writes (changes state or media)

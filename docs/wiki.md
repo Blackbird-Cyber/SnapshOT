@@ -99,7 +99,7 @@ vendor tool whose lock stanza is disabled) to `docs/tools/<folder>/<slug>.md`.
 | `folder` | yes | a folder slug; must match the directory |
 | `launchers` | yes | `.desktop` ids: SnapshOT launchers in `packages/snapshot-menu`, or upstream ids pulled into a folder by `snapshot.menu` (e.g. `org.wireshark.Wireshark.desktop`); `[]` if none |
 | `ships_as` | yes | `apt`, `vendor`, `upstream-gui` or `snapshot` (our own package) |
-| `package` | yes | the apt package, the `vendor/sources.lock` stanza name, or our package |
+| `package` | yes | the apt package, the `vendor/sources.lock` stanza name, or our package; a list of names (`[qemu-system-x86, qemu-system-arm, qemu-utils]`) for a tool split over several packages, rendered comma-separated in the facts box (a vendor tool has exactly one stanza) |
 | `arch` | yes | `[amd64, arm64]`, or one of them |
 | `status` | yes | `shipped`, or `not-shipped` (vendor tools whose stanza is `enabled: false`) |
 | `wire` | yes | `passive` (never transmits), `active` (sends, reads only), `writes` (changes device state or media) |
@@ -265,8 +265,11 @@ open a node's page.
    warning so `mkdocs build --strict` fails;
 3. generates the navigation;
 4. generates the tool, folder, protocol, tactic and matrix pages;
-5. renders titles, ledes, badges, facts boxes, the marker sections and the
-   Material tags;
+5. renders titles, ledes, badges, facts boxes (kept out of the search index, so
+   results quote each page's own prose), the marker sections and the Material
+   tags; the generated phase and tactic tables mark tools that are not shipped
+   or run on one architecture only, and the matrix turns its column headings so
+   six phases and twelve tactics fit the page;
 6. writes the graph data and adds the graph scripts to the pages that need them;
 7. points Material's offline search shim at the vendored copy instead of
    `https://unpkg.com/iframe-worker/shim`, and removes the sitemap and source
