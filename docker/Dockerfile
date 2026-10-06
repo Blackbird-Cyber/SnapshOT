@@ -4,6 +4,8 @@
 FROM debian:trixie-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
+# mkdocs-material, python3-pymdownx and python3-yaml are snapshot-wiki's
+# Build-Depends: dpkg-buildpackage builds the wiki in this container.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         live-build debootstrap \
         dpkg-dev debhelper build-essential \
@@ -11,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3 python3-pip pipx \
         aptly diffoscope \
         ca-certificates git sudo faketime rsync \
+        mkdocs-material python3-pymdownx python3-yaml \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /snapshot
