@@ -115,8 +115,8 @@ Wireshark *detects*: it records the network evidence of several tactics.
 
 ## Quick start
 
-Wireshark is a GUI; the launcher opens the window. These are the parts an OT
-responder uses most.
+Wireshark is a GUI; the menu launcher opens the window. These commands open it
+the useful ways:
 
 ```sh
 # What the menu launcher runs (opens the capture-interface window)
@@ -129,11 +129,44 @@ wireshark -r ~/cases/site-a/pcap/eth1.pcapng -Y 'modbus.func_code in {5,6,15,16,
 wireshark -i eth1 -k
 ```
 
-Inside the window:
+A first session, from capture to a saved extract:
 
-- **Capture > Options**: choose the TAP or SPAN interface and start. No `sudo`
-  is needed (group `wireshark`).
-- **Display filter bar** (examples that work on the shipped dissectors):
+1. **Capture, or open a file.** Open Wireshark from 02 Traffic Analysis and
+   choose **Capture > Options**. On the **Input** tab, select the TAP or SPAN
+   interface (no `sudo`: the user is in group `wireshark`). On the **Output**
+   tab, give a file name in the case folder, such as
+   `~/cases/site-a/pcap/eth1-20261006T0900Z.pcapng`; for a long capture, tick
+   **Create a new file automatically** after an interval and **Use a ring
+   buffer with** a number of files. Click **Start**, and **Capture > Stop**
+   when you have enough. A capture taken earlier opens with **File > Open**.
+2. **Put the clock on UTC.** **View > Time Display Format > UTC Date and Time
+   of Day**, so packet times match the case notes.
+3. **Read the three panes.** The packet list at the top has one line per
+   packet. The packet details below it show the selected packet as a tree of
+   decoded fields: expand Modbus/TCP to see the unit id, the function code and
+   the register. The packet bytes at the bottom highlight whatever field is
+   selected.
+4. **See what is on the network.** **Statistics > Protocol Hierarchy** lists
+   the protocols and their share of the traffic, **Statistics > Conversations**
+   who talks to whom (IPv4 and TCP tabs), and **Statistics > Endpoints** every
+   address. **Statistics > Capture File Properties** gives the first and last
+   packet times and the counts for the notes.
+5. **Filter.** Type a display filter (examples below) in the bar above the
+   packet list and press Enter; the bar turns green when the filter is valid.
+   To filter on a value you can see, right-click the field in the packet
+   details and choose **Apply as Filter**.
+6. **Follow a conversation.** Select one packet of it and choose **Analyze >
+   Follow > TCP Stream** (also on the right-click menu). Wireshark sets a
+   filter for that stream and shows its content; **Back** closes the window
+   and restores the previous filter.
+7. **Check the warnings.** **Analyze > Expert Information** groups malformed
+   packets, retransmissions and protocol warnings by severity.
+8. **Save what supports a finding.** With the filter applied, **File > Export
+   Specified Packets** writes only the displayed packets to a new file in the
+   case folder. Never overwrite the original capture, and note the filter and
+   the packet numbers in the case notes.
+
+Display filters that work on the shipped dissectors:
 
 ```text
 modbus.func_code in {5,6,15,16,22,23}
@@ -145,10 +178,6 @@ bacapp.confirmed_service in {15,16}
 iec60870_asdu.typeid in {45,46,47,48,49,50,51}
 opcua.servicenodeid.numeric in {673,712}
 ```
-
-- **Statistics > Protocol Hierarchy / Conversations / Endpoints**: what is on
-  the network and who talks.
-- **Right-click a packet > Follow > TCP Stream**: reassemble a conversation.
 
 The Modbus filter is the write function codes (5, 6, 15, 16, 22, 23); the S7
 filter is the download, upload, PI-service and PLC-stop functions; the
