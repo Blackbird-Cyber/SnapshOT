@@ -1,0 +1,162 @@
+SnapshOT field kit guide
+========================
+
+1. Workflow
+-----------
+  Prepare   On the SnapshOT laptop: menu 06 - Forensics & Response >
+            "Prepare Field Kit USB" (snapshot-fieldkit-prep). It erases the
+            stick, makes one exFAT partition labelled SNAPKIT (or FAT32 with
+            --fat32) and copies this kit with a MANIFEST.sha256 of its files.
+            "snapshot-fieldkit-prep --refresh" updates the kit on a prepared
+            stick and keeps results/ and user-supplied/.
+  Collect   On the target: run the collector from the stick (README.txt).
+            One run = one folder results/<HOST>_<UTC time>/.
+  Import    Back on the laptop: "Import Field Kit results"
+            (snapshot-fieldkit-import --case <case> --examiner "<name>").
+            Each collection is checked against its MANIFEST.sha256 (TAMPER
+            on mismatch, not imported), copied to
+            ~/cases/<case>/fieldkit/<HOST>_<STAMP>/, made read-only, hashed
+            into IMPORT-MANIFEST-<UTC>.sha256, and recorded in
+            ~/cases/<case>/chain-of-custody.log. --take-stick then removes
+            the imported collections from the stick.
+
+2. Profiles
+-----------
+  quick (default)  Low impact: built-in tools and WMI/proc reads only, the
+                   ICS project-file scan limited to the usual project folders
+                   (4 levels). Windows: 2 to 5 minutes. Linux: 1 to 3 minutes.
+  full             Adds event logs, more hashing, recent files, a scan of
+                   every fixed drive (8 levels, capped at 20000 files) and,
+                   on Windows, user-supplied Sysinternals tools. Windows: 10
+                   to 60 minutes. Linux: 5 to 30 minutes. Disk-heavy: avoid
+                   on busy HMIs and historians.
+
+3. Rules every collector follows
+--------------------------------
+  - Read-only on the target. Writes only under results/<HOST>_<STAMP>/ on
+    the stick, found from the script's own location, never the current
+    directory. No network, no installs, no services, no registry or
+    configuration changes, never clears logs, never opens serial ports.
+  - Banner and pause: each run prints the kit version, results folder,
+    profile and expected duration, and waits for Enter (Ctrl+C aborts).
+  - Most volatile first: processes and connections, then services, tasks,
+    autostart, users, system, software, devices, OT, then the full extras.
+  - Fail-soft: a failing step is logged and the run goes on. run.log has a
+    UTC BEGIN/END line with the return code for each step; errors.txt
+    collects error output.
+  - At the end: summary.txt (key=value), collection.txt (sizes) and
+    MANIFEST.sha256 (sha256sum format) when the host has a SHA-256 tool.
+  - Unavoidable footprint, listed in run.log: Windows Prefetch entries for
+    powershell.exe / cmd.exe and the tools run, process-creation audit
+    events if enabled, wmic's first-run alias compile, file access times on
+    Linux, and the Sysinternals EULA value when those tools are used.
+
+4. Windows collector
+--------------------
+  collect-triage.cmd [quick|full] [cmd] [-y]
+    With PowerShell it starts Collect-Triage.ps1 with -NoProfile
+    -ExecutionPolicy Bypass. "cmd" forces the built-in-only fallback
+    (PowerShell blocked or watched). Without PowerShell (XP, 2003) the
+    fallback runs on its own. If PowerShell is blocked by policy the
+    launcher says so: rerun with "cmd".
+
+  Collect-Triage.ps1 (PowerShell 2.0 and newer), quick:
+    processes.csv/.txt   WMI processes: PID, parent, owner, start (UTC),
+                         path, SHA-256 of the binary, command line
+    tasklist-svc.txt     services per process
+    netstat.txt/.csv     netstat -ano with process names; listening.csv
+    services.csv, drivers.csv          WMI services and drivers
+    schtasks.csv, task-files.csv       scheduled tasks (verbose) and task files
+    autostart.txt        Run/RunOnce (HKLM, WOW64, each loaded user),
+                         Winlogon, AppInit, Active Setup, KnownDLLs, IFEO
+                         debuggers, BootExecute
+    autostart-files.csv  Startup folders of every profile
+    wmi-persistence.txt  WMI event filters, consumers, bindings
+    users.csv, groups.txt, logon-sessions.csv, logged-on-users.csv,
+    sessions.txt, profiles.csv          local accounts, groups, sessions
+    systeminfo.txt, os.txt, hotfixes.csv
+    software.csv         Uninstall keys (never Win32_Product: it triggers
+                         MSI repairs)
+    ipconfig.txt, dnscache.txt, arp.txt, routes.txt, nbtstat.txt,
+    firewall.txt, proxy.txt, shares.csv, hosts.txt
+    usbstor.txt, mounted-devices.txt, netuse.txt, disks.csv, env.txt
+    ot-serial.csv, ot-serialcomm.txt   COM ports from PnP and the registry
+    ot-opc.csv, ot-opc.txt             OPC DA/AE/HDA/XML-DA servers
+    ot-ics-software.csv  software, Program Files folders, services and
+                         processes matching windows\ics-vendors.txt
+    ot-project-files.csv ICS project files (windows\ics-extensions.txt):
+                         path, size, times. Listed, never copied.
+  full adds:
+    eventlogs\*.evtx     Security, System, Application, PowerShell, Task
+                         Scheduler, RDP (wevtutil epl); XP/2003: *.evt via
+                         WMI BackupEventlog
+    hashes.csv           SHA-256 of process, service, driver, startup and
+                         ICS project files
+    recent.csv           Prefetch, Recent items, jump lists (listing only)
+    autoruns.csv, sigcheck.csv         when user-supplied (see
+                         windows\user-supplied\README.txt)
+    ot-project-files.csv every fixed drive, 8 levels, 20000 files
+
+  cmd fallback (XP and up, built-in tools only): tasklist, wmic (when
+  present), netstat, sc, schtasks, reg query (the same keys), net, query
+  user, systeminfo, ipconfig, arp, route, nbtstat, netsh, the OT queries,
+  and the project-file scan with the same lists and depths. Times: with
+  wmic the folder name and summary are UTC; without wmic they are the
+  host's local time (folder name ends in "L", summary.txt says
+  stamp=local and records the time zone). Hashes: certutil (Windows 7 and
+  newer); XP has none, so summary.txt says hasher=none and integrity starts
+  at the import manifest.
+
+5. Linux collector
+------------------
+  sh collect-triage.sh [quick|full] [-y]   (POSIX sh, BusyBox-safe)
+  quick:
+    ps.tsv               /proc process table: pid, ppid, uid, user, state,
+                         start ticks, comm, exe, exe_deleted (1 = running
+                         binary deleted from disk), cwd, command line
+    ps-raw.txt           ps output when present
+    sockets.tsv, sockmap.txt   TCP/UDP v4/v6 decoded from /proc/net with
+                         owning PIDs (root only for other users' sockets)
+    sockets-raw.txt, unix-sockets.txt
+    net.txt              addresses, routes, ARP, resolv.conf, hosts
+    system.txt           kernel, OS release, time and zone, uptime, boot time
+    users.txt            passwd, group, sudoers, logins; /etc/shadow
+                         presence and permissions only, never its contents
+    persistence.txt      cron, systemd units and timers, init scripts,
+                         rc.local, ld.so.preload, profile scripts,
+                         authorized_keys (listing only)
+    kernel.txt           modules, mounts, partitions, df, lsblk, USB, PCI, dmesg
+    packages.txt         dpkg / rpm / opkg / apk inventory
+    ot-serial.txt        serial device nodes (not opened)
+  full adds:
+    recent.tsv           files changed in the last 14 days (capped 5000)
+    suid.txt             SUID/SGID files on the root filesystem
+    logs/, logs-index.tsv     /var/log copy (20 MiB per file, 200 MiB total)
+    journal.txt          last 50000 journal lines
+    hashes.tsv           SHA-256 of each running binary (via /proc/<pid>/exe)
+  Not root: runs with a warning and reduced detail.
+
+6. ICS project files
+--------------------
+  Lists only: path, size, modified and created times. Extensions live in
+  windows\ics-extensions.txt; vendor names and default project folders in
+  windows\ics-vendors.txt (both read by the PowerShell and cmd collectors).
+  quick scans Documents, Desktop and Public Documents of every profile, the
+  vendor folders in ics-vendors.txt and Program Files\<vendor> folders, 4
+  levels deep. full scans every fixed drive 8 levels deep (the Windows
+  folder skipped), stopping at 20000 files.
+
+7. Importing
+------------
+  snapshot-fieldkit-import [--device /dev/sdX | --path DIR] [--case NAME]
+                           [--examiner NAME] [--take-stick] [--yes]
+  Runs as your user. Uses the stick where the desktop mounted it, or mounts
+  it read-only through udisks. Results that fail their manifest are
+  reported as TAMPER and left on the stick. A collection without a
+  manifest (hasher=none) is imported and noted in the log.
+
+8. Results folder
+-----------------
+  results/<HOST>_<yyyymmddTHHMMSSZ>/   (cmd fallback without wmic: ...L)
+    run.log, errors.txt, summary.txt, collection.txt, MANIFEST.sha256 and
+    the files listed above.

@@ -1,0 +1,61 @@
+# ICS project-file extensions: the single list read by Collect-Triage.ps1 and
+# collect-triage.cmd. One entry per line: the extension (cmd/.NET wildcards *
+# and ? allowed) then an optional description. Lines starting with # are
+# comments. The collectors LIST matching files (path, size, times); they never
+# copy them. Windows matches wildcards against 8.3 short names too, so a few
+# unrelated files can appear (".pro" also matches ".project").
+#
+# Siemens
+.s7p        STEP 7 (classic) project
+.s7l        STEP 7 (classic) library
+.s5d        STEP 5 program
+.ap1*       TIA Portal project V10 to V19 (.ap13, .ap15_1, ...)
+.ap2*       TIA Portal project V20+
+.zap1*      TIA Portal archive V10 to V19
+.zap2*      TIA Portal archive V20+
+.al1*       TIA Portal library
+.mcp        WinCC flexible project
+.hmi        WinCC flexible project
+.pdl        WinCC picture
+# Rockwell / Allen-Bradley
+.acd        Studio 5000 / RSLogix 5000 project
+.l5k        RSLogix 5000 export
+.l5x        Studio 5000 / RSLogix 5000 XML export
+.rss        RSLogix 500 project
+.rsp        RSLogix 5 project
+.mer        FactoryTalk View ME runtime
+.apa        FactoryTalk View application archive
+.med        FactoryTalk View ME application
+.ccwsln     Connected Components Workbench solution
+# Schneider Electric
+.stu        Unity Pro / Control Expert project
+.sta        Unity Pro / Control Expert archive
+.stx        Control Expert archive
+.xef        Unity Pro XML export
+.zef        Unity Pro XML export (compressed)
+.prj        Concept / PL7 project
+.vxdz       Vijeo Designer project
+# CODESYS and derivatives
+.project    CODESYS V3 project
+.projectarchive CODESYS V3 project archive
+.pro        CODESYS V2 project
+# Mitsubishi
+.gx3        GX Works3 project
+.gxw        GX Works2 project
+.gpj        GX Developer project
+# Omron
+.cxp        CX-Programmer project
+.smc        Sysmac Studio project
+.smc2       Sysmac Studio project
+# AVEVA / Wonderware
+.aapkg      ArchestrA / System Platform package
+.wwb        InTouch window
+# Ignition / Kepware
+.gwbk       Ignition gateway backup
+.opf        KEPServerEX project
+# Beckhoff / Phoenix Contact / ABB
+.tsproj     TwinCAT 3 project
+.tszip      TwinCAT 3 archive
+.pcwex      PC WORX project
+.pcwef      PC WORX archive
+.ecl        ABB Control Builder project

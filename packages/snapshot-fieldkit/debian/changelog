@@ -1,0 +1,15 @@
+snapshot-fieldkit (0.1.0) unstable; urgency=low
+
+  * Initial release: the SnapshOT field triage kit under
+    /usr/share/snapshot/fieldkit (Windows collector for PowerShell 2.0 with a
+    cmd.exe fallback, Linux collector in POSIX sh, docs, ICS extension and
+    vendor lists, user-supplied/ drop folders for Sysinternals and KAPE).
+  * snapshot-fieldkit-prep: partition, format (exFAT, or FAT32) and fill a USB
+    stick, or refresh the kit on one while keeping its results. Refuses the
+    boot medium, the root disk and non-removable disks.
+  * snapshot-fieldkit-import: copy results into ~/cases/<case>/ as the
+    operator, without root, through udisks; verify each collection's
+    MANIFEST.sha256, write an import manifest and append to an append-only
+    chain-of-custody log.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Tue, 06 Oct 2026 00:00:00 +0000

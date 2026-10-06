@@ -1,0 +1,18 @@
+Source: snapshot-fieldkit
+Section: admin
+Priority: optional
+Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: snapshot-fieldkit
+Architecture: all
+Depends: ${misc:Depends}, fdisk, jq, rsync, util-linux
+Recommends: dosfstools, exfatprogs, udisks2
+Description: SnapshOT field triage kit and host-side USB tooling
+ Operator-prepared USB triage kit for OT/ICS engagements: read-only forensic
+ collectors for Windows (PowerShell 2.0 and a cmd.exe fallback) and Linux
+ (POSIX sh, BusyBox-safe), plus host-side commands on the SnapshOT laptop to
+ prepare the stick, refresh the kit and import results into a case folder with
+ integrity checks. Ships no third-party collectors; the operator supplies those.

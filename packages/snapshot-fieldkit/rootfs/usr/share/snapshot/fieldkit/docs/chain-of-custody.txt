@@ -1,0 +1,44 @@
+SnapshOT field kit: chain-of-custody form
+=========================================
+Print one per stick and engagement. Fill in by hand; keep with the stick.
+
+Case / engagement: ______________________________________________________
+Client / site:     ______________________________________________________
+Stick label: SNAPKIT   Serial (snapshot-fieldkit-prep output): _____________
+Kit VERSION line:  ______________________________________________________
+Prepared by: _____________________  Date/time (UTC): ____________________
+
+Collections
+-----------
+ # | Host name | Host role (HMI, EWS, ...) | Profile | Collector (ps1/cmd/sh)
+   | Start UTC | End UTC | Run by | Witness | Results folder | Notes
+---+-----------+---------------------------+---------+-----------------------
+ 1 |           |                           |         |
+   |           |         |        |         |                |
+ 2 |           |                           |         |
+   |           |         |        |         |                |
+ 3 |           |                           |         |
+   |           |         |        |         |                |
+ 4 |           |                           |         |
+   |           |         |        |         |                |
+ 5 |           |                           |         |
+   |           |         |        |         |                |
+
+Transfers of the stick
+----------------------
+ Date/time (UTC) | Released by (name, signature) | Received by (name, signature) | Purpose
+-----------------+-------------------------------+-------------------------------+---------
+                 |                               |                               |
+                 |                               |                               |
+                 |                               |                               |
+
+Import
+------
+Imported on (laptop host): ______________  Date/time (UTC): _______________
+Examiner: ______________________  Case folder: ~/cases/__________________
+Import manifest SHA-256 (from chain-of-custody.log): ______________________
+Result (ok / TAMPER): ________  Taken from stick (yes/no): ________
+
+Notes / anomalies:
+_________________________________________________________________________
+_________________________________________________________________________
