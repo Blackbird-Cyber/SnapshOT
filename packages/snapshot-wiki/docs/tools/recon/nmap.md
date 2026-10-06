@@ -106,8 +106,9 @@ an adversary could have found on a host at that point in time.
 ```sh
 # What the nmap launcher runs
 nmap -h
-# What the ICS scripts launcher shows, narrowed to four protocols
-nmap --script-help 'modbus*,s7*,enip*,bacnet*'
+# What the ICS scripts launcher shows, narrowed to four protocols (patterns are
+# case-sensitive: bacnet* is nmap's bacnet-info, BACnet* the Redpoint script)
+nmap --script-help 'modbus*,s7*,enip*,bacnet*,BACnet*'
 # Three ICS ports on one known host, at most 10 packets a second
 nmap -sT -n -Pn -p 102,502,44818 --max-rate 10 192.0.2.10
 # Modbus unit id and device identification
