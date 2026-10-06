@@ -85,11 +85,11 @@ laptop, write it once with `-1`, read it back and record both commands.
 
 mbpoll *resembles* two tactics, because Modbus cannot tell a responder from an
 adversary. Its reads look like Collection, specifically Monitor Process State
-(T0801): an unexpected host polling registers. Its writes look like Impair
-Process Control: Unauthorized Message, Command Message (T1692.001) and Modify
-Parameter (T0836). Announce mbpoll use to the site's monitoring team, and when
-you find such traffic in a capture, mbpoll is how you check, with approval,
-what the adversary read or changed.
+(T0801): an unexpected host polling registers. Its writes look like
+Impair Process Control, through Unauthorized Message: Command Message
+(T1692.001) and Modify Parameter (T0836). Announce mbpoll use to the site's
+monitoring team, and when you find such traffic in a capture, mbpoll is how you
+check, with approval, what the adversary read or changed.
 
 ## Quick start
 
@@ -123,7 +123,9 @@ the command line and the UTC time:
 ```sh
 CASE=~/cases/site-a
 mkdir -p "$CASE/modbus"
-{ date -u; echo '$ mbpoll -1 -a 1 -r 1 -c 10 192.0.2.10'; mbpoll -1 -a 1 -r 1 -c 10 192.0.2.10; } 2>&1 | tee -a "$CASE/modbus/plc01-reads.txt"
+{ date -u; echo '$ mbpoll -1 -a 1 -r 1 -c 10 192.0.2.10';
+  mbpoll -1 -a 1 -r 1 -c 10 192.0.2.10; } \
+  2>&1 | tee -a "$CASE/modbus/plc01-reads.txt"
 sha256sum "$CASE/modbus/plc01-reads.txt" >> "$CASE/SHA256SUMS"
 ```
 
@@ -136,8 +138,9 @@ matters: the packets are the evidence of exactly what was sent.
   capture your own requests while you do it.
 - [nmap](../recon/nmap.md): `modbus-discover` finds the unit id and device
   identity before you read registers.
-- pymodbus and the ICS Python shell (03 Protocol Tools): scripted Modbus reads
-  when a one-line command is not enough.
+- [pymodbus](pymodbus.md) and the [ICS Python shell](ics-python-shell.md):
+  scripted Modbus reads when a one-line command is not enough.
+- [plcscan](plcscan.md): find Modbus devices and unit ids on a segment.
 
 ## Upstream documentation
 
