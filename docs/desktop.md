@@ -9,7 +9,11 @@ engagement-phase folders. Two packages own all of this:
   default (`/etc/xdg`), the Qt defaults and the LightDM greeter.
 - `packages/snapshot-menu` — the tool launchers, the eight folders and the root
   Xfce menu. All launchers live here, including those for tools other SnapshOT
-  packages ship (the field kit's in `snapshot-fieldkit`).
+  packages ship (the field kit's in `snapshot-fieldkit`, the wiki's in
+  `snapshot-wiki`).
+
+`packages/snapshot-wiki` adds the default-browser settings (`helpers.rc`,
+`mimeapps.list`) alongside the wiki itself; see [wiki.md](wiki.md).
 
 ## Where the defaults live
 
@@ -30,6 +34,8 @@ there sets the desktop up for every new user with no per-user seeding:
 | `qt5ct/qt5ct.conf`, `qt6ct/qt6ct.conf` | dark Qt (Fusion + SnapshOT-Dark palette) |
 | `menus/xfce-applications.menu` | the root menu layout (snapshot-menu) |
 | `menus/applications-merged/snapshot.menu` | the eight SnapshOT folders |
+| `xfce4/helpers.rc` | Preferred Applications: the web browser `exo-open --launch WebBrowser` starts (snapshot-wiki) |
+| `mimeapps.list` | HTML and http(s) links open in `firefox-esr.desktop` (snapshot-wiki) |
 
 The wallpaper is **not** set in `xfce4-desktop.xml`: xfdesktop keys backdrops by
 monitor name, so a fixed stanza would miss differently-named monitors. Instead
@@ -57,9 +63,35 @@ either install order.
 
 - `/etc/xdg/menus/xfce-applications.menu` — libgarcon-common
 
+`snapshot-wiki` (preinst/postinst/postrm):
+
+- `/etc/xdg/xfce4/helpers.rc`, owned by xfce4-helpers (Preferred Applications)
+
+This one is done differently. `helpers.rc` is a conffile of xfce4-helpers, and
+shipping a second conffile at the diverted path makes dpkg stop with a
+"deleted since installation?" prompt whenever xfce4-helpers is already
+configured (for example when a field update adds `snapshot-wiki` to an
+installed system). So `snapshot-wiki` ships its copy as
+`/usr/share/snapshot-wiki/xfce4-helpers.rc`, preinst diverts the original to
+`helpers.rc.distrib`, postinst makes `/etc/xdg/xfce4/helpers.rc` a symlink to
+the copy, and postrm removes the symlink before removing the divert.
+(`snapshot-menu` and `snapshot-themes` ship at the diverted path; that works for
+the image build, which installs everything in one transaction, but they would
+hit the same prompt if first installed over an already configured owner.)
+
+The copy keeps xfce4-helpers' keys (so Ctrl+Alt+T's TerminalEmulator is
+unchanged) with `WebBrowser=debian-sensible-browser`. The `firefox` helper in
+`/usr/share/xfce4/helpers/firefox.desktop` cannot be used: its
+`X-XFCE-Binaries` are `firefox;firefox-gtk2;firefox-gtk;mozilla-firefox;org.mozilla.firefox;`,
+without `firefox-esr`. `debian-sensible-browser` runs `sensible-browser`, which
+runs `x-www-browser`, the alternative `firefox-esr` registers. `sensible-browser`
+comes from `sensible-utils`, which the image did not include until
+`snapshot-wiki` depended on it. `scripts/check-firefox-quiet.sh` checks this
+chain.
+
 The other `/etc/xdg` files above (xfwm4.xml, xfce4-desktop.xml,
-xfce4-screensaver.xml, terminalrc, the Qt confs) are not owned by any package we
-install, so they ship directly with no divert.
+xfce4-screensaver.xml, terminalrc, the Qt confs, mimeapps.list) are not owned by
+any package we install, so they ship directly with no divert.
 
 ## The menu
 
@@ -81,6 +113,13 @@ The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
 Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
+
+08 Reference holds the offline reference folder, the build manifest and the
+**SnapshOT Wiki** (`snapshot-wiki.desktop`, snapshot-menu 0.2.4), which runs
+`exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`. The
+Whisker favourites list it after the two terminals (snapshot-themes 0.2.1).
+Firefox ESR itself is a general browser, not a SnapshOT tool, so it stays in
+Usual Applications (Internet).
 
 ### Adding a launcher
 
@@ -114,9 +153,14 @@ run that script; it strips the trademarked logo assets and recolours the accent 
 `scripts/check-desktop.sh` runs in a `debian:trixie` container and:
 
 - runs `desktop-file-validate` on every `.desktop` (the `X-SnapshOT-*` category
-  hints are expected),
+  hints are expected), including snapshot-wiki's files,
 - runs `xmllint --noout` on every `.xml`/`.menu`,
 - parses the staged menu with `python3-xdg` and asserts the eight folders are
-  populated and that Usual Applications does not re-list the pulled-in tools.
+  populated (the wiki launcher in 08 - Reference), that Usual Applications does
+  not re-list the pulled-in tools, and that it does list Firefox ESR (stubbed
+  as `firefox-esr.desktop` with `Network;WebBrowser;`).
+
+`scripts/check-wiki.sh` checks the other direction: that every tool launcher is
+documented by exactly one wiki page, in the right folder ([wiki.md](wiki.md)).
 
 It exits non-zero on any error.

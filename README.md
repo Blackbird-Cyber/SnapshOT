@@ -154,7 +154,7 @@ come with the next image; see [Status and known issues](#status-and-known-issues
 | 05 Wireless & SDR | aircrack-ng, rtl-sdr, HackRF, GNU Radio, gqrx, gr-osmosdr, SoapySDR |
 | 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec; *Autopsy* (amd64 only) |
 | 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
-| 08 Reference | offline reference folder, the build manifest |
+| 08 Reference | offline reference folder, the build manifest, the SnapshOT Wiki |
 
 Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
 [`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
@@ -169,12 +169,22 @@ GRASSMARLIN's case x86-only Java 8); Ghidra is pinned but disabled because it an
 add about 650 MB. See [docs/vendoring.md](docs/vendoring.md). Everything else comes from
 the Debian package lists in [`config/package-lists/`](config/package-lists/).
 
+**The SnapshOT Wiki** documents every tool above against the OT incident-response
+lifecycle (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS): what each tool does, how it
+behaves on the wire and how to use it in each phase. It is a static site of about 3.4 MB
+in `/usr/share/snapshot/wiki`, opened from 08 Reference and the Whisker favourites in
+**Firefox ESR**, which is also the browser for PLC and HMI web interfaces. An enterprise
+policy keeps Firefox from making any connection on its own; Firefox adds about 275 MiB
+to the image. See [docs/wiki.md](docs/wiki.md).
+
 ## Security posture
 
 - **Quiet on the wire.** avahi, systemd-timesyncd and ModemManager are masked;
   systemd-resolved has LLMNR and mDNS off; NetworkManager does not check connectivity
   and creates no automatic wired profile; IPv6 autoconfiguration and router
   advertisements are off. Interfaces come up only when the operator brings them up.
+  Firefox ESR runs under an enterprise policy that stops it calling home
+  (`scripts/check-firefox-quiet.sh` captures no packet while it shows the wiki).
 - **Encryption at rest.** The installer sets up LUKS2 on the root filesystem. `/boot`
   holds only the kernel, initramfs and GRUB files and is not encrypted.
 - **Small, fixed install.** No recommended packages, and no network during the
@@ -207,6 +217,8 @@ python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes
 scripts/check-installer.sh                     # validate the installer configuration
 scripts/check-desktop.sh                       # validate the desktop menu and launchers
 scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
+scripts/check-wiki.sh                          # build and validate the SnapshOT Wiki
+scripts/check-firefox-quiet.sh                 # prove Firefox ESR sends nothing on its own (slow)
 SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64, in the build container (native on Apple Silicon)
 docker/build-in-docker.sh                      # amd64 (emulated on Apple Silicon, much slower)
 sudo scripts/build.sh                          # directly on a Debian trixie host
@@ -223,12 +235,12 @@ refreshes the download table above.
 | Path | Contents |
 |---|---|
 | [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
-| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `calamares-settings-snapshot` (the installer) |
+| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `snapshot-wiki` (the offline wiki and the Firefox ESR policy), `calamares-settings-snapshot` (the installer) |
 | [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
 | [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py`, the installer, desktop and field kit checks, reproducibility test, update USB, release |
+| [`scripts/`](scripts/) | build, `vendor.py`, the installer, desktop, field kit and wiki checks, the Firefox network check, reproducibility test, update USB, release |
 | [`docker/`](docker/) | the build container |
-| [`docs/`](docs/) | build, vendoring, desktop, field kit, offline install and field updates |
+| [`docs/`](docs/) | build, vendoring, desktop, field kit, wiki, offline install and field updates |
 
 ## Status and known issues
 

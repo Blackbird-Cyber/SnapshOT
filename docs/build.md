@@ -52,6 +52,17 @@ runs `dpkg-parsechangelog` on every `packages/*/debian/changelog`,
 hook (which checks its sudoers file with `visudo -cf`), and asserts that the
 exec sequence in `settings.conf` runs `packages` before `initramfscfg`.
 
+## Checking the wiki
+`packages/snapshot-wiki` builds the SnapshOT Wiki with MkDocs during
+`dpkg-buildpackage` (the builder image carries `mkdocs-material`,
+`python3-pymdownx` and `python3-yaml`). Before a build, after changing any page
+or launcher:
+```
+scripts/check-wiki.sh             # strict build, links, launcher coverage, offline-only assets
+scripts/check-firefox-quiet.sh    # optional, slow: Firefox ESR sends nothing on its own
+```
+See [`docs/wiki.md`](wiki.md).
+
 ## How offline works
 - All apt mirrors point at the snapshot timestamp; the live squashfs holds the
   whole system, so the install copies bytes rather than fetching them.
