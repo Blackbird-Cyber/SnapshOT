@@ -102,6 +102,8 @@ could have learned and captured from the site's radio links.
 
 ## Quick start
 
+Gqrx is a GUI; the menu launcher opens the receiver window.
+
 ```sh
 # What the menu launcher runs (opens the receiver window)
 gqrx
@@ -113,10 +115,35 @@ gqrx --conf site-a.conf
 gqrx --edit
 ```
 
-In the window: pick the SDR device on first run, set the centre frequency and
-sample rate, start the receiver, then click a signal on the waterfall to tune it.
-The recording controls save demodulated audio (WAV) or raw I/Q; the DSP settings
-choose the demodulator and bandwidth.
+A first session, finding and recording a signal:
+
+1. **Attach the receiver.** Plug in the RTL-SDR dongle or the HackRF with its
+   antenna, then open Gqrx from 05 Wireless & SDR.
+2. **Choose the device.** On the first start the **Configure I/O devices**
+   dialog opens (later, `gqrx --edit` brings it back). Pick the device from the
+   list, or use its scan button; set the input rate (2.048 MS/s suits an
+   RTL-SDR) and click OK.
+3. **Start the receiver.** Click the start button at the left of the toolbar
+   (Ctrl+D starts and stops the DSP). The spectrum and the waterfall begin to
+   fill.
+4. **Tune.** Type the centre frequency into the large frequency display, or
+   scroll its digits. A transmitter shows as a line or a band on the waterfall;
+   click it to tune the receiver to it.
+5. **Demodulate.** In the **Receiver Options** panel, pick the **Mode** that
+   matches the signal (Narrow FM, AM, USB, WFM and others) and its **Filter
+   width**; raise the **Squelch** to silence the noise between transmissions.
+   In **Input controls**, raise the gain until signals stand clear of the noise
+   floor, and stop before the floor itself rises.
+6. **Record.** The **Rec** button in the **Audio** panel (or the R key) records
+   the demodulated audio as WAV. **Tools > I/Q tool** (Ctrl+I) records the raw
+   I/Q, which [GNU Radio](gnuradio.md) can decode later; set its location to
+   `~/cases/site-a/rf/` and choose SigMF if you want the metadata kept beside
+   the samples.
+7. **Close.** Stop the receiver with the same start button. Leave **Tools >
+   Remote control** off: it opens a network port for other programs.
+
+Gqrx saves the device and receiver settings to its configuration file when it
+closes; copy that file into the case folder (below).
 
 ## Output and evidence
 

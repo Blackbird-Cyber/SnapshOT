@@ -95,6 +95,8 @@ recorded as none.
 
 ## Quick start
 
+GNU Radio Companion is a GUI; the menu launcher opens the flow-graph editor.
+
 ```sh
 # What the menu launcher runs (opens the flow-graph editor)
 gnuradio-companion
@@ -104,10 +106,38 @@ grcc ~/cases/site-a/rf/decode.grc -o ~/cases/site-a/rf
 gnuradio-config-info --print-all
 ```
 
-In GRC, a simple receive-and-inspect graph is: an Osmocom Source or a File Source
-(reading recorded I/Q), a low-pass filter, a demodulator block for the
-modulation, and a QT GUI Frequency/Time Sink to view the result or a File Sink to
-save it. Set the sample rate and centre frequency to match the recording.
+A first flow graph, looking at a recording rather than the air: a `.cfile` of
+complex samples recorded with `osmocom_fft -r` ([gr-osmosdr](gr-osmosdr.md)) or
+by Gqrx's I/Q tool, whose file name carries the sample rate and centre
+frequency.
+
+1. **Start a flow graph.** Open GNU Radio Companion from 05 Wireless & SDR. A
+   new flow graph already holds an **Options** block and a `samp_rate`
+   **Variable** block. Double-click Options (any block opens its
+   **Properties** this way) and set its Id, for example `look_433`: it names
+   the generated program.
+2. **Set the sample rate.** Double-click `samp_rate` and set it to the
+   recording's sample rate, for example `2048000`.
+3. **Add the blocks.** Press Ctrl+F (**Find Blocks**), type part of a block's
+   name and drag it onto the canvas. Add a **File Source** (File: the
+   recording; Output Type: complex; Repeat: No), a **Throttle** (Sample Rate:
+   `samp_rate`; it stops a file from being read flat out), a **QT GUI
+   Frequency Sink** and a **QT GUI Waterfall Sink** (Center Frequency (Hz): the
+   recording's centre frequency; Bandwidth (Hz): `samp_rate`).
+4. **Connect them.** Click an output port, then an input port: File Source to
+   Throttle, then Throttle to each sink. A block drawn in red still has an
+   error; its Properties say what.
+5. **Save, generate and run.** **File > Save As** into `~/cases/site-a/rf/`.
+   **Run > Generate** (F5) writes the Python program next to the `.grc` file,
+   **Run > Execute** (F6) runs it and opens the spectrum and waterfall windows,
+   and **Run > Kill** (F7) stops it.
+6. **Go further.** To hear or decode an FM signal, put a **Low Pass Filter**
+   and a **Quadrature Demod** between the Throttle and a sink; to keep the
+   processed samples, end the chain in a **File Sink** in the case folder.
+
+To receive live instead, replace the File Source and the Throttle with an
+**osmocom Source** (Device Arguments: `rtl=0` or `hackrf=0`, plus its sample
+rate and frequency). Never add an osmocom Sink: a sink transmits.
 
 ## Output and evidence
 
