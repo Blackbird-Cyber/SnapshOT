@@ -34,9 +34,11 @@ while IFS= read -r f; do
 done < <(find "$THEMES" "$MENU" -name "*.desktop" | sort)
 
 echo "== retired launchers =="
-# Dropped in snapshot-menu 0.2.4: the radio slice is receive-only (no HackRF, no
-# GNU Radio, no SoapySDR) and avahi-browse cannot work with avahi-daemon masked.
-for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop snapshot-avahi-browse.desktop; do
+# Dropped in snapshot-menu 0.2.4: the radio slice is strictly receive-only (no
+# HackRF, no GNU Radio, no SoapySDR, no key cracking; airodump-ng is the only
+# 802.11 entry) and avahi-browse cannot work with avahi-daemon masked.
+for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop snapshot-aircrack-ng.desktop \
+            snapshot-avahi-browse.desktop; do
     if [ -e "$MENU/usr/share/applications/$gone" ]; then
         echo "ERROR: retired launcher is back: $gone"; fail=1
     fi
@@ -144,7 +146,7 @@ expected = {
     "02 - Traffic Analysis":          ["snapshot-tshark.desktop", "org.wireshark.Wireshark.desktop"],
     "03 - Protocol Tools":            ["snapshot-mbpoll.desktop"],
     "04 - Firmware & Hardware":       ["snapshot-binwalk.desktop", "org.sigrok.PulseView.desktop"],
-    "05 - Wireless & SDR":            ["snapshot-aircrack-ng.desktop", "snapshot-airodump-ng.desktop",
+    "05 - Wireless & SDR":            ["snapshot-airodump-ng.desktop",
                                        "snapshot-rtl-sdr.desktop", "snapshot-rtl-power.desktop",
                                        "dk.gqrx.gqrx.desktop"],
     "06 - Forensics & Response":      ["snapshot-autopsy.desktop", "snapshot-sleuthkit.desktop",

@@ -81,10 +81,12 @@ The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
 Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
-05 Wireless & SDR is receive-only (snapshot-menu 0.2.4): airodump-ng for the
-passive 802.11 survey, rtl_test and rtl_power for RTL-SDR dongles, and gqrx. The
-HackRF, GNU Radio Companion and SoapySDR entries were dropped with their
-packages; the image never transmits on radio.
+05 Wireless & SDR is strictly receive-only (snapshot-menu 0.2.4): airodump-ng
+for the passive 802.11 survey, rtl_test and rtl_power for RTL-SDR dongles, and
+gqrx. The HackRF, GNU Radio Companion and SoapySDR entries were dropped with
+their packages, and the aircrack-ng key-cracking entry went with them (the
+package stays because airodump-ng lives in it); the image never transmits on
+radio.
 01 Recon & Discovery's *mDNS listen (passive)* runs the package's `mdns-listen`
 helper, a tshark capture on udp 5353 on the one interface that is up (or one the
 operator picks), because avahi-daemon is masked and avahi-browse cannot work.

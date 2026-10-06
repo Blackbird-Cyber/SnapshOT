@@ -8,6 +8,9 @@ snapshot-menu (0.2.4) unstable; urgency=low
     was installed).
   * Add "rtl_power (RF spectrum sweep)" (snapshot-rtl-power.desktop): a passive
     wideband power sweep to CSV with an RTL-SDR dongle.
+  * Drop the aircrack-ng key-cracking launcher (snapshot-aircrack-ng.desktop);
+    airodump-ng is the only 802.11 entry. The aircrack-ng package stays
+    because airodump-ng ships in it.
   * 01 Recon & Discovery: replace "avahi-browse (mDNS)"
     (snapshot-avahi-browse.desktop), which only printed "Daemon not running"
     because avahi-daemon is masked, with "mDNS listen (passive)"
