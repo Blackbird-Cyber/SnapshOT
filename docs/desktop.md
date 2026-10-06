@@ -35,7 +35,7 @@ there sets the desktop up for every new user with no per-user seeding:
 | `menus/xfce-applications.menu` | the root menu layout (snapshot-menu) |
 | `menus/applications-merged/snapshot.menu` | the eight SnapshOT folders |
 | `xfce4/helpers.rc` | Preferred Applications: the web browser `exo-open --launch WebBrowser` starts (snapshot-wiki) |
-| `mimeapps.list` | HTML and http(s) links open in `firefox-esr.desktop` (snapshot-wiki) |
+| `mimeapps.list` | HTML and http(s) links open in `firefox-esr.desktop`, plain text in `org.xfce.mousepad.desktop` (snapshot-wiki) |
 
 The wallpaper is **not** set in `xfce4-desktop.xml`: xfdesktop keys backdrops by
 monitor name, so a fixed stanza would miss differently-named monitors. Instead

@@ -414,8 +414,10 @@ cannot be used because its binaries list does not include `firefox-esr`;
 `sensible-browser` (from `sensible-utils`: Priority important, so it is in the
 debootstrap base, and a dependency of `snapshot-wiki` as well) runs
 `x-www-browser`, which firefox-esr provides.
-`/etc/xdg/mimeapps.list` sends HTML and http(s) links to `firefox-esr.desktop`.
-See [desktop.md](desktop.md) for the divert.
+`/etc/xdg/mimeapps.list` sends HTML and http(s) links to `firefox-esr.desktop`,
+and plain text (`text/plain`, such as the Field Kit guide) to Mousepad
+(`org.xfce.mousepad.desktop`); without that default `exo-open` picked
+LibreOffice Writer. See [desktop.md](desktop.md) for the divert.
 
 ## Vendored JavaScript
 
