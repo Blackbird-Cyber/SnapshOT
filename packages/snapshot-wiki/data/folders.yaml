@@ -48,7 +48,7 @@ folders:
     directory: snapshot-wireless.directory
     category: X-SnapshOT-Wireless
     color: "#277FFF"
-    summary: Survey Wi-Fi and the radio spectrum around a site, receive first and transmit only where it is lawful and approved.
+    summary: Survey Wi-Fi and the radio spectrum around a site, receive only, for transmitters the asset inventory does not explain.
 
   - slug: forensics
     number: "06"

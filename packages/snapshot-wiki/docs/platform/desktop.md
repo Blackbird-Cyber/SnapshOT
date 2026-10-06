@@ -24,7 +24,7 @@ Each folder has a page in this wiki listing its tools:
 | 02 Traffic Analysis | capture and decoding: Wireshark, tshark, tcpdump, Suricata | [Traffic Analysis](../tools/traffic/index.md) |
 | 03 Protocol Tools | Modbus, S7, EtherNet/IP, OPC UA and BACnet clients | [Protocol Tools](../tools/protocols/index.md) |
 | 04 Firmware & Hardware | flash and JTAG readers, logic analyzers, serial consoles, QEMU | [Firmware & Hardware](../tools/firmware/index.md) |
-| 05 Wireless & SDR | Wi-Fi survey and software-defined radio | [Wireless & SDR](../tools/wireless/index.md) |
+| 05 Wireless & SDR | receive-only Wi-Fi survey and software-defined radio | [Wireless & SDR](../tools/wireless/index.md) |
 | 06 Forensics & Response | the field kit, The Sleuth Kit, TestDisk/PhotoRec, Autopsy | [Forensics & Response](../tools/forensics/index.md) |
 | 07 Reporting & Documentation | notes, screenshots, office suite, password store, disk wiping | [Reporting & Documentation](../tools/reporting/index.md) |
 | 08 Reference | the offline reference folder, the build manifest and this wiki | [Reference](../tools/reference/index.md) |
@@ -35,7 +35,9 @@ Accessories), and **Settings**.
 
 A command-line tool's launcher opens a terminal, shows the command it ran (most
 print their help), and leaves a shell open in that terminal so you can carry on
-typing; the tool pages give the commands to run next. Launchers for tools this
+typing; the tool pages give the commands to run next. For a tool that keeps
+running, such as the passive mDNS listener, Ctrl+C stops the tool and still
+leaves the shell open. Launchers for tools this
 image does not carry are hidden rather than broken: the vendor-layer tools when
 the image was built without the [vendor layer](vendor-layer.md), and the
 amd64-only tools on arm64 ([architectures](architectures.md)).

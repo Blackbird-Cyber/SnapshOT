@@ -43,15 +43,19 @@ several menu folders:
   [Suricata](../tools/traffic/suricata.md) capture, decode and analyse without
   transmitting.
 - **Recon & Discovery (01):** [p0f](../tools/recon/p0f.md) fingerprints hosts
-  from traffic it only observes.
+  from traffic it only observes, and
+  [mDNS listen](../tools/recon/mdns-listen.md) prints the mDNS announcements
+  hosts send.
 - **Firmware & Hardware (04):** [binwalk](../tools/firmware/binwalk.md) analyses
   a firmware image on disk; [sigrok-cli](../tools/firmware/sigrok-cli.md) and
   [PulseView](../tools/firmware/pulseview.md) record signals from a bench probe;
   [sdcc](../tools/firmware/sdcc.md) and [QEMU](../tools/firmware/qemu.md) work
   offline on the laptop.
-- **Wireless & SDR (05):** [rtl-sdr](../tools/wireless/rtl-sdr.md),
-  [Gqrx](../tools/wireless/gqrx.md) and
-  [SoapySDR](../tools/wireless/soapysdr.md) receive radio without transmitting.
+- **Wireless & SDR (05):** the whole folder is receive-only:
+  [airodump-ng](../tools/wireless/airodump-ng.md) surveys Wi-Fi from a card in
+  monitor mode, and [rtl-sdr](../tools/wireless/rtl-sdr.md) and
+  [Gqrx](../tools/wireless/gqrx.md) receive radio with dongles that have no
+  transmitter.
 - **Forensics & Response (06):** [Autopsy](../tools/forensics/autopsy.md) and
   the [Sleuth Kit](../tools/forensics/sleuthkit.md) read evidence without
   changing it; so does the field kit's import step, though the kit as a whole is
@@ -91,7 +95,8 @@ window, the site's monitoring told in advance, and the fragile-device rules
   [arp-scan](../tools/recon/arp-scan.md),
   [netdiscover](../tools/recon/netdiscover.md) (which also has a passive mode),
   [fping](../tools/recon/fping.md), [nbtscan](../tools/recon/nbtscan.md) and
-  [avahi-browse](../tools/recon/avahi-browse.md).
+  [avahi-browse](../tools/recon/avahi-browse.md) (once its masked daemon is
+  started by hand).
 - **Protocol Tools (03):** [plcscan](../tools/protocols/plcscan.md) and the
   [ICS Python shell](../tools/protocols/ics-python-shell.md) when used for reads.
 - **Firmware & Hardware (04):** the serial console tools
@@ -129,11 +134,10 @@ window, and is read back and recorded. Writes appear across folders:
   properties, parameters and programs to a controller.
 - **Firmware & Hardware (04):** [flashrom](../tools/firmware/flashrom.md) and
   [OpenOCD](../tools/firmware/openocd.md) can overwrite firmware and memory.
-- **Wireless & SDR (05):** the [aircrack-ng suite](../tools/wireless/aircrack-ng-suite.md)
-  can inject and deauthenticate, and the [HackRF](../tools/wireless/hackrf.md),
-  [GNU Radio](../tools/wireless/gnuradio.md) flow graphs with a transmit sink and
-  [gr-osmosdr](../tools/wireless/gr-osmosdr.md)'s signal generator can transmit;
-  all are allowed only where lawful and approved.
+- **Wireless & SDR (05)** has no writes tool. The `aircrack-ng` package that
+  provides [airodump-ng](../tools/wireless/airodump-ng.md) also installs tools
+  that inject and deauthenticate; they have no menu entry, and using one would be
+  a radio write under the [rules of engagement](rules-of-engagement.md).
 - **Traffic Analysis (02):** [Scapy](../tools/traffic/scapy.md) crafts and sends
   packets and [tcpreplay](../tools/traffic/tcpreplay.md) puts a capture back on a
   wire, so both are writes tools even though they live among the capture tools.

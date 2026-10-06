@@ -1,8 +1,8 @@
 ---
 title: rtl-sdr
-summary: Test RTL-SDR dongles
+summary: Find an RTL-SDR dongle and read its identity, and sweep the radio spectrum to CSV (receive only)
 folder: wireless
-launchers: [snapshot-rtl-sdr.desktop]
+launchers: [snapshot-rtl-sdr.desktop, snapshot-rtl-power.desktop]
 ships_as: apt
 package: rtl-sdr
 arch: [amd64, arm64]
@@ -42,8 +42,10 @@ transmitting in a band and roughly where, so a responder can map the radio attac
 surface around a site and spot a transmitter that should not be there. Because the
 dongle cannot transmit, it is the safe first look at the spectrum, and its
 command-line tools write CSV and I/Q files that go straight into the case folder.
-For signals above its range, or a wider view at once, use the
-[HackRF](hackrf.md); to look at and listen to a signal, use [Gqrx](gqrx.md).
+The menu has two entries for it in 05 Wireless & SDR, which is receive-only: the
+**rtl-sdr (dongle check)**, which runs `rtl_eeprom`, and **rtl_power (RF
+spectrum sweep)**. To look at and listen to a signal, use [Gqrx](gqrx.md); for
+Wi-Fi, which is above the dongle's range, use [airodump-ng](airodump-ng.md).
 
 ## On the wire
 
@@ -72,10 +74,12 @@ For signals above its range, or a wider view at once, use the
 ### Preparation
 
 In [preparation](../../lifecycle/phases/preparation.md), check each dongle with
-`rtl_test` and measure its clock error, so later frequencies can be corrected
-with `-p`. Then record a baseline sweep of the bands the site's radio inventory
-lists (licensed telemetry, ISM, the plant's private radio) from a fixed, noted
-position, so the normal radio environment is known before anything goes wrong.
+the menu's dongle check (`rtl_eeprom`, which names the tuner and the serial
+number) and measure its clock error with `rtl_test -p`, so later frequencies can
+be corrected with `-p`. Then record a baseline sweep of the bands the site's
+radio inventory lists (licensed telemetry, ISM, the plant's private radio) from
+a fixed, noted position, so the normal radio environment is known before
+anything goes wrong.
 
 ### Identification
 
@@ -113,19 +117,31 @@ playbook follows up as possible Wireless Compromise (T0860).
 ## Quick start
 
 ```sh
-# What the menu launcher runs: find the dongle, name its tuner and read its
-# EEPROM identity (vendor and product ids, manufacturer, product, serial);
+# What the dongle check launcher runs: find the dongle, name its tuner and read
+# its EEPROM identity (vendor and product ids, manufacturer, product, serial);
 # with no options rtl_eeprom only reads
 rtl_eeprom
+# What the rtl_power launcher runs: the sweep options and the CSV columns
+rtl_power -h
 # Measure the dongle's clock error in ppm (Ctrl+C to stop)
 rtl_test -p
 # Sweep the 433 MHz ISM band in 1 kHz bins, single shot, to CSV
 rtl_power -f 433M:435M:1k -1 ~/cases/site-a/rf/ism433.csv
 # Broad UHF survey, 1 MHz bins, integrated over five minutes, single shot
 rtl_power -f 400M:470M:1M -i 5m -1 ~/cases/site-a/rf/uhf-survey.csv
+# Log the 433 MHz band every 10 seconds for an hour (-e), compressed
+rtl_power -f 433M:435M:1k -e 1h | gzip > ~/cases/site-a/rf/ism433-1h.csv.gz
 # Record 10 seconds of raw I/Q around 433.92 MHz at 2.048 MS/s
 rtl_sdr -f 433920000 -s 2048000 -n 20480000 ~/cases/site-a/rf/433920k-2048k.iq
 ```
+
+`rtl_power` is the survey tool. `-f lower:upper:bin` sets the range and the bin
+size (a maximum: it picks a convenient smaller bin), `-i` the integration
+interval (10 seconds by default), `-1` a single sweep and `-e` a total run time;
+without `-1` or `-e` it logs until Ctrl+C. `-g` sets a fixed tuner gain instead
+of the automatic one, which keeps sweeps taken at different times comparable,
+`-p` applies the clock correction, and `-c 20%` to `-c 50%` crops the noisy
+edges of each hop when the bins are 1 MHz or smaller.
 
 Each line of an `rtl_power` CSV covers one hop of the sweep for one integration
 interval: the date, the time, the low and high frequency of that hop, the bin
@@ -155,13 +171,7 @@ them. Note the dongle, antenna and position in the case notes.
 
 - [Gqrx](gqrx.md): a live waterfall for the same dongles, to find and tune a
   signal by eye before recording it.
-- [HackRF](hackrf.md): a wider-range SDR (up to 6 GHz) when a signal is outside
-  the RTL dongle's range.
-- [GNU Radio Companion](gnuradio.md): decode a signal from the I/Q that
-  `rtl_sdr` recorded.
-- [gr-osmosdr](gr-osmosdr.md) and [SoapySDR](soapysdr.md): how GNU Radio and
-  other software reach the same dongles.
-- [aircrack-ng suite](aircrack-ng-suite.md): the Wi-Fi side of the same survey.
+- [airodump-ng](airodump-ng.md): the Wi-Fi side of the same survey.
 
 ## Upstream documentation
 

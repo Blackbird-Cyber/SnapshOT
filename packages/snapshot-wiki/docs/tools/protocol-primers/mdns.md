@@ -57,6 +57,9 @@ dns.srv.target || dns.ptr.domain_name
 
 ## SnapshOT tools that speak or decode it
 
+- [mDNS listen (passive)](../recon/mdns-listen.md): the 01 Recon & Discovery
+  entry; a tshark capture of UDP 5353 that prints what hosts announce and sends
+  nothing.
 - [avahi-browse](../recon/avahi-browse.md): list the mDNS and DNS-SD services on
   a segment from the terminal. It sends queries, and only works once the
   avahi daemon, masked on SnapshOT, is started by hand.

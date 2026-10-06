@@ -162,8 +162,9 @@ and explained:
   mistaken for an intruder's.
 - **Evidence and data handling**: who holds custody, where evidence goes at the
   end, how long it is kept, and that the laptop is wiped and re-imaged afterwards.
-- **Radio**: wireless work is receive-only unless a licence and the owner's
-  agreement cover transmission.
+- **Radio**: wireless work is receive-only, which is all SnapshOT's radio tools
+  do; any transmission is out of scope unless a licence and the owner's
+  agreement cover it.
 
 ## ATT&CK for ICS tactics in play
 

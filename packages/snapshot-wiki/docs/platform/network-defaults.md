@@ -18,11 +18,14 @@ something asks for them:
 
 - **avahi-daemon** (service and socket): no mDNS/DNS-SD advertising or querying.
   This is why [avahi-browse](../tools/recon/avahi-browse.md) shows nothing until
-  the daemon is unmasked and started by hand.
+  the daemon is unmasked and started by hand, and why the menu's mDNS entry is
+  [mDNS listen (passive)](../tools/recon/mdns-listen.md), which captures the
+  announcements other hosts send without the daemon.
 - **systemd-timesyncd**: no automatic NTP to a time server.
-- **ModemManager**: named in the same mask list, and not installed in the first
-  place (the image installs no recommended packages), so nothing probes the
-  serial and USB adapters used for console work as modems.
+
+ModemManager is not masked because it is not on the image at all: nothing pulls
+it in with recommended packages off, so nothing probes the serial and USB
+adapters used for console work as modems.
 
 ## Name resolution
 

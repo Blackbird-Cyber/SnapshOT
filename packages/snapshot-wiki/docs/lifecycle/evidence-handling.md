@@ -22,14 +22,14 @@ evidence keeps things findable:
 ```
 ~/cases/acme-2026-10/
   pcap/                 captures, by interface and UTC time
-  recon/                discovery output: ARP, ping, NetBIOS and
-                        mDNS sweeps, p0f, plcscan
+  recon/                discovery output: ARP, ping and NetBIOS
+                        sweeps, mDNS service lists, p0f, plcscan
   nmap/                 scan output (-oA: .nmap, .xml, .gnmap)
   modbus/ s7/ enip/     protocol reads and writes, one folder per
   opcua/ bacnet/        protocol, each script beside its output
   serial/               serial console logs
   firmware/             flash dumps, logic captures and their analysis
-  rf/                   SDR sweeps, recordings and flow graphs
+  rf/                   SDR sweeps and recordings
   wifi/                 802.11 survey captures
   images/               disk images, hashed on arrival
   analysis/             results derived from the evidence: suricata/,

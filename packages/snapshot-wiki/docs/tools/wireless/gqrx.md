@@ -23,14 +23,15 @@ upstream: https://gqrx.dk/
 
 ## What it is
 
-Gqrx is a graphical SDR receiver built on GNU Radio. It shows a live spectrum and
-waterfall for the band you tune to, lets you click a signal to centre and
-demodulate it (AM, FM, SSB and more), plays the audio, and records either the
-demodulated audio or the raw I/Q to a file; its I/Q tool also plays a recording
-back through the same display. It is receive-only. It drives the RTL-SDR
-dongles, the HackRF and other SDRs through [gr-osmosdr](gr-osmosdr.md), and it
-keeps its settings (device, frequency, demodulator) in a configuration file
-under `~/.config/gqrx/`.
+Gqrx is a graphical SDR receiver built on the GNU Radio libraries. It shows a
+live spectrum and waterfall for the band you tune to, lets you click a signal to
+centre and demodulate it (AM, FM, SSB and more), plays the audio, and records
+either the demodulated audio or the raw I/Q to a file; its I/Q tool also plays a
+recording back through the same display. It is receive-only. It reaches the
+radio through the gr-osmosdr library that comes with it; on SnapshOT that radio
+is an RTL-SDR dongle, the receive-only hardware the [rtl-sdr](rtl-sdr.md) tools
+use. It keeps its settings (device, frequency, demodulator) in a configuration
+file under `~/.config/gqrx/`.
 
 ## Why it is on SnapshOT
 
@@ -39,16 +40,16 @@ it. For a responder, the waterfall is the fastest way to find a transmitter,
 judge its bandwidth and modulation by eye, and confirm whether it is voice,
 telemetry or a data link, before deciding whether it matters. It turns the raw RF
 near a site into something a person can see and hear, and record as evidence.
-It sits between the command-line sweeps of [rtl-sdr](rtl-sdr.md) and
-[HackRF](hackrf.md), which say where to look, and
-[GNU Radio](gnuradio.md), which decodes what Gqrx found.
+It takes over where the `rtl_power` sweeps of [rtl-sdr](rtl-sdr.md) leave off:
+the sweep says where to look, and Gqrx shows what is there.
 
 ## On the wire
 
 !!! note "Passive: it only receives"
 
-    Gqrx is a receiver; it never transmits, even when the attached SDR is a
-    HackRF. Nothing reaches the plant and the site's monitoring sees nothing.
+    Gqrx is a receiver, and the RTL-SDR dongles it drives on SnapshOT have no
+    transmitter. Nothing reaches the plant and the site's monitoring sees
+    nothing.
 
     - Listening is passive, but what you may lawfully receive, record and
       disclose is regulated in some jurisdictions (the content of private or
@@ -57,10 +58,10 @@ It sits between the command-line sweeps of [rtl-sdr](rtl-sdr.md) and
       covers it.
     - The SDR is reached over USB through the `plugdev` group, which the SnapshOT
       user is in, so no `sudo` is needed. Gqrx asks which device to use on
-      startup; pick the attached dongle or HackRF.
+      startup; pick the attached dongle.
     - The waterfall shows energy and modulation, not meaning. Use it to find and
-      characterise a signal; decoding a data protocol is a job for
-      [GNU Radio](gnuradio.md) or a dedicated decoder.
+      characterise a signal and to record it; decoding a data protocol needs a
+      dedicated decoder, which SnapshOT does not carry.
 
 ## PICERL mapping
 
@@ -117,8 +118,8 @@ gqrx --edit
 
 A first session, finding and recording a signal:
 
-1. **Attach the receiver.** Plug in the RTL-SDR dongle or the HackRF with its
-   antenna, then open Gqrx from 05 Wireless & SDR.
+1. **Attach the receiver.** Plug in the RTL-SDR dongle with its antenna, then
+   open Gqrx from 05 Wireless & SDR.
 2. **Choose the device.** On the first start the **Configure I/O devices**
    dialog opens (later, `gqrx --edit` brings it back). Pick the device from the
    list, or use its scan button; set the input rate (2.048 MS/s suits an
@@ -136,7 +137,7 @@ A first session, finding and recording a signal:
    floor, and stop before the floor itself rises.
 6. **Record.** The **Rec** button in the **Audio** panel (or the R key) records
    the demodulated audio as WAV. **Tools > I/Q tool** (Ctrl+I) records the raw
-   I/Q, which [GNU Radio](gnuradio.md) can decode later; set its location to
+   I/Q, for playback or analysis later; set its location to
    `~/cases/site-a/rf/` and choose SigMF if you want the metadata kept beside
    the samples.
 7. **Close.** Stop the receiver with the same start button. Leave **Tools >
@@ -166,11 +167,10 @@ position in the case notes; the copied configuration records the rest.
 
 ## Related tools
 
-- [rtl-sdr](rtl-sdr.md) and [HackRF](hackrf.md): the dongles and wideband SDR
-  Gqrx receives through, and their command-line sweeps that point you at a band.
-- [GNU Radio Companion](gnuradio.md): build a decoder for a signal Gqrx found.
-- [gr-osmosdr](gr-osmosdr.md) and [SoapySDR](soapysdr.md): the device layers Gqrx
-  uses to reach the hardware.
+- [rtl-sdr](rtl-sdr.md): the dongle check and the `rtl_power` sweeps that point
+  you at a band before you open Gqrx.
+- [airodump-ng](airodump-ng.md): the Wi-Fi side of the same survey, above the
+  dongle's range.
 
 ## Upstream documentation
 

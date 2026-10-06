@@ -1,7 +1,6 @@
 # The Purdue reference model and where SnapshOT attaches.
 # Format: docs/wiki.md, "Graphs". Rendered by <div class="snapshot-graph" data-graph="purdue">.
-# Node urls are docs/ paths and must exist; add one to `radio` once the
-# wireless survey tool page exists.
+# Node urls are docs/ paths and must exist.
 title: Purdue levels, zones and where SnapshOT attaches
 layout: hierarchical
 direction: UD
@@ -27,7 +26,7 @@ nodes:
   - {id: span3, level: 3, group: snapshot, label: "SPAN / TAP", url: tools/traffic/tshark.md, title: "Passive capture on a mirror port or TAP at level 3: historian, domain and DMZ conversations."}
   - {id: span2, level: 4, group: snapshot, label: "SPAN / TAP", url: tools/traffic/tshark.md, title: "Passive capture at level 2: HMI polling, engineering sessions, program downloads."}
   - {id: serial, level: 5, group: snapshot, label: "Serial\nRS-485 / RS-232", url: tools/protocols/mbpoll.md, title: "A serial adapter on a controller's console or fieldbus port, engineer present."}
-  - {id: radio, level: 7, group: snapshot, label: "Wireless survey\nreceive only", title: "Receive-only survey of Wi-Fi and radio links around cells and remote sites."}
+  - {id: radio, level: 7, group: snapshot, label: "Wireless survey\nreceive only", url: lifecycle/playbooks/wireless-survey.md, title: "Receive-only survey of Wi-Fi and radio links around cells and remote sites."}
 
 edges:
   - {from: l5, to: l4}

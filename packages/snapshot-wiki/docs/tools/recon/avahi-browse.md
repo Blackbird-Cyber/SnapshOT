@@ -1,8 +1,8 @@
 ---
-title: avahi-browse (mDNS)
-summary: Browse mDNS/DNS-SD services on the network
+title: avahi-browse
+summary: Browse mDNS/DNS-SD services through the avahi daemon, which SnapshOT keeps masked
 folder: recon
-launchers: [snapshot-avahi-browse.desktop]
+launchers: []
 ships_as: apt
 package: avahi-utils
 arch: [amd64, arm64]
@@ -38,9 +38,11 @@ to list what is announcing itself. It names services and the hosts behind them,
 and the resolved TXT records often carry a model or firmware string, which is a
 useful supplement to ARP and port discovery on a segment that carries mDNS. A
 device that advertises a web or remote-access service nobody expected is also a
-finding in itself. On SnapshOT it is the active route; the same advertisements
-can usually be read passively from a capture, which is why the daemon it needs
-stays masked until someone decides otherwise.
+finding in itself. On SnapshOT it is the active route, kept for a deliberate
+browse once the daemon has been unmasked and started. The menu has no entry for
+it: the same advertisements can usually be read passively, so 01 Recon &
+Discovery offers [mDNS listen (passive)](mdns-listen.md) instead, and the daemon
+avahi-browse needs stays masked until someone decides otherwise.
 
 ## On the wire
 
@@ -53,21 +55,21 @@ stays masked until someone decides otherwise.
     - **On SnapshOT the avahi daemon is masked by default**, both its service
       and its socket (part of the quiet-on-the-wire
       [network defaults](../../platform/network-defaults.md)), so avahi-browse
-      reports "Failed to create client object: Daemon not running" and the menu
-      launcher, which runs `avahi-browse --help`, only prints usage. As shipped,
-      the tool sends and shows nothing.
+      reports "Failed to create client object: Daemon not running". As shipped,
+      the tool sends and shows nothing, which is why it has no menu entry.
     - To actually browse you must unmask and start the daemon (the service
       requires its socket, so unmask both), which makes the laptop query and,
       unless configured otherwise, announce its own name and addresses on the
       segment. That breaks the quiet-on-the-wire posture, so do it only with
       approval, tell the site's monitoring, and mask both units again when
       finished (the commands are in the quick start).
-    - **Prefer a passive alternative.** To see the mDNS already on a segment
-      without transmitting, capture it with [tshark](../traffic/tshark.md):
-      `tshark -n -i eth1 -f 'udp port 5353'`. For a single active query without a
-      resident daemon, nmap's `dns-service-discovery` and
-      `broadcast-dns-service-discovery` scripts send their DNS-SD queries and
-      stop.
+    - **Prefer the passive alternative.** To see the mDNS already on a segment
+      without transmitting, use the menu's
+      [mDNS listen (passive)](mdns-listen.md), a [tshark](../traffic/tshark.md)
+      capture of UDP 5353. For a one-off active browse without a resident daemon,
+      nmap's `dns-service-discovery` (one host) and
+      `broadcast-dns-service-discovery` (the multicast group) scripts send
+      their DNS-SD queries and stop.
     - Stop and re-mask the daemon if a device on the segment reacts badly or the
       operators report anything unusual.
 
@@ -78,8 +80,8 @@ stays masked until someone decides otherwise.
 During [identification](../../lifecycle/phases/identification.md), where a
 resident avahi daemon is acceptable and approved, avahi-browse enumerates the
 services advertised on the segment and the hosts behind them. On SnapshOT the
-passive route is the default: capture mDNS on UDP 5353 with tshark and read the
-advertisements from the file, so the laptop stays silent.
+passive route is the default: [mDNS listen (passive)](mdns-listen.md) captures
+the advertisements on UDP 5353 with tshark, so the laptop stays silent.
 
 ### Lessons Learned
 
@@ -105,10 +107,10 @@ records what any host on the segment could learn about the devices there.
 ## Quick start
 
 ```sh
-# What the menu launcher runs (prints the usage summary)
+# PASSIVE and preferred: the menu's mDNS listen entry, no daemon needed
+/usr/share/snapshot-menu/mdns-listen eth1
+# The options of avahi-browse itself
 avahi-browse --help
-# PASSIVE and preferred: watch mDNS on the wire without a daemon
-tshark -n -i eth1 -f 'udp port 5353'
 # Active, only with approval: unmask the daemon and its socket, then start it
 sudo systemctl unmask avahi-daemon.service avahi-daemon.socket
 sudo systemctl start avahi-daemon.service
@@ -150,10 +152,13 @@ sha256sum "$CASE/recon/mdns-services.txt" >> "$CASE/SHA256SUMS"
 
 ## Related tools
 
-- [tshark](../traffic/tshark.md): the passive way to see mDNS on a segment, with
-  no daemon and no traffic of your own.
-- [nmap](nmap.md): `dns-service-discovery` sends a single DNS-SD query without a
-  resident daemon, for an approved active check.
+- [mDNS listen (passive)](mdns-listen.md): the menu's passive way to see mDNS on
+  a segment, with no daemon and no traffic of your own.
+- [tshark](../traffic/tshark.md): the capture behind it, for filters and files of
+  your own.
+- [nmap](nmap.md): the `dns-service-discovery` script asks one host on UDP 5353
+  for its DNS-SD services without a resident daemon, for an approved active
+  check.
 - [netdiscover](netdiscover.md): layer-2 discovery of the same hosts, passively.
 
 ## Upstream documentation

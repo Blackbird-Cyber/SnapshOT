@@ -109,22 +109,35 @@ a write:
 Physical work belongs in a maintenance window on hardware the engineer has
 released, and every acquisition is hashed and logged like any other evidence.
 
-## Radio: receive first, transmit only where lawful and approved
+## Radio: receive only
 
-Wireless work is **receive first**. A survey with an SDR or a Wi-Fi card in
-monitor mode listens and records; it changes nothing and is the default (see the
-[wireless survey](playbooks/wireless-survey.md) playbook). Transmission is a
-different matter:
+Wireless work on SnapshOT is **receive only**. The 05 Wireless & SDR folder
+holds receivers: [airodump-ng](../tools/wireless/airodump-ng.md) surveys Wi-Fi
+from a card in monitor mode, and the RTL-SDR dongles that
+[rtl-sdr](../tools/wireless/rtl-sdr.md) and [Gqrx](../tools/wireless/gqrx.md)
+drive have no transmitter. A survey listens and records; it changes nothing (see
+the [wireless survey](playbooks/wireless-survey.md) playbook), and it answers
+the question the radio tools are there for: is something transmitting here that
+is not in the asset inventory?
 
-- Transmitting (a HackRF, Wi-Fi deauthentication or injection with the
-  [aircrack-ng suite](../tools/wireless/aircrack-ng-suite.md)) is only done where
-  it is **lawful** and **specifically approved** in the authorization. Radio law
-  varies by country and band, and some bands must never be touched.
+- SnapshOT carries no transmit-capable SDR tooling: the `hackrf`, `gnuradio`
+  and `soapysdr-tools` packages are not on the image (Gqrx brings only the GNU
+  Radio libraries it receives through), and the menu offers no injection or
+  key-cracking tool. The `aircrack-ng` package that provides airodump-ng also
+  installs `aireplay-ng`, `airbase-ng` and the key cracker; they stay out of
+  the workflow.
+- Transmitting (Wi-Fi deauthentication or injection, or any other radio
+  transmission) is out of scope unless the authorization names it and it is
+  **lawful** for the band. Radio law varies by country and band, and some bands
+  must never be touched.
 - Jamming, deauthentication and injection can knock wireless instruments,
-  telemetry or safety links off the air. Treat any transmit as a write to the
-  process and apply the engineer-present and window rules.
-- When in doubt, do not transmit. A receive-only survey answers most questions,
-  and it cannot hurt the process.
+  telemetry or safety links off the air. If a transmission is ever approved,
+  treat it as a write to the process and apply the engineer-present and window
+  rules.
+- Listening is passive, but recording the content of other parties'
+  communications is regulated in some jurisdictions: record networks,
+  frequencies, timing and power, and content only when the authorization covers
+  it.
 
 ## Tell the site's monitoring before active work
 
