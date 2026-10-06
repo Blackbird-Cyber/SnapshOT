@@ -53,8 +53,14 @@ for the passphrase twice. There is no hibernation.
 
 ## 5. Administration
 
-- The user is in group `sudo` (plus `plugdev`, `dialout`, `kvm`, `netdev`, `audio`,
-  `video`, `cdrom`, `floppy`, `dip`). Root stays locked.
+- The user is in group `sudo` (plus `plugdev`, `dialout`, `kvm`, `netdev`, `wireshark`,
+  `audio`, `video`, `cdrom`, `floppy`, `dip`). Root stays locked.
+- Group `wireshark` may run `dumpcap`, so Wireshark, tshark and termshark capture
+  without `sudo`. `config/hooks/normal/0600-snapshot-wireshark.hook.chroot` answers
+  wireshark-common's install-setuid question at build time: `dumpcap` is
+  `root:wireshark 0754` with `cap_net_raw,cap_net_admin`. `tcpdump` still needs `sudo`.
+  The live user gets the same groups (minus `sudo`, which live-config grants) from
+  `config/includes.chroot/etc/live/config.conf.d/snapshot.conf`.
 - `sudo` asks for the user's password. `config/hooks/normal/0500-snapshot-sudo.hook.chroot`
   writes `/etc/sudoers.d/snapshot-operator`, so the password is remembered for 60
   minutes and shared by every terminal.
@@ -105,7 +111,9 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 4. Plymouth asks for the passphrase once; LightDM shows the login screen; log in.
 5. `lsblk -f` shows the ESP (vfat), `/boot` (ext4) and the root on a `luks-*`
    mapping.
-6. `groups` lists `sudo`, `dialout`, `kvm`, `plugdev` and `netdev`.
+6. `groups` lists `sudo`, `dialout`, `kvm`, `plugdev`, `netdev` and `wireshark`;
+   `getcap /usr/bin/dumpcap` shows `cap_net_admin,cap_net_raw=eip`, and
+   `tshark -D` lists the interfaces without `sudo`.
 7. `sudo -v` asks for the password; a second `sudo -v`, also from another terminal,
    does not ask again within the hour.
 8. `dpkg -l 'live-*' 'calamares*' user-setup` reports no installed packages.
