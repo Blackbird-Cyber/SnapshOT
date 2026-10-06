@@ -2,10 +2,13 @@
 
 ## Requirements
 A Debian trixie host (or the `docker/` container) with `live-build`, `dpkg-dev`,
-`debhelper`, `xorriso`, `squashfs-tools`. live-build runs as root. The vendor
-step needs **Docker and network** but nothing extra on the host: it builds the
-Python wheelhouses inside per-arch trixie containers using the pinned
-interpreter, so no `pip-tools` (or `uv`) is installed on the host.
+`debhelper`, `xorriso`, `squashfs-tools`, and `mkdocs-material`, `python3-pymdownx`
+and `python3-yaml` (the Build-Depends of `packages/snapshot-wiki`, whose site is built
+when `scripts/build.sh` runs `dpkg-buildpackage`; the `docker/` image has them).
+live-build runs as root. The vendor step needs **Docker and network** but
+nothing extra on the host: it builds the Python wheelhouses inside per-arch
+trixie containers using the pinned interpreter, so no `pip-tools` (or `uv`) is
+installed on the host.
 
 The container path works on macOS too: `docker/build-in-docker.sh` copies the
 tree into the container, builds there (live-build cannot build a chroot on a

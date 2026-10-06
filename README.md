@@ -171,11 +171,21 @@ the Debian package lists in [`config/package-lists/`](config/package-lists/).
 
 **The SnapshOT Wiki** documents every tool above against the OT incident-response
 lifecycle (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS): what each tool does, how it
-behaves on the wire and how to use it in each phase. It is a static site of about 3.4 MB
-in `/usr/share/snapshot/wiki`, opened from 08 Reference and the Whisker favourites in
-**Firefox ESR**, which is also the browser for PLC and HMI web interfaces. An enterprise
-policy keeps Firefox from making any connection on its own; Firefox adds about 275 MiB
-to the image. See [docs/wiki.md](docs/wiki.md).
+behaves on the wire, a quick start for using it, and where it fits in each phase, with
+rules of engagement, playbooks, protocol primers and a guide to the platform itself. It
+is a static site of about 13 MB in `/usr/share/snapshot/wiki` (package `snapshot-wiki`),
+and works with no network: search, tags and the interactive graphs run offline. Open it
+from **08 Reference > SnapshOT Wiki** or the Whisker favourites; it is also the
+browser's home page. See [docs/wiki.md](docs/wiki.md).
+
+**Firefox ESR**, the one package in
+[`config/package-lists/snapshot-reference.list.chroot`](config/package-lists/snapshot-reference.list.chroot),
+shows the wiki and is the browser for PLC, HMI and switch web interfaces; it is in
+Usual Applications > Internet. `snapshot-wiki` locks it down: an enterprise policy and
+system preferences stop it making any connection on its own (no telemetry, updates, Safe
+Browsing, DNS over HTTPS or Remote Settings), and its password manager is off in favour
+of KeePassXC. The price is listed under [Status and known issues](#status-and-known-issues).
+Firefox adds about 275 MiB to the image.
 
 ## Security posture
 
@@ -256,6 +266,14 @@ refreshes the download table above.
   SnapshOT ships it without the Windows binaries those modules call.
 - No hibernation: swap, when chosen, is a file inside the encrypted root and the
   installer writes no resume parameter.
+- Firefox ESR receives no certificate revocation or intermediate-certificate updates,
+  add-on blocklists or security-list updates: Remote Settings is held off so the browser
+  never calls home, and the pinned ESR 140 has no policy for it, so its hosts resolve to
+  loopback ([docs/wiki.md](docs/wiki.md)). Re-image rather than update in place.
+- In the vendor layer, the pymodbus console launcher fails at start-up (the pinned
+  pymodbus-repl does not match pymodbus 3.11), and pymodbus's serial client is missing
+  `pyserial`; the pymodbus library works over Modbus TCP, and `mbpoll` covers Modbus RTU
+  ([docs/vendoring.md](docs/vendoring.md#known-issues)).
 - Product and support URLs and the package maintainer address are `example.invalid`
   placeholders.
 

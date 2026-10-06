@@ -4,9 +4,21 @@ The SnapshOT Wiki is an offline documentation site that ships on the image:
 every tool in the menu, documented against the OT incident-response lifecycle
 (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS). It is built with MkDocs
 Material when the `snapshot-wiki` package is built, installed to
-`/usr/share/snapshot/wiki`, and opened from **08 - Reference > SnapshOT Wiki**
-in Firefox ESR, from `file://`, with no network. Search, tags and the
-interactive graphs all work offline.
+`/usr/share/snapshot/wiki`, and opened in Firefox ESR, from `file://`, with no
+network. Search, tags and the interactive graphs all work offline.
+
+Three things open it:
+
+- the launcher **08 - Reference > SnapshOT Wiki**, `snapshot-wiki.desktop` in
+  `packages/snapshot-menu` (0.2.4), which runs
+  `exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`;
+- the same launcher in the Whisker favourites, after the two terminals
+  (`favorites=` in `packages/snapshot-themes`' `whiskermenu/defaults.rc`,
+  snapshot-themes 0.2.1);
+- Firefox's home page, set by `Homepage` in `policies.json`.
+
+`check-wiki.sh` fails if the launcher does not validate or does not open that
+URL, or if the policy's home page is anything else.
 
 This guide is for authors and maintainers. Readers start at the wiki's own
 home page.
@@ -46,7 +58,7 @@ and data files; never create them by hand (the build fails if you do).
 | Tab | Path under `docs/` | Content |
 |---|---|---|
 | Home | `index.md` | the home page: cards, the lifecycle graph, the phase table |
-| | `platform/*.md` | Platform guide: `live-and-install`, `admin-and-capture`, `network-defaults`, `vendor-layer`, `reference-data`, `build-manifest`, `architectures`, `field-updates`, `browser`, `using-this-wiki` (in that order) |
+| | `platform/*.md` | Platform guide: `live-and-install`, `desktop`, `admin-and-capture`, `network-defaults`, `vendor-layer`, `reference-data`, `build-manifest`, `architectures`, `field-updates`, `browser`, `using-this-wiki` (in that order, `PLATFORM_ORDER` in the hook) |
 | Lifecycle | `lifecycle/index.md` | the PICERL model and why it fits OT field work |
 | | `lifecycle/rules-of-engagement.md`, `wire-classes.md`, `evidence-handling.md` | Rules of engagement section |
 | | `lifecycle/phases/<id>.md` | one page per phase id in `data/lifecycle.yaml` |
@@ -120,6 +132,19 @@ moved several techniques into the T16xx range (for example T1692 Unauthorized
 Message, T1693 Modify Firmware, T1694 Insecure Credentials); use the ids in the
 data file, not older ones from memory.
 
+The hook rejects (as a warning, which fails the strict build): a missing or
+unknown key, or a value of the wrong type; a `folder` that is not in
+`data/folders.yaml` or not the page's directory; a launcher that is not a
+`.desktop` id; an unknown `ships_as`, `status`, `wire`, phase, CSF function,
+tactic, `attack_role`, technique or protocol; an empty `phases`, or a phase
+without its one-line note; `attack_role: none` with tactics, or tactics with
+`none`; `not-shipped` on anything but a vendor tool; a list in `package` for a
+vendor tool, or an empty name in a list; an `upstream` that is not an http(s)
+URL; any H1; `##` sections other than the template's, in its order; a missing
+`### <Phase>` for a phase in `phases:` (shipped pages); and anything but exactly
+one `<!-- snapshot:facts -->`. `check-wiki.sh` adds the checks against the menu
+package and the vendor lock (below).
+
 ### Body
 
 Put `<!-- snapshot:facts -->` on a line of its own straight after the
@@ -135,11 +160,38 @@ PICERL mapping, one `###` per phase in `phases:`, named as the phase
 Learned). A not-shipped page has: What it is; Why it is not shipped; What to use
 instead; Upstream documentation.
 
-In Quick start, put each command's explanation on a comment line above it;
-code blocks are narrow. The launcher's own command comes first, vendor tools are
-`/opt/snapshot/<tool>/bin/<cmd>`, and `sudo` appears only where the image needs
-it (capture with Wireshark, tshark and termshark needs none: the user is in
-group `wireshark`; serial ports need none: group `dialout`).
+Quick start is the guide to using the tool, and its shape depends on the kind
+of tool (there is no separate walkthrough section; numbered steps go inside
+Quick start):
+
+- **Command-line tools:** the launcher's own command first, then a realistic
+  sequence of three to eight commands, each explained on a comment line above
+  it (code blocks are narrow). Vendor tools are `/opt/snapshot/<tool>/bin/<cmd>`;
+  `sudo` appears only where the image needs it (capture with Wireshark, tshark
+  and termshark needs none: the user is in group `wireshark`; serial ports
+  need none: group `dialout`). Output and evidence then says where the output
+  lands and how it is kept and hashed under `~/cases/<case>/`.
+- **GUI tools** (Wireshark, Autopsy, PulseView, GNU Radio Companion, Gqrx, OPC
+  UA Client, CherryTree, Flameshot, KeePassXC, LibreOffice): any command lines
+  that apply, then a numbered walkthrough of a first useful session (open,
+  connect or load, the key panes, filter or decode, save or export) that an
+  operator who has never used the tool can follow. Keep each step one
+  paragraph: no nested lists or code blocks inside a step. Menu and dialog
+  labels are checked against the installed trixie package (`strings` on the
+  binary, or its `.ui` and `.xcd` files) or the upstream manual; a label that
+  could not be checked is described rather than quoted.
+- **Python libraries** (pymodbus, pycomm3, asyncua, BACpypes3, BAC0,
+  python-snap7, the ICS Python shell): short working examples run through
+  `/opt/snapshot/ics-python/bin/ics-python`, reads first; any write is marked
+  as needing the engineer present.
+
+A not-shipped page's What to use instead links the shipped tool pages that
+cover the same job.
+
+A problem with the tool on the current build goes in a `!!! warning "Known
+issue on this build"` admonition straight after the facts marker, and in the
+repository's records too (`README.md` Status and known issues, and
+`docs/vendoring.md` for the vendor layer).
 
 ### Adding a tool
 
@@ -224,7 +276,11 @@ browsers without JavaScript:
 
 `lifecycle` (phases and tools, tools coloured by menu folder) and `attack`
 (tactics and tools, coloured by ATT&CK role) are generated from the tool pages.
-Any other name is `docs/graphs/<name>.yaml`:
+Any other name is `docs/graphs/<name>.yaml`; today those are `crosswalk`
+(PICERL, CSF 2.0 and tactics) and `purdue` (levels, zones and where SnapshOT
+attaches). The pages that place them: `index.md` and `lifecycle/index.md`
+(lifecycle), `lifecycle/attack-ics/index.md` (attack), `lifecycle/crosswalk.md`
+(crosswalk) and `lifecycle/phases/identification.md` (purdue). The YAML format:
 
 ```yaml
 title: Purdue levels, zones and where SnapshOT attaches
@@ -283,8 +339,13 @@ byte-identical.
 
 ## Building and previewing
 
-The package build runs `mkdocs build --strict -d build/site` (`debian/rules`);
-the builder image has the Build-Depends. To build or preview the site alone:
+The package build runs `mkdocs build --strict --clean -d build/site`
+(`debian/rules`), then copies the site to `/usr/share/snapshot/wiki` and
+`rootfs/` to `/`; mkdocs never enters the image. The Build-Depends are
+`debhelper-compat (= 13)`, `mkdocs-material`, `python3-pymdownx` and
+`python3-yaml`; `docker/Dockerfile` installs the last three in the builder
+image, and a host build needs them too ([build.md](build.md)). To build or
+preview the site alone:
 
 ```sh
 docker run --rm -v "$PWD/packages/snapshot-wiki":/w -w /w debian:trixie bash -c \
@@ -302,7 +363,7 @@ Then open `packages/snapshot-wiki/build/site/index.html` in a browser
 | `scripts/check-wiki.sh` | about 20 s | strict build, two identical builds, nothing remote in the site, offline search index, graph data for every graph, launcher coverage (each tool launcher listed by exactly one tool page, in its own folder), `status` against `vendor/sources.lock`, `data/folders.yaml` against the menu's `.directory` files, a page for every phase, `policies.json`, the wiki launcher, no em-dashes |
 | `scripts/check-wiki.sh --partial` | about 20 s | the same, but links to pages not written yet, undocumented launchers and missing phase pages are warnings, for use while content is being written |
 | `scripts/check-firefox-quiet.sh` | about 2 min | with the firefox-esr of the image's Debian snapshot pin: every policy in `policies.json` known to that Firefox's own schema, the `about:policies` screenshot (`build/firefox-quiet/about-policies.png`), the default-browser chain, and zero packets in 45 seconds of Firefox on the wiki |
-| `scripts/check-desktop.sh` | about 10 s | includes the wiki launcher in 08 - Reference and Firefox in Usual Applications |
+| `scripts/check-desktop.sh` | about 10 s | includes the wiki launcher in 08 - Reference, Firefox in Usual Applications (a `firefox-esr.desktop` stub), and `desktop-file-validate` and `xmllint` over snapshot-wiki's `rootfs/` |
 
 All run in `debian:trixie` containers and exit non-zero on failure.
 
@@ -332,7 +393,10 @@ engagement. `snapshot-wiki` makes it quiet:
   its three hosts (`firefox.settings.services.mozilla.com`,
   `firefox-settings-attachments.cdn.mozilla.net`,
   `content-signature-2.cdn.mozilla.net`) to loopback with
-  `network.dns.localDomains`, so no query or connection leaves the machine.
+  `network.dns.localDomains`, so no query or connection leaves the machine,
+  and switches off the two certificate consumers that would ask it
+  (`security.remote_settings.crlite_filters.enabled` and
+  `security.remote_settings.intermediates.enabled`).
   When the pin moves to an ESR that knows those policies, add them back to
   `policies.json`; `check-firefox-quiet.sh` fails on any policy the pinned
   Firefox does not know.

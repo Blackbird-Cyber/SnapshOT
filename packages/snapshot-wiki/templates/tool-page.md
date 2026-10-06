@@ -63,8 +63,9 @@ names where you are certain, and what evidence it produces for the tactic.
 
 ## Quick start
 
-Three to eight commands, each with a one-line explanation as a comment on the
-line above it (code blocks are narrow; trailing comments get cut off). The
+The guide to using the tool (docs/wiki.md, "Body"). A command-line tool: three
+to eight commands, each with a one-line explanation as a comment on the line
+above it (code blocks are narrow; trailing comments get cut off). The
 launcher's own command first; vendor tools as `/opt/snapshot/<tool>/bin/<cmd>`;
 `sudo` only where the image needs it; documentation addresses (192.0.2.0/24)
 for targets.
@@ -73,6 +74,20 @@ for targets.
 # What the menu launcher runs
 tool --help
 ```
+
+A GUI tool: any command lines that apply, then a numbered walkthrough of a
+first useful session, one paragraph per step, with menu labels checked against
+the trixie package or the upstream manual:
+
+1. **Open and connect or load.** Where it is in the menu, and the first dialog.
+2. **The key panes.** What each shows and where to look.
+3. **Filter, decode or analyse.** The one or two actions that answer the
+   question.
+4. **Save or export.** Into `~/cases/<case>/`, never over the original.
+
+A Python library: short working examples through
+`/opt/snapshot/ics-python/bin/ics-python`, reads first, any write marked as
+needing the engineer present.
 
 ## Output and evidence
 

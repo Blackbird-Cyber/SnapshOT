@@ -87,8 +87,8 @@ without `firefox-esr`. `debian-sensible-browser` runs `sensible-browser`, which
 runs `x-www-browser`, the alternative `firefox-esr` registers. `sensible-browser`
 comes from `sensible-utils`, which is Priority important and so already in the
 debootstrap base (the arm64 ISO's `live/filesystem.packages` lists it);
-`snapshot-wiki` depends on it as well, so the chain does not rest on that. `scripts/check-firefox-quiet.sh` checks this
-chain.
+`snapshot-wiki` depends on it as well, so the chain does not rest on that.
+`scripts/check-firefox-quiet.sh` checks this chain.
 
 The other `/etc/xdg` files above (xfwm4.xml, xfce4-desktop.xml,
 xfce4-screensaver.xml, terminalrc, the Qt confs, mimeapps.list) are not owned by
@@ -161,7 +161,8 @@ run that script; it strips the trademarked logo assets and recolours the accent 
   not re-list the pulled-in tools, and that it does list Firefox ESR (stubbed
   as `firefox-esr.desktop` with `Network;WebBrowser;`).
 
-`scripts/check-wiki.sh` checks the other direction: that every tool launcher is
-documented by exactly one wiki page, in the right folder ([wiki.md](wiki.md)).
-
 It exits non-zero on any error.
+
+`scripts/check-wiki.sh` checks the other direction: that every tool launcher is
+documented by exactly one wiki page, in the right folder, and that the wiki
+launcher validates and opens the wiki ([wiki.md](wiki.md)).
