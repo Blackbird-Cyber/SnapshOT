@@ -171,8 +171,8 @@ Quick start):
   and termshark needs none: the user is in group `wireshark`; serial ports
   need none: group `dialout`). Output and evidence then says where the output
   lands and how it is kept and hashed under `~/cases/<case>/`.
-- **GUI tools** (Wireshark, Autopsy, PulseView, GNU Radio Companion, Gqrx, OPC
-  UA Client, CherryTree, Flameshot, KeePassXC, LibreOffice): any command lines
+- **GUI tools** (Wireshark, Autopsy, PulseView, Gqrx, OPC UA Client,
+  CherryTree, Flameshot, KeePassXC, LibreOffice): any command lines
   that apply, then a numbered walkthrough of a first useful session (open,
   connect or load, the key panes, filter or decode, save or export) that an
   operator who has never used the tool can follow. Keep each step one

@@ -1,6 +1,6 @@
 ---
 # Copy to docs/tools/<folder>/<slug>.md. <slug> is the tool's usual name in
-# lowercase with dashes (nmap, tshark, aircrack-ng-suite); it becomes the URL.
+# lowercase with dashes (nmap, tshark, redpoint-nse); it becomes the URL.
 # Every key below is required unless marked optional; the build fails on a
 # missing or unknown key, an unknown phase/tactic/technique/protocol, or a
 # section heading that differs from this template. Remove these comments.
