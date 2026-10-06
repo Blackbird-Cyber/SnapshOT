@@ -1,0 +1,3 @@
+#!/bin/sh
+# SnapshOT field kit: see /usr/share/snapshot-fieldkit/snapshot-fieldkit-import.
+exec /usr/share/snapshot-fieldkit/snapshot-fieldkit-import "$@"

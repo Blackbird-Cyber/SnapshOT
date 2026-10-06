@@ -1,0 +1,93 @@
+# ICS vendor patterns: the single list read by Collect-Triage.ps1 and
+# collect-triage.cmd. One "kind|value" per line; # starts a comment.
+#
+#   name|<text>   matched case-insensitively (substring) against installed
+#                 software (name and publisher), Program Files folder names,
+#                 services and running processes. A Program Files folder that
+#                 matches is also a quick-profile project-file root.
+#   dir|<path>    a vendor default project folder, with %ENVVAR% expansion;
+#                 a quick-profile project-file root (4 levels deep).
+#
+# Keep values free of the characters & | < > ^ " (they break cmd.exe).
+name|Siemens
+name|SIMATIC
+name|TIA Portal
+name|STEP 7
+name|WinCC
+name|Rockwell
+name|Allen-Bradley
+name|RSLinx
+name|RSLogix
+name|Studio 5000
+name|FactoryTalk
+name|Schneider
+name|Unity Pro
+name|Control Expert
+name|EcoStruxure
+name|Vijeo
+name|Citect
+name|Proficy
+name|iFIX
+name|CIMPLICITY
+name|GE Digital
+name|GE Intelligent
+name|Wonderware
+name|AVEVA
+name|InTouch
+name|ArchestrA
+name|Inductive Automation
+name|Ignition
+name|Kepware
+name|KEPServerEX
+name|Matrikon
+name|OPC Foundation
+name|OPC Core Components
+name|CODESYS
+name|3S-Smart
+name|Omron
+name|CX-One
+name|Sysmac
+name|Mitsubishi
+name|MELSOFT
+name|GX Works
+name|ABB
+name|Automation Builder
+name|Honeywell
+name|Experion
+name|Emerson
+name|DeltaV
+name|Ovation
+name|Yokogawa
+name|CENTUM
+name|Beckhoff
+name|TwinCAT
+name|Phoenix Contact
+name|PC WORX
+name|PLCnext
+name|Automation Studio
+name|Triconex
+name|TriStation
+name|Moxa
+name|Hirschmann
+name|Iconics
+name|GENESIS64
+#
+dir|%USERPROFILE%\Documents\Automation
+dir|%PUBLIC%\Documents\Siemens
+dir|%ProgramFiles%\Siemens\Step7\S7Proj
+dir|%ProgramFiles(x86)%\Siemens\Step7\S7Proj
+dir|%SystemDrive%\Program Files\Siemens\Step7\S7Proj
+dir|%SystemDrive%\RSLogix 5000\Projects
+dir|%PUBLIC%\Documents\RSView Enterprise
+dir|%ALLUSERSPROFILE%\Documents\RSView Enterprise
+dir|%PUBLIC%\Documents\Studio 5000
+dir|%PUBLIC%\Wonderware
+dir|%SystemDrive%\InTouch Applications
+dir|%ProgramData%\Schneider Electric
+dir|%PUBLIC%\Documents\Schneider Electric
+dir|%ProgramFiles%\Inductive Automation\Ignition\data\projects
+dir|%ProgramData%\Kepware
+dir|%PUBLIC%\Documents\Kepware
+dir|%ProgramData%\CODESYS
+dir|%SystemDrive%\TwinCAT
+dir|%PUBLIC%\Documents\Iconics

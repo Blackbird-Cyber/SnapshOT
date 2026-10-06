@@ -3,9 +3,9 @@
 
 <!--
   SnapshOT root Xfce menu (diverts libgarcon-common's xfce-applications.menu).
-  It owns the single <Layout>: the seven SnapshOT engagement-phase folders at the
+  It owns the single <Layout>: the eight SnapshOT engagement-phase folders at the
   top level, then the stock Xfce categories nested under "Usual Applications".
-  The seven <Menu> blocks themselves are merged in from
+  The eight <Menu> blocks themselves are merged in from
   applications-merged/snapshot.menu via <DefaultMergeDirs/>.
 -->
 <Menu>
@@ -30,6 +30,7 @@
         <Menuname>SnapshOT-Protocols</Menuname>
         <Menuname>SnapshOT-Firmware</Menuname>
         <Menuname>SnapshOT-Wireless</Menuname>
+        <Menuname>SnapshOT-Forensics</Menuname>
         <Menuname>SnapshOT-Reporting</Menuname>
         <Menuname>SnapshOT-Reference</Menuname>
         <Separator/>

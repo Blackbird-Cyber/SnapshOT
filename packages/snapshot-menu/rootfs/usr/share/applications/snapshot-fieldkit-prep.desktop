@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Prepare Field Kit USB
+GenericName=Field triage USB
+Comment=Partition and format a USB stick and copy the SnapshOT field triage kit
+Exec=/usr/share/snapshot-menu/exec-in-shell "snapshot-fieldkit-prep"
+TryExec=/usr/bin/snapshot-fieldkit-prep
+Terminal=true
+StartupNotify=false
+Icon=drive-removable-media
+Categories=X-SnapshOT-Forensics;

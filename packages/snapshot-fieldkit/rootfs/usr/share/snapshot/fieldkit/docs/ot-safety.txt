@@ -1,0 +1,32 @@
+OT safety note for the SnapshOT field kit
+=========================================
+
+Control systems are fragile and production matters more than evidence.
+Before running a collector on an HMI, engineering workstation, historian
+or any host that supervises a process:
+
+1. Authorisation. Have written permission for this host, and the site's
+   operations contact present or informed. Agree a time window.
+2. Process state. Ask whether the process is running and what a host
+   restart or slowdown would mean. Prefer a maintenance window.
+3. Use the quick profile first. It reads only and stays in the usual
+   folders. Use full only when the host can take minutes of disk and CPU
+   load; never during a critical operation.
+4. Watch the banner. Each run shows where it writes, the profile and the
+   expected duration, and waits for Enter: abort there if anything is off.
+5. Serial ports are never opened (opening a port can toggle DTR/RTS and
+   reset attached equipment); they are listed from the registry, PnP and
+   /dev only. Do not add tools that open them.
+6. No network, no installs: the collectors change no configuration, start
+   no services and write only to the stick. Windows still records the run
+   in Prefetch; antivirus or EDR on the host may alert on PowerShell or on
+   Sysinternals tools. Tell the site before you start.
+7. Antivirus. If the host's antivirus quarantines a file from the stick,
+   stop: note it on the chain-of-custody form and do not disable the
+   antivirus.
+8. Removal. Wait for "Done:", then eject the stick properly (Windows:
+   Safely Remove; Linux: sync, umount) before pulling it.
+9. Write-protected media are out of scope: the collectors need to write
+   results to the stick.
+10. Record everything on docs/chain-of-custody.txt: who ran what, where,
+   when, and anything unexpected.

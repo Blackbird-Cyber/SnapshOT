@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-# Divert libgarcon-common's root Xfce menu so SnapshOT's layout (the seven
+# Divert libgarcon-common's root Xfce menu so SnapshOT's layout (the eight
 # engagement-phase folders + Usual Applications nesting) is what xfce4-panel,
 # the Whisker menu and xfce4-appfinder read. Works in either install order.
 DIV=/etc/xdg/menus/xfce-applications.menu

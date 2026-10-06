@@ -206,7 +206,7 @@ in a zip.
 - it copies the Sleuth Kit license texts to `licenses/sleuthkit/`.
 
 Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
-`config/package-lists/snapshot-reporting.list.chroot`.
+`config/package-lists/snapshot-forensics.list.chroot`.
 
 ## Size budget (per arch, this enabled set)
 

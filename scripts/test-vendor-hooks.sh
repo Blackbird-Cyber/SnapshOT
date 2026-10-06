@@ -36,7 +36,7 @@ apt-get install -y -qq --no-install-recommends \
 # The amd64 OPC UA GUI client is PyQt5; the real SnapshOT image has the desktop,
 # so give the bare test container the Qt runtime libs the offscreen platform
 # needs (libGL/EGL, glib, fontconfig, dbus, xkbcommon). Autopsy's libtsk_jni.so
-# needs the image libraries from snapshot-reporting.list.chroot and its Solr
+# needs the image libraries from snapshot-forensics.list.chroot and its Solr
 # script needs ps and lsof; the JDK is only for javac on the JNI probe (P).
 if [ "${TEST_ARCH}" = amd64 ]; then
     apt-get install -y -qq --no-install-recommends \

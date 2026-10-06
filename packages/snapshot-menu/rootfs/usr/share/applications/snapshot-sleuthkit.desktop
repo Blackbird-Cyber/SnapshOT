@@ -8,4 +8,4 @@ TryExec=/usr/bin/mmls
 Terminal=true
 StartupNotify=false
 Icon=utilities-terminal
-Categories=X-SnapshOT-Reporting;
+Categories=X-SnapshOT-Forensics;

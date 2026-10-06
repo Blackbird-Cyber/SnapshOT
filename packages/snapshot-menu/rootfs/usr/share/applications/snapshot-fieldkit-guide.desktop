@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Field Kit guide
+Comment=Workflow, profiles, OT safety and chain of custody
+Exec=exo-open /usr/share/snapshot/fieldkit/docs/fieldkit-guide.txt
+Terminal=false
+Icon=help-contents
+Categories=X-SnapshOT-Forensics;

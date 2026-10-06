@@ -1,0 +1,7 @@
+# Field kit files read on Windows targets keep their CRLF line ends byte for
+# byte: cmd.exe misparses LF-only batch files, and Notepad before Windows 10
+# shows LF-only text as one line. scripts/check-fieldkit.sh checks the endings.
+packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/windows/** -text
+packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/docs/** -text
+packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/README.txt -text
+packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/VERSION -text

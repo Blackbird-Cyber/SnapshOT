@@ -8,7 +8,7 @@
 #   1. desktop-file-validate every *.desktop (X-SnapshOT-* category hints/warnings
 #      are expected; errors are not).
 #   2. xmllint --noout every *.xml / *.menu (well-formedness).
-#   3. Parse the staged menu tree with python3-xdg and assert the seven SnapshOT
+#   3. Parse the staged menu tree with python3-xdg and assert the eight SnapshOT
 #      folders hold the expected entries and that "Usual Applications" does NOT
 #      also list the upstream tools pulled into those folders.
 set -euo pipefail
@@ -129,11 +129,13 @@ expected = {
     "03 - Protocol Tools":            ["snapshot-mbpoll.desktop"],
     "04 - Firmware & Hardware":       ["snapshot-binwalk.desktop", "org.sigrok.PulseView.desktop"],
     "05 - Wireless & SDR":            ["snapshot-aircrack-ng.desktop", "dk.gqrx.gqrx.desktop", "gnuradio-grc.desktop"],
-    "06 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
+    "06 - Forensics & Response":      ["snapshot-autopsy.desktop", "snapshot-sleuthkit.desktop",
+                                       "snapshot-fieldkit-prep.desktop", "snapshot-fieldkit-import.desktop",
+                                       "snapshot-fieldkit-folder.desktop", "snapshot-fieldkit-guide.desktop"],
+    "07 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
                                        "org.flameshot.Flameshot.desktop", "org.keepassxc.KeePassXC.desktop",
-                                       "libreoffice-writer.desktop", "snapshot-autopsy.desktop",
-                                       "snapshot-sleuthkit.desktop"],
-    "07 - Reference":                 ["snapshot-build-manifest.desktop"],
+                                       "libreoffice-writer.desktop"],
+    "08 - Reference":                 ["snapshot-build-manifest.desktop"],
 }
 for name, want in expected.items():
     if name not in top:
@@ -143,6 +145,13 @@ for name, want in expected.items():
     for w in want:
         if w not in have:
             problems.append(name + ": expected entry " + w + " not present")
+
+# Moved out of Reporting into Forensics & Response (snapshot-menu 0.2.3).
+for name, gone in {"07 - Reporting & Documentation": ["snapshot-autopsy.desktop",
+                                                       "snapshot-sleuthkit.desktop"]}.items():
+    if name in top:
+        for g in sorted(set(ids_recursive(top[name])) & set(gone)):
+            problems.append(name + ": " + g + " should be in 06 - Forensics & Response only")
 
 ua = top.get("Usual Applications")
 if ua is None:
@@ -162,7 +171,7 @@ if problems:
     for p in problems:
         print("  - " + p)
     sys.exit(1)
-print("menu check OK: seven folders populated, Usual Applications clean")
+print("menu check OK: eight folders populated, Usual Applications clean")
 PY
 
 if [ "$fail" -ne 0 ]; then echo "== check-desktop: FAIL =="; exit 1; fi
