@@ -239,12 +239,9 @@ folder.
 
 ### Hand-off to an analysis workstation
 
-SnapshOT collects, hashes and examines evidence on the command line; it ships
-no GUI forensics suite. When a case needs deeper analysis, such as
-[Autopsy](autopsy.md)'s keyword index, ingest modules and reports over a disk
-image and the imported collections, it moves to a separate analysis
-workstation. Autopsy's Windows build is the usual choice there, installed by
-the operator and not redistributed with SnapshOT.
+SnapshOT collects and hashes evidence, and examines disk images with
+[The Sleuth Kit](sleuthkit.md). When a case needs more analysis than the
+engagement laptop should do, it moves to a separate analysis workstation.
 
 The transfer unit is the case folder, with its `SHA256SUMS` and
 `chain-of-custody.log`. Lines that tool pages append to `SHA256SUMS` carry this
@@ -265,9 +262,8 @@ sha256sum "$CASE/$T"
 
 Copy the folder whole. On the workstation, run `sha256sum -c` on the transfer
 manifest from inside the copied folder (on Windows, from Git Bash or WSL)
-before Autopsy opens anything, then add the images as data sources and the
-`fieldkit/` collections as logical files. Record the transfer, with the
-manifest's hash, on the printed chain-of-custody form. The stick itself stays
+before any tool opens the evidence. Record the transfer, with the manifest's
+hash, on the printed chain-of-custody form. The stick itself stays
 collectors-only.
 
 ## Related tools
@@ -280,9 +276,6 @@ collectors-only.
   chain-of-custody form.
 - [nwipe](../reporting/nwipe.md): wipe the stick between clients before
   preparing it again.
-- [Autopsy](autopsy.md): searches an imported collection as logical files next
-  to a disk image of the same host; not shipped on this image, used on the
-  analysis workstation after the hand-off.
 
 ## Upstream documentation
 

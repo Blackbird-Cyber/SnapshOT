@@ -77,12 +77,6 @@ explaining what it would add and why it is out of scope (from `docs/vendoring.md
 - [Ghidra](../tools/firmware/ghidra.md): pinned but disabled because it and its
   JDK add about 650 MB to every image, which would take either ISO past
   GitHub's 2 GiB release-asset limit.
-- [Autopsy](../tools/forensics/autopsy.md): pinned but disabled since
-  2026-10-07, with the Java runtime and the native Sleuth Kit library built for
-  it. It is Windows-first, its Linux build is a documented subset, and fitting
-  it into an offline, read-only image kept exposing new assumptions; analysis
-  with Autopsy happens on a separate workstation after the field kit
-  [hand-off](../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation).
 - [firmware-mod-kit](../tools/firmware/firmware-mod-kit.md): needs its own build
   stage; a placeholder.
 - [searchsploit / Exploit-DB](../tools/reference/exploitdb-searchsploit.md): a
