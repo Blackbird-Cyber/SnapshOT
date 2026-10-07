@@ -5,6 +5,8 @@
 # BUILD_STRIP BUILD_OUT SNAPSHOT_DEBIAN_PIN SNAPSHOT_DIST SOURCE_DATE_EPOCH
 # HOST_UID HOST_GID. libtsk 4.15 is linked in statically, so it never loads
 # Debian's libtsk19t64 (4.12.1); the other libraries are shared, from the pin.
+# Not run since 2026-10-07: sleuthkit-jni is disabled with autopsy, its only
+# user (docs/vendoring.md, "Out of scope and why"); kept as the recorded shape.
 set -euo pipefail
 . "$(dirname "$0")/lib/pinned-apt.sh"
 pinned_install build-essential pkg-config openjdk-21-jdk-headless \

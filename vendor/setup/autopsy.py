@@ -9,6 +9,9 @@ into the TSK jar, keeps Solr's pid file and logs out of the install tree,
 restores the exec bits the zip does not store, and prunes the Windows/macOS-only
 payload except Tesseract-OCR/tessdata, which Autopsy's core installer copies
 on first start. See docs/vendoring.md.
+
+Not run since 2026-10-07: the `autopsy` stanza is disabled (docs/vendoring.md,
+"Out of scope and why"); the script stays as the recorded shape.
 """
 import fnmatch
 import os

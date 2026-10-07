@@ -1,8 +1,8 @@
 #!/bin/sh
 # Install every enabled vendored tool that this image's arch covers into
 # /opt/snapshot/<tool>/ (venvs from the staged wheelhouse, archives, per-tool
-# setup scripts such as vendor/setup/autopsy.py, wrappers, nmap NSE symlinks),
-# then clamp mtimes and remove the staging dir. Offline. See docs/vendoring.md.
+# setup scripts from vendor/setup/, wrappers, nmap NSE symlinks), then clamp
+# mtimes and remove the staging dir. Offline. See docs/vendoring.md.
 set -e
 VENDOR=/usr/local/share/snapshot/vendor
 if [ ! -f "$VENDOR/vendor-install.py" ]; then
