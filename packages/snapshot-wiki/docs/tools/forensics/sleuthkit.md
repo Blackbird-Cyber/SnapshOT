@@ -31,10 +31,7 @@ metadata and content, `tsk_recover` whole directory trees, and `mactime` turns a
 file listing into a timeline. It reads raw, split raw, E01, AFF, VMDK and VHD
 images and NTFS, FAT, exFAT, ext2/3/4, HFS+, APFS, UFS and ISO 9660 file systems.
 `img_cat` writes an image's raw contents out, which turns an E01 into a raw
-image for tools that read only raw. [Autopsy](autopsy.md), the graphical front
-end on the same library, is not shipped on this image; it runs on an analysis
-workstation after the field kit
-[hand-off](fieldkit.md#hand-off-to-an-analysis-workstation).
+image for tools that read only raw.
 
 ## Why it is on SnapshOT
 
@@ -72,9 +69,7 @@ the directories that matter (startup folders, temporary folders, the engineering
 software's project folders) and the deleted entries next to them. Indicators
 already found in captures or in a [field kit](fieldkit.md) collection, such as a
 file name or a tool's location, can be checked against the listing straight
-away. On SnapshOT this is the way into a disk image; a case that needs a full
-GUI examination goes to the analysis workstation after the
-[hand-off](fieldkit.md#hand-off-to-an-analysis-workstation).
+away. On SnapshOT, TSK is the way into a disk image.
 
 ### Eradication
 
@@ -180,8 +175,6 @@ handling](../../lifecycle/evidence-handling.md).
   or carve files the file system no longer lists.
 - [SnapshOT field kit](fieldkit.md): what was running on the host, to compare
   with what is on its disk.
-- [Autopsy](autopsy.md): the same engine with a GUI, keyword search and reports;
-  not shipped on this image, used on the analysis workstation.
 - [binwalk](../firmware/binwalk.md): for firmware images rather than disk
   images.
 

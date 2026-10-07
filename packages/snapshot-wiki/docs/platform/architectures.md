@@ -45,6 +45,5 @@ given image lists what it actually contains.
 
 - [Live session and install](live-and-install.md): writing and booting each
   image.
-- [The vendor layer](vendor-layer.md): why opcua-client is amd64 only, and why
-  [Autopsy](../tools/forensics/autopsy.md) is not shipped on either image.
+- [The vendor layer](vendor-layer.md): why opcua-client is amd64 only.
 - [Build manifest](build-manifest.md): the exact contents of the image in hand.

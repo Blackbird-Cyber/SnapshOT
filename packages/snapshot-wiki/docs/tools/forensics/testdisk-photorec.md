@@ -162,9 +162,6 @@ handling](../../lifecycle/evidence-handling.md).
 
 - [The Sleuth Kit](sleuthkit.md): list the partitions and files first; carve
   only what the file system cannot give back.
-- [Autopsy](autopsy.md): runs PhotoRec as an ingest module and puts the carved
-  files in the case; not shipped on this image, used on the analysis
-  workstation.
 - [binwalk](../firmware/binwalk.md): signature carving for firmware images
   rather than disks.
 - [nwipe](../reporting/nwipe.md): the opposite job, for media leaving an

@@ -129,9 +129,9 @@ Between them, a reader can trace any file back to the host it came from, the
 operator who collected it, and every hand it passed through, with hashes proving
 it did not change on the way.
 
-When a case needs deeper analysis than the command-line tools give, in
-[Autopsy](../tools/forensics/autopsy.md) for example, the whole case folder
-moves to a separate analysis workstation. That transfer is a hand in the chain
+When a case needs deeper analysis than
+[The Sleuth Kit](../tools/forensics/sleuthkit.md) on the engagement laptop
+gives, the whole case folder moves to a separate analysis workstation. That transfer is a hand in the chain
 like any other: check `SHA256SUMS` before the case leaves, write a transfer
 manifest with paths relative to the case folder (the lines in `SHA256SUMS`
 carry this laptop's absolute paths), verify the copy against it on the
