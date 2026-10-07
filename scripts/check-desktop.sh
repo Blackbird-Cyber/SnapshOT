@@ -39,8 +39,10 @@ echo "== retired launchers =="
 # Dropped in snapshot-menu 0.2.4: the radio slice is strictly receive-only (no
 # HackRF, no GNU Radio, no SoapySDR, no key cracking; airodump-ng is the only
 # 802.11 entry) and avahi-browse cannot work with avahi-daemon masked.
+# Dropped in snapshot-menu 0.2.9: Autopsy is no longer in the vendor layer; it
+# belongs on the analysis workstation after the field kit hand-off.
 for gone in snapshot-hackrf.desktop snapshot-soapysdr.desktop snapshot-aircrack-ng.desktop \
-            snapshot-avahi-browse.desktop; do
+            snapshot-avahi-browse.desktop snapshot-autopsy.desktop; do
     if [ -e "$MENU/usr/share/applications/$gone" ]; then
         echo "ERROR: retired launcher is back: $gone"; fail=1
     fi
@@ -152,7 +154,7 @@ expected = {
     "05 - Wireless & SDR":            ["snapshot-airodump-ng.desktop",
                                        "snapshot-rtl-sdr.desktop", "snapshot-rtl-power.desktop",
                                        "dk.gqrx.gqrx.desktop"],
-    "06 - Forensics & Response":      ["snapshot-autopsy.desktop", "snapshot-sleuthkit.desktop",
+    "06 - Forensics & Response":      ["snapshot-sleuthkit.desktop",
                                        "snapshot-fieldkit-prep.desktop", "snapshot-fieldkit-import.desktop",
                                        "snapshot-fieldkit-folder.desktop", "snapshot-fieldkit-guide.desktop"],
     "07 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
@@ -170,8 +172,7 @@ for name, want in expected.items():
             problems.append(name + ": expected entry " + w + " not present")
 
 # Moved out of Reporting into Forensics & Response (snapshot-menu 0.2.3).
-for name, gone in {"07 - Reporting & Documentation": ["snapshot-autopsy.desktop",
-                                                       "snapshot-sleuthkit.desktop"]}.items():
+for name, gone in {"07 - Reporting & Documentation": ["snapshot-sleuthkit.desktop"]}.items():
     if name in top:
         for g in sorted(set(ids_recursive(top[name])) & set(gone)):
             problems.append(name + ": " + g + " should be in 06 - Forensics & Response only")

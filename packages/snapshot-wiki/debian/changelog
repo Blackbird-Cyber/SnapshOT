@@ -1,3 +1,25 @@
+snapshot-wiki (0.1.2) unstable; urgency=low
+
+  * Autopsy page rewritten as not shipped (status: not-shipped, no
+    launcher): the vendor layer disabled Autopsy on 2026-10-07 because it
+    is Windows-first, its Linux build is a documented subset, and fitting
+    it into an offline, read-only, quiet-on-the-wire image kept exposing
+    new assumptions. It points at The Sleuth Kit, TestDisk/PhotoRec, the
+    field kit and the analysis-workstation hand-off instead.
+  * Field kit page: "Hand-off to an analysis workstation" (Autopsy's
+    Windows build, installed by the operator; the case folder with
+    SHA256SUMS and a relative-path transfer manifest as the transfer
+    unit). Evidence handling and the IR triage playbook link to it.
+  * The Sleuth Kit, TestDisk/PhotoRec, architectures, vendor layer,
+    desktop, live and install, wire classes, the ATT&CK for ICS overview
+    and the preparation, eradication and lessons-learned phases no longer
+    say Autopsy ships, nor that it needs 8 GB of RAM.
+  * hooks/snapshot_wiki.py: the facts box of a not-shipped tool without a
+    launcher says "none" and "no menu launcher" instead of "run it from a
+    terminal" and "its launcher stays hidden".
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Wed, 07 Oct 2026 12:30:00 -0400
+
 snapshot-wiki (0.1.1) unstable; urgency=low
 
   * pymodbus page: the console launcher is gone (pymodbus-repl dropped from

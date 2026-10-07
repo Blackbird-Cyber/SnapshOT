@@ -8,28 +8,7 @@ exfatprogs
 udisks2
 # fdisk, util-linux, jq, rsync and busybox are already in the base image.
 # Evidence handling on both arches: The Sleuth Kit CLI (mmls, fsstat, fls,
-# icat, tsk_recover) and TestDisk/PhotoRec (Autopsy's carver uses photorec).
+# icat, tsk_recover) and TestDisk/PhotoRec. Deeper analysis (Autopsy) runs on a
+# separate workstation after the field kit hand-off (docs/fieldkit.md).
 sleuthkit
 testdisk
-#if ARCHITECTURES amd64
-# Runtime for the vendored Autopsy (amd64 only; docs/vendoring.md). Recommends
-# are off, so everything it loads is listed:
-# - libtsk_jni.so (vendor/recipes/sleuthkit-jni.sh, built against this pin):
-libewf2
-libafflib0t64
-libvhdi1
-libvmdk1
-libsqlite3-0
-zlib1g
-# - its Solr script probes the port with lsof (procps is in the base):
-lsof
-# - the media viewer plays video through the system GStreamer:
-gstreamer1.0-plugins-base
-gstreamer1.0-plugins-good
-gstreamer1.0-plugins-ugly
-gstreamer1.0-libav
-gstreamer1.0-x
-gstreamer1.0-gl
-gstreamer1.0-alsa
-gstreamer1.0-pulseaudio
-#endif

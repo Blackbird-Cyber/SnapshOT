@@ -33,7 +33,7 @@ evidence keeps things findable:
   wifi/                 802.11 survey captures
   images/               disk images, hashed on arrival
   analysis/             results derived from the evidence: suricata/,
-                        flows/, scapy/, tsk/, carved/, autopsy/
+                        flows/, scapy/, tsk/, carved/
   fieldkit/             host triage imported from the field kit stick
   lab/                  notes from lab replays, never the plant
   reference/            the build manifest and /etc/snapshot-release
@@ -128,6 +128,15 @@ from collection to report. SnapshOT keeps it two ways, and they agree:
 Between them, a reader can trace any file back to the host it came from, the
 operator who collected it, and every hand it passed through, with hashes proving
 it did not change on the way.
+
+When a case needs deeper analysis than the command-line tools give, in
+[Autopsy](../tools/forensics/autopsy.md) for example, the whole case folder
+moves to a separate analysis workstation. That transfer is a hand in the chain
+like any other: check `SHA256SUMS` before the case leaves, write a transfer
+manifest with paths relative to the case folder (the lines in `SHA256SUMS`
+carry this laptop's absolute paths), verify the copy against it on the
+workstation, and record the transfer on the form. The field kit page's
+[hand-off](../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation) section has the commands.
 
 ## What the kit itself proves
 

@@ -817,7 +817,9 @@ def facts_box(w: Wiki, page_src: str, m: dict) -> str:
     rows = []
     f = m["folder"]
     rows.append(["Menu folder", f"[{w.folder_label(f)}]({rel(page_src, 'tools/' + f + '/index.md')})"])
-    launchers = ", ".join(f"`{x}`" for x in m["launchers"]) or "none (run it from a terminal)"
+    shipped = m["status"] != "not-shipped"
+    launchers = (", ".join(f"`{x}`" for x in m["launchers"])
+                 or ("none (run it from a terminal)" if shipped else "none"))
     rows.append(["Launchers", launchers])
     kind = SHIPS_AS[m["ships_as"]]
     if m["ships_as"] == "vendor":
@@ -828,9 +830,9 @@ def facts_box(w: Wiki, page_src: str, m: dict) -> str:
         noun = kind if len(names) == 1 else kind.replace("package", "packages", 1)
         rows.append(["Ships as", f"{noun} " + ", ".join(f"`{p}`" for p in names)])
     rows.append(["Architectures", ", ".join(m["arch"]) + (" only" if len(m["arch"]) == 1 else "")])
-    if m["status"] == "not-shipped":
+    if not shipped:
         rows.append(["Status", "Not shipped: defined in the vendor lock but disabled; "
-                               "its launcher stays hidden"])
+                     + ("its launcher stays hidden" if m["launchers"] else "no menu launcher")])
     version = (f"Pinned by the image; see the {page_link(w, BUILD_MANIFEST_PAGE, 'build manifest', page_src)}"
                if w.exists(BUILD_MANIFEST_PAGE) else f"Pinned by the image; see `{MANIFEST_FILE}`")
     rows.append(["Version", version])

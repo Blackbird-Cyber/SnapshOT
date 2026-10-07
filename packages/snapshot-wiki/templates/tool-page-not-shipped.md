@@ -1,8 +1,9 @@
 ---
 # For a vendor-layer tool whose vendor/sources.lock stanza is `enabled: false`:
-# its launcher exists in packages/snapshot-menu but TryExec hides it. Copy to
-# docs/tools/<folder>/<slug>.md. Same keys as templates/tool-page.md; the
-# PICERL notes say where the tool WOULD be used. Remove these comments.
+# its launcher exists in packages/snapshot-menu but TryExec hides it, or, for a
+# tool whose launcher was dropped from the menu, there is none: launchers: [].
+# Copy to docs/tools/<folder>/<slug>.md. Same keys as templates/tool-page.md;
+# the PICERL notes say where the tool WOULD be used. Remove these comments.
 title: TOOL
 summary: ONE LINE
 folder: FOLDER

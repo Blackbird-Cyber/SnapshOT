@@ -112,8 +112,10 @@ The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
 04 Firmware & Hardware, 05 Wireless & SDR, 06 Forensics & Response, 07 Reporting
 & Documentation and 08 Reference. 06 Forensics & Response holds the field kit
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
-Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and Autopsy and The
-Sleuth Kit, which moved there from Reporting in snapshot-menu 0.2.3.
+Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and The Sleuth Kit,
+which moved there from Reporting in snapshot-menu 0.2.3. The Autopsy launcher
+that moved with it was dropped in snapshot-menu 0.2.9, when the vendor layer
+stopped shipping Autopsy ([`docs/vendoring.md`](vendoring.md)).
 05 Wireless & SDR is strictly receive-only (snapshot-menu 0.2.4): airodump-ng
 for the passive 802.11 survey, a dongle check (rtl_eeprom, since snapshot-menu
 0.2.6; rtl_test -t only benchmarked E4000 tuners) and rtl_power for RTL-SDR

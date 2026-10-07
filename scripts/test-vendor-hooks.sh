@@ -22,6 +22,12 @@ trap 'rm -rf "$STAGE"' EXIT
 echo "== staging vendor layer for $ARCH =="
 python3 scripts/vendor.py stage --arch "$ARCH" --dest "$STAGE/vendor"
 [ -f "$STAGE/vendor/vendor-install.py" ] || { echo "nothing staged for $ARCH; run scripts/vendor.py fetch" >&2; exit 1; }
+# Autopsy is disabled in the lock (2026-10-07), with the Temurin JRE and the
+# sleuthkit-jni build only it used: none of them may be staged, on either arch,
+# even when their archives are still under vendor/src.
+for p in setup/autopsy.py src/amd64/autopsy src/amd64/temurin-jre-21.0.12.1 src/amd64/sleuthkit-jni; do
+    [ ! -e "$STAGE/vendor/$p" ] || { echo "FAIL: $p is staged although Autopsy is disabled" >&2; exit 1; }
+done
 
 echo "== installing + testing inside $IMAGE (linux/$ARCH) =="
 docker run --rm -i --platform "linux/$ARCH" \
@@ -35,15 +41,11 @@ apt-get install -y -qq --no-install-recommends \
     python3 nmap unzip ca-certificates findutils >/dev/null
 # The amd64 OPC UA GUI client is PyQt5; the real SnapshOT image has the desktop,
 # so give the bare test container the Qt runtime libs the offscreen platform
-# needs (libGL/EGL, glib, fontconfig, dbus, xkbcommon). Autopsy's libtsk_jni.so
-# needs the image libraries from snapshot-forensics.list.chroot and its Solr
-# script needs ps and lsof; the JDK is only for javac on the JNI probe (P).
+# needs (libGL/EGL, glib, fontconfig, dbus, xkbcommon).
 if [ "${TEST_ARCH}" = amd64 ]; then
     apt-get install -y -qq --no-install-recommends \
         libgl1 libegl1 libopengl0 libglib2.0-0 libfontconfig1 libfreetype6 \
-        libdbus-1-3 libxkbcommon0 \
-        libewf2 libafflib0t64 libvhdi1 libvmdk1 libsqlite3-0 zlib1g procps lsof \
-        openjdk-21-jdk-headless >/dev/null
+        libdbus-1-3 libxkbcommon0 >/dev/null
 fi
 
 fail=0
@@ -205,69 +207,16 @@ if [ "$TEST_ARCH" = amd64 ]; then
     else bad "opcua-client Qt offscreen smoke test failed"; sed 's/^/    /' /tmp/qt; fi
 fi
 
-# P. amd64-only Autopsy (vendor/setup/autopsy.py): the vendored JRE, wrapper and
-# autopsy.conf, exec bits, the prune, libtsk_jni.so in the TSK jar and loading
-# as a normal user, embedded Solr from the read-only tree, and no writes under
-# /opt/snapshot while those parts run. On arm64 none of it may be installed.
-if [ "$TEST_ARCH" = amd64 ]; then
-    A=$OPT/autopsy; APP=$A/app; JRE=$OPT/runtimes/temurin-jre-21.0.12.1
-    JAR=$APP/autopsy/modules/ext/sleuthkit-4.15.0.jar; S=$APP/autopsy/solr
-    for f in "$A/MANIFEST" "$JRE/MANIFEST" /usr/share/snapshot/vendor/autopsy.manifest \
-             /usr/share/snapshot/vendor/temurin-jre-21.0.12.1.manifest "$A/LICENSE" \
-             "$A/licenses/sleuthkit/README.md" "$OPT/bin/autopsy" "$A/bin/autopsy"; do have "$f"; done
-    v="$("$JRE/bin/java" -version 2>&1)"
-    case "$v" in *'"21.0.12.1"'*) pass "JRE 21.0.12.1 runs";;
-        *) bad "vendored JRE does not run"; printf '%s\n' "$v" | sed 's/^/    /';; esac
-    grep -qx "RUNTIME=$JRE" "$A/bin/autopsy" && grep -qx 'exec "$TOOL/app/bin/autopsy" "$@"' "$A/bin/autopsy" \
-        && pass "autopsy wrapper -> app/bin/autopsy on the JRE" || bad "autopsy wrapper wrong"
-    c=$APP/etc/autopsy.conf
-    [ "$(grep -cE '^[[:space:]]*#?[[:space:]]*jdkhome=' "$c")" = 1 ] && grep -qx "jdkhome=\"$JRE\"" "$c" \
-        && pass "autopsy.conf jdkhome=$JRE" || bad "autopsy.conf jdkhome wrong"
-    grep -q '^default_options="--nosplash ' "$c" && pass "default_options has --nosplash" || bad "no --nosplash"
-    for f in bin/autopsy platform/lib/nbexec autopsy/solr/bin/autopsy-solr autopsy/markmckinnon/mm_artifact_parser_x64_linux; do
-        [ -x "$APP/$f" ] && pass "$f executable" || bad "$f not executable"; done
-    for d in gstreamer photorec_exec plaso Volatility 7-Zip iLeapp aLeapp ewfexport_exec; do
-        [ ! -e "$APP/autopsy/$d" ] && pass "pruned autopsy/$d" || bad "autopsy/$d still present"; done
-    # The core installer copies Tesseract-OCR/tessdata on first start; only the engine goes.
-    [ "$(ls "$APP/autopsy/Tesseract-OCR")" = tessdata ] && [ -s "$APP/autopsy/Tesseract-OCR/tessdata/eng.traineddata" ] \
-        && pass "autopsy/Tesseract-OCR keeps only tessdata/" || bad "autopsy/Tesseract-OCR is not just tessdata/"
-    left="$(find "$APP" -type f \( -iname '*.exe' -o -iname '*.dylib' -o \( -iname '*.dll' ! -path '*/platform/modules/lib/*' \) \))"
-    [ -z "$left" ] && pass "no Windows/macOS binaries left" || { bad "Windows/macOS binaries left"; printf '%s\n' "$left" | head | sed 's/^/    /'; }
-    for f in autopsy/rr/rip.pl autopsy/rr-full/rip.pl autopsy/modules/lib/amd64/libheifconvert.so; do have "$APP/$f"; done
-    python3 - "$JAR" <<'PY' && pass "jar has NATIVELIBS/amd64/linux/libtsk_jni.so, no win DLLs" || bad "TSK jar not patched"
-import sys, zipfile
-z = zipfile.ZipFile(sys.argv[1]); n = z.namelist()
-assert "NATIVELIBS/amd64/linux/libtsk_jni.so" in n and not [x for x in n if x.endswith(".dll")]
-open("/tmp/libtsk_jni.so", "wb").write(z.read("NATIVELIBS/amd64/linux/libtsk_jni.so"))
-PY
-    d="$(ldd /tmp/libtsk_jni.so 2>&1)"
-    case "$d" in *"not found"*|*libtsk.so*|*"not a dynamic"*) bad "libtsk_jni.so deps wrong"; printf '%s\n' "$d" | sed 's/^/    /';;
-        *) pass "libtsk_jni.so resolves (libtsk static)";; esac
-    touch /tmp/p-marker; useradd -m tester 2>/dev/null || true
-    mkdir -p /tmp/probe; printf 'import org.sleuthkit.datamodel.SleuthkitJNI;\npublic class TskJniSmoke { public static void main(String[] a) { System.out.println("tsk-jni-version=" + SleuthkitJNI.getVersion()); } }\n' > /tmp/probe/TskJniSmoke.java
-    javac --release 21 -cp "$JAR" -d /tmp/probe /tmp/probe/TskJniSmoke.java && chmod -R a+rX /tmp/probe
-    out="$(runuser -u tester -- "$JRE/bin/java" -cp "$JAR:/tmp/probe" TskJniSmoke 2>&1)"
-    case "$out" in *tsk-jni-version=4.15.0*) pass "SleuthkitJNI loads as a normal user (4.15.0)";;
-        *) bad "JNI load failed"; printf '%s\n' "$out" | sed 's/^/    /';; esac
-    out="$(runuser -u tester -- bash -c '
-        U=$HOME/.autopsy/dev; mkdir -p "$U/solr" "$U/var/log"
-        cp "$1/server/solr/solr.xml" "$1/server/solr/zoo.cfg" "$U/solr/"; cp -r "$1/server/solr/configsets" "$U/solr/"
-        cd "$1" && SOLR_HOME="$U/solr" SOLR_JAVA_HOME="$2" SOLR_JAVA_MEM=-Xmx512m STOP_KEY=t timeout 600 "$1/bin/autopsy-solr" start -p 23232 >/tmp/solr.log 2>&1 || { echo START-FAILED; tail -5 /tmp/solr.log; }
-        python3 -c "import urllib.request as u; print(\"solr-http\", u.urlopen(\"http://127.0.0.1:23232/solr/admin/info/system?wt=json\", timeout=30).status)"
-        ls "$U/solr/solr-23232.pid" "$U/var/log/solr/solr.log"
-        SOLR_HOME="$U/solr" SOLR_JAVA_HOME="$2" "$1/bin/autopsy-solr" stop -k t -p 23232 >/dev/null 2>&1' _ "$S" "$JRE" 2>&1)"
-    case "$out" in
-        *START-FAILED*|*"No such file"*) bad "Solr did not start cleanly"; printf '%s\n' "$out" | sed 's/^/    /';;
-        *"solr-http 200"*) pass "Solr 8 starts from the read-only tree (pid + logs under ~/.autopsy/dev)";;
-        *) bad "Solr did not start"; printf '%s\n' "$out" | sed 's/^/    /';;
-    esac
-    w="$(find "$OPT" -newer /tmp/p-marker 2>/dev/null)"
-    [ -z "$w" ] && pass "running Autopsy parts wrote nothing under /opt/snapshot" || { bad "writes under /opt/snapshot"; printf '%s\n' "$w" | head | sed 's/^/    /'; }
-else
-    for f in "$OPT/autopsy" "$OPT/bin/autopsy" "$OPT/runtimes/temurin-jre-21.0.12.1" \
-             /usr/share/snapshot/vendor/autopsy.manifest; do
-        [ ! -e "$f" ] && pass "no $f on $TEST_ARCH" || bad "$f installed on $TEST_ARCH"; done
-fi
+# P. Autopsy is disabled in the lock (2026-10-07), with its Temurin JRE and the
+# sleuthkit-jni build: nothing of it may be installed on either arch, and the
+# only runtime is CPython 3.11.16.
+for f in "$OPT/autopsy" "$OPT/bin/autopsy" "$OPT/runtimes/temurin-jre-21.0.12.1" \
+         /usr/share/snapshot/vendor/autopsy.manifest \
+         /usr/share/snapshot/vendor/temurin-jre-21.0.12.1.manifest; do
+    [ ! -e "$f" ] && [ ! -L "$f" ] && pass "no $f on $TEST_ARCH" || bad "$f installed on $TEST_ARCH"
+done
+rts="$(ls "$OPT/runtimes" 2>/dev/null | tr '\n' ' ')"
+[ "$rts" = "cpython-3.11.16 " ] && pass "runtimes: only cpython-3.11.16" || bad "unexpected runtimes: $rts"
 
 echo
 if [ "$fail" -eq 0 ]; then echo "== test-vendor-hooks ($TEST_ARCH): ALL PASS =="; else echo "== test-vendor-hooks ($TEST_ARCH): FAIL =="; fi

@@ -13,7 +13,7 @@ It lives in two packages:
   (implementation in `/usr/share/snapshot-fieldkit/`, wrappers in `/usr/bin`).
 - `packages/snapshot-menu` — the launchers in **06 - Forensics & Response**:
   *Prepare Field Kit USB*, *Import Field Kit results* (both in a terminal),
-  *Field Kit folder* and *Field Kit guide*, next to Autopsy and The Sleuth Kit.
+  *Field Kit folder* and *Field Kit guide*, next to The Sleuth Kit.
 
 SnapshOT ships only its own scripts. Sysinternals and KAPE may not be
 redistributed; the operator drops them into `windows/user-supplied/`.
@@ -117,6 +117,23 @@ nothing to the stick. For each `results/<HOST>_<STAMP>/`:
 `--take-stick` (after a typed `TAKE`, or `--yes`) then remounts the stick
 read-write through udisks and removes the collections this run imported and
 verified; tampered or earlier collections stay.
+
+### Hand-off to an analysis workstation
+
+SnapshOT collects, hashes and examines on the command line (The Sleuth Kit,
+TestDisk/PhotoRec); it ships no GUI forensics suite. Deeper analysis of disk
+images and imported collections, in Autopsy for example, happens on a separate
+analysis workstation: Autopsy's Windows build is the usual choice, installed by
+the operator and not redistributed with SnapshOT (the vendor layer dropped it on
+2026-10-07; see [`docs/vendoring.md`](vendoring.md#out-of-scope-and-why)). The
+transfer unit is the case folder, `~/cases/<case>/`, with its `SHA256SUMS`
+(which points at the import manifests) and `chain-of-custody.log`. Check
+`SHA256SUMS` before the case leaves the laptop; its lines carry the laptop's
+absolute paths, so also write a transfer manifest with paths relative to the
+case folder, copy the folder whole, verify the copy against that manifest on
+the workstation before opening anything, and record the transfer in the chain
+of custody. The wiki's field kit page has the commands. The stick stays
+collectors-only.
 
 ## Profiles
 
@@ -222,7 +239,7 @@ fallback writes no manifest (`hasher=none`) and integrity starts at the import.
    except syntax), and unit tests of the collector's helpers.
 
 `scripts/check-desktop.sh` covers the menu (06 Forensics & Response holds the
-four field kit launchers, Autopsy and The Sleuth Kit) and
+four field kit launchers and The Sleuth Kit) and
 `scripts/check-installer.sh` the package changelog.
 
 Not covered by containers: PowerShell 2.0 and `cmd.exe` themselves, real USB

@@ -26,9 +26,8 @@ the operator's summary.
 | Kernel | Debian amd64 kernel | Debian arm64 kernel |
 | CPU microcode | Intel and AMD microcode | none (those packages are x86 only) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
-| *Autopsy* | yes, with its own JRE, a `libtsk_jni` built from The Sleuth Kit, and the GStreamer plugins and `lsof` it uses | no: its release ships native libraries for x86-64 Linux only, and upstream does not support arm64 Linux |
 | The Sleuth Kit CLI, TestDisk/PhotoRec | yes | yes |
-| Image size with the vendor layer | larger, published in parts | smaller |
+| Image size with the vendor layer | slightly larger | slightly smaller |
 
 Everything else is the same on both: the Debian package lists, the other
 vendored tools (the ICS Python libraries and OPC UA command-line tools, plcscan,
@@ -37,15 +36,15 @@ the [quiet network defaults](network-defaults.md).
 
 ## Launchers for amd64-only tools
 
-The launchers for the amd64-only tools (opcua-client, Autopsy) ship on both
-images and are simply hidden on arm64, so the menu is consistent and a tool
-appears only where it can run. The [build manifest](build-manifest.md) of a
+The launcher for the one amd64-only tool, opcua-client, ships on both images and
+is simply hidden on arm64, so the menu is consistent and a tool appears only
+where it can run. The [build manifest](build-manifest.md) of a
 given image lists what it actually contains.
 
 ## Related pages
 
 - [Live session and install](live-and-install.md): writing and booting each
   image.
-- [The vendor layer](vendor-layer.md): why opcua-client and Autopsy are amd64
-  only.
+- [The vendor layer](vendor-layer.md): why opcua-client is amd64 only, and why
+  [Autopsy](../tools/forensics/autopsy.md) is not shipped on either image.
 - [Build manifest](build-manifest.md): the exact contents of the image in hand.

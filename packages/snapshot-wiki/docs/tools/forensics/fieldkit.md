@@ -237,10 +237,41 @@ Keep the printed form with the stick; [evidence
 handling](../../lifecycle/evidence-handling.md) covers the rest of the case
 folder.
 
+### Hand-off to an analysis workstation
+
+SnapshOT collects, hashes and examines evidence on the command line; it ships
+no GUI forensics suite. When a case needs deeper analysis, such as
+[Autopsy](autopsy.md)'s keyword index, ingest modules and reports over a disk
+image and the imported collections, it moves to a separate analysis
+workstation. Autopsy's Windows build is the usual choice there, installed by
+the operator and not redistributed with SnapshOT.
+
+The transfer unit is the case folder, with its `SHA256SUMS` and
+`chain-of-custody.log`. Lines that tool pages append to `SHA256SUMS` carry this
+laptop's absolute paths, so check them before the case leaves, then write a
+transfer manifest with paths relative to the case folder for the copy:
+
+```sh
+CASE=~/cases/site-a
+# Every hash recorded during the engagement still matches
+( cd "$CASE" && sha256sum -c SHA256SUMS )
+# Hash every file in the case, paths relative to the case folder
+T=TRANSFER-MANIFEST-$(date -u +%Y%m%dT%H%M%SZ).sha256
+( cd "$CASE" && find . -type f ! -name "$T" -print0 | LC_ALL=C sort -z \
+    | xargs -0 sha256sum -- > "$T" )
+# The manifest's own hash goes on the custody form
+sha256sum "$CASE/$T"
+```
+
+Copy the folder whole. On the workstation, run `sha256sum -c` on the transfer
+manifest from inside the copied folder (on Windows, from Git Bash or WSL)
+before Autopsy opens anything, then add the images as data sources and the
+`fieldkit/` collections as logical files. Record the transfer, with the
+manifest's hash, on the printed chain-of-custody form. The stick itself stays
+collectors-only.
+
 ## Related tools
 
-- [Autopsy](autopsy.md): add an imported collection as logical files to search
-  it next to a disk image of the same host.
 - [The Sleuth Kit](sleuthkit.md): when a host's disk is imaged instead, list and
   recover its files from the image.
 - [tshark](../traffic/tshark.md): the network side of the same hosts, captured
@@ -249,6 +280,9 @@ folder.
   chain-of-custody form.
 - [nwipe](../reporting/nwipe.md): wipe the stick between clients before
   preparing it again.
+- [Autopsy](autopsy.md): searches an imported collection as logical files next
+  to a disk image of the same host; not shipped on this image, used on the
+  analysis workstation after the hand-off.
 
 ## Upstream documentation
 
