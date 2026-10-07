@@ -18,13 +18,10 @@ does not provide at the version we need.
 /opt/snapshot/
   runtimes/cpython-3.11.16/        bin/python3, lib/..., MANIFEST   (shared, immutable)
   runtimes/temurin-jdk-21.0.12.1/  (only once an enabled tool references it)
-  runtimes/temurin-jre-21.0.12.1/  (amd64; Autopsy)
   ics-python/   MANIFEST  venv/  bin/{ics-python,uadiscover,...,uahistoryread}
   opcua-client/ MANIFEST  venv/  bin/opcua-client            (amd64 images only)
   plcscan/      MANIFEST  app/   bin/plcscan                 (runtime python, no venv)
   redpoint-nse/ MANIFEST  scripts/*.nse  LICENSE  (+ symlinks into nmap's script dir)
-  autopsy/      MANIFEST  app/   bin/autopsy  LICENSE  licenses/sleuthkit/
-                                                             (amd64 images only)
   bin/          symlinks -> ../<tool>/bin/<cmd>   <- the only dir ever put on PATH
 ```
 
@@ -143,9 +140,12 @@ config/includes.chroot/usr/local/share/snapshot/vendor`. Hooks 0100/0200 run
 
 ## Source builds (`type: build`)
 
-Some tools need a native piece no upstream publishes for Linux. Autopsy is the
-case: its TSK jar only carries Windows DLLs, so SnapshOT builds `libtsk_jni.so`
-from The Sleuth Kit 4.15.0 (stanza `sleuthkit-jni`).
+Some tools need a native piece no upstream publishes for Linux. The one recipe in
+the tree, `sleuthkit-jni`, is the worked example: it built `libtsk_jni.so` from
+The Sleuth Kit 4.15.0 for Autopsy, whose TSK jar only carries Windows DLLs. It is
+disabled together with Autopsy (see [Out of scope and why](#out-of-scope-and-why)),
+so no current build fetches or runs it; the stanza and
+`vendor/recipes/sleuthkit-jni.sh` stay as the recorded shape.
 
 - The recipe lives in `vendor/recipes/<name>.sh` (lock key `build:`). `fetch`
   runs it for every arch an enabled tool `uses:` it on; `update-hashes` runs it
@@ -165,7 +165,8 @@ from The Sleuth Kit 4.15.0 (stanza `sleuthkit-jni`).
   change, then clear the value to `TODO` and rerun `update-hashes --only <name>`.
   Recipes build in fixed paths and link with `--build-id=none` so the output is
   bit-for-bit the same per pin.
-- The amd64 `libtsk_jni` takes about 3 to 5 minutes emulated on Apple Silicon.
+- When it was enabled, the amd64 `libtsk_jni` took about 3 to 5 minutes
+  emulated on Apple Silicon.
 
 ## Post-install setup (`setup:`)
 
@@ -187,33 +188,15 @@ A non-zero exit fails the image build. After setup, every non-`python`
 `commands:` target must exist and be executable, which catches exec bits lost
 in a zip.
 
-`vendor/setup/autopsy.py` does `unix_setup.sh`'s job for a read-only tree:
-
-- it sets `jdkhome` in `etc/autopsy.conf` to the Temurin JRE and adds
-  `--nosplash` and a per-user Jython cache dir to `default_options`;
-- it puts `libtsk_jni.so` into `autopsy/modules/ext/sleuthkit-4.15.0.jar` as
-  `NATIVELIBS/amd64/linux/libtsk_jni.so`, the only place TSK loads it from, and
-  drops the jar's Windows DLLs;
-- it appends a block to `autopsy/solr/bin/autopsy-solr.in.sh` so the embedded
-  Solr keeps its pid file and logs under `~/.autopsy/dev` instead of the
-  install tree;
-- it restores the exec bits (the zip stores no unix modes);
-- it prunes the Windows/macOS-only payload (GStreamer, PhotoRec, the Tesseract
-  OCR engine, plaso, Volatility, 7-Zip, LEAPP and other `.exe`/`.dll`/`.dylib`
-  files), about 885 MiB. RegRipper (`rr`, `rr-full`) stays because Autopsy runs
-  it with perl on Linux, and the JavaFX mac/win jars stay because module
-  manifests name them;
-- it keeps `autopsy/Tesseract-OCR/tessdata/` (the OCR language packs, 14 MiB
-  of plain data). Autopsy's core installer copies that folder into the user
-  directory on the first start, on every OS; without it the copy throws
-  `NullPointerException: srcDir` and the rest of core start-up is skipped (two
-  error dialogs, no Welcome window, JavaFX and the module installers not
-  started) until the next launch. OCR itself stays unsupported on Linux: the
-  engine is a Windows executable and is pruned;
-- it copies the Sleuth Kit license texts to `licenses/sleuthkit/`.
-
-Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
-`config/package-lists/snapshot-forensics.list.chroot`.
+`vendor/setup/autopsy.py`, kept with the disabled `autopsy` stanza, is the
+worked example. It did `unix_setup.sh`'s job for a read-only tree: it set
+`jdkhome` in `etc/autopsy.conf` to the Temurin JRE, put `libtsk_jni.so` into the
+TSK jar as `NATIVELIBS/amd64/linux/libtsk_jni.so` (the only place TSK loads it
+from), moved the embedded Solr's pid file and logs to `~/.autopsy/dev`, restored
+the exec bits the zip does not store, pruned about 885 MiB of Windows/macOS-only
+payload while keeping the OCR language packs the first start copies, and copied
+the Sleuth Kit license texts. Its docstring and comments record why each step
+was needed.
 
 ## Size budget (per arch, this enabled set)
 
@@ -223,13 +206,13 @@ Autopsy uses the system `photorec` (testdisk), GStreamer and `lsof` from
 | ics-python wheelhouse (20 wheels) | ~7.3 MiB | ~7.5 MiB |
 | opcua-client wheelhouse (19 wheels, incl. PyQt5) | ~74 MiB | n/a |
 | plcscan + Redpoint archives | ~76 KiB | ~76 KiB |
-| Temurin JRE 21 (download / on disk) | ~50 MiB / 158 MiB | n/a |
-| Autopsy 4.23.1 zip (download / installed after the prune) | 1.16 GiB / ~925 MiB | n/a |
-| sleuthkit-jni (source / build output) | 4.7 MiB / 0.9 MiB | n/a |
 
-Autopsy already pushes the amd64 ISO past GitHub's 2 GiB asset limit, so
-`release.sh` publishes it in parts. Ghidra (disabled) is 456 MiB and pulls the
-180+ MiB JDK on both arches.
+With this set both ISOs are expected to stay under GitHub's 2 GiB release-asset
+limit; `release.sh` splits any image that exceeds it. Ghidra (disabled) is
+456 MiB and pulls the 180+ MiB JDK on both arches. Autopsy (disabled) was the
+largest item on amd64: a 1.16 GiB zip installed as about 925 MiB after the
+prune, plus 158 MiB for its Temurin JRE and 0.9 MiB of `sleuthkit-jni` output,
+which put the amd64 ISO at an estimated 2.6 GiB, published in parts.
 
 ## Recipes
 
@@ -256,26 +239,12 @@ only fetched/installed once an **enabled** tool sets `runtime: <name>`.
 no `javac`), `kind: zip`/`tarball`, `strip`, `commands: name=app/<launcher>`.
 The runtime ships once the tool is enabled.
 
-Autopsy is the worked example of a Java tool that needs more than unpacking:
-
-```
-name: autopsy
-type: java
-kind: zip
-arch: amd64
-runtime: temurin-jre-21.0.12.1
-strip: 1
-url: .../autopsy-4.23.1.zip
-sha256: ...
-size: 1250556137
-uses: sleuthkit-jni                 # type: build stanza, built by vendor.py
-setup: vendor/setup/autopsy.py      # runs in the chroot after extraction
-commands: autopsy=app/bin/autopsy
-```
-
-`vendor.py fetch --only autopsy --arch amd64` fetches the JRE and the zip and
-builds `sleuthkit-jni`; `scripts/test-vendor-hooks.sh amd64` then checks the
-installed tree, the JNI load and Solr as a normal user.
+A tool that needs a native piece built from source or a fix-up after
+extraction adds `uses: <build stanza>` and `setup: vendor/setup/<tool>.py` (see
+[Source builds](#source-builds-type-build) and
+[Post-install setup](#post-install-setup-setup)); the disabled `autopsy` stanza
+in the lock shows both. A tool that `uses:` a build needs that build stanza
+enabled too, or `vendor.py fetch` stops.
 
 ### Add a data set that plugs into an OS tool
 
@@ -291,52 +260,53 @@ Each MANIFEST records a `license`; bundled `LICENSE`/`COPYING` files are copied 
 | artifact | license |
 |---|---|
 | CPython runtimes (python-build-standalone) | PSF-2.0 (bundles OpenSSL etc. under their own terms) |
-| Temurin JDK 21, Temurin JRE 21 | GPL-2.0-with-Classpath-Exception |
+| Temurin JDK 21, Temurin JRE 21 (both disabled) | GPL-2.0-with-Classpath-Exception |
 | ics-python wheels | per package (from wheel metadata / bundled LICENSE): pymodbus BSD-3-Clause, pyserial BSD-3-Clause, pycomm3 MIT, asyncua LGPL-3.0+, bacpypes3 MIT, BAC0 LGPL-3.0, python-snap7 MIT |
 | opcua-client | GPL (opcua-client, unversioned) + GPL-3.0 (PyQt5) |
 | plcscan (eloraux fork) | GPL-3.0 |
 | Redpoint NSE | Nmap license (same as Nmap; see bundled `LICENSE`) |
-| Ghidra | Apache-2.0 |
-| Autopsy | Apache-2.0; bundled third-party components under their own terms (see the release's notices) |
-| The Sleuth Kit (`libtsk_jni.so`) | IPL-1.0 and CPL-1.0 (libtsk), Apache-2.0 (Java bindings); texts in `/opt/snapshot/autopsy/licenses/sleuthkit/` |
+| Ghidra (disabled) | Apache-2.0 |
+| Autopsy (disabled) | Apache-2.0; bundled third-party components under their own terms (see the release's notices) |
+| The Sleuth Kit `libtsk_jni.so` build (disabled, with Autopsy) | IPL-1.0 and CPL-1.0 (libtsk), Apache-2.0 (Java bindings) |
+
+The disabled rows are pinned in the lock but not on the image.
 
 ## Out of scope and why
 
-- **pydnp3** — sdist only (no wheel); would need a native build stage. Dropped.
-- **cpppo** — every release pins `greenery<3.0`, and no greenery below 3.0
+- **pydnp3**: sdist only (no wheel); would need a native build stage. Dropped.
+- **cpppo**: every release pins `greenery<3.0`, and no greenery below 3.0
   publishes a wheel, so it cannot be installed under the wheels-only,
   `--require-hashes` contract. Dropped; **pycomm3 already covers EtherNet/IP**.
-- **pymodbus-repl** (`pymodbus.console`, the `pymodbus-console` command) — dead
+- **pymodbus-repl** (`pymodbus.console`, the `pymodbus-console` command): dead
   upstream: its last release, 2.0.4 (August 2024), imports `ModbusAsciiFramer`
   from `pymodbus.transaction`, which pymodbus 3.7.3 and later no longer export,
   so it only runs with pymodbus 3.7.0-3.7.2. Dropped rather than holding pymodbus
   back at 3.7.2; **`mbpoll` (Debian) is the interactive Modbus client**, and the
   pymodbus library (with pyserial for `ModbusSerialClient`) stays in `ics-python`.
-- **GRASSMARLIN** — archived; Java 8 + JavaFX and an x86-only JNetPcap native lib.
+- **Autopsy** (with the Temurin JRE 21 and the `sleuthkit-jni` build that only it
+  used): disabled on 2026-10-07. Autopsy is Windows-first and its Linux build is
+  a documented subset (upstream lists Recent Activity as partial and LEAPP,
+  plaso, OCR, YARA, HEIF and video thumbnails as unsupported on Linux), and
+  fitting it into an offline, read-only, quiet-on-the-wire image kept exposing
+  new assumptions: a TSK JNI library no release ships for Linux, Java 21, OCR
+  language data its first start copies, a JRE module (`jdk.unsupported.desktop`)
+  its JavaFX panels need, and an update check. It was amd64 only as well: its
+  JavaFX jars and other native parts are x86-64, and upstream does not support
+  arm64 Linux. **The Sleuth Kit and TestDisk/PhotoRec stay on both arches**, and
+  Autopsy belongs on a separate analysis workstation (its Windows build,
+  installed by the operator and not redistributed) that receives the case folder
+  and its `SHA256SUMS` after the field kit hand-off
+  ([docs/fieldkit.md](fieldkit.md#hand-off-to-an-analysis-workstation)).
+- **GRASSMARLIN**: archived; Java 8 + JavaFX and an x86-only JNetPcap native lib.
   Unsupported on this image.
-- **zeek / ICSNPP** — zeek ships as an OBS `.deb` into `/opt/zeek` and pulls apt
+- **zeek / ICSNPP**: zeek ships as an OBS `.deb` into `/opt/zeek` and pulls apt
   dependencies (the documented exception to "self-contained"); ICSNPP needs a
   working zeek. Defined as disabled placeholders.
-- **arkime** — `.deb` into `/opt/arkime`, no published stable sha. Placeholder.
-- **s7scan** — a Python 3 fork (desvert) would need scapy pinned in its own venv;
+- **arkime**: `.deb` into `/opt/arkime`, no published stable sha. Placeholder.
+- **s7scan**: a Python 3 fork (desvert) would need scapy pinned in its own venv;
   not yet vendored. Placeholder.
-- **firmware-mod-kit / exploitdb** — need their own build/large data stages.
+- **firmware-mod-kit / exploitdb**: need their own build/large data stages.
   Placeholders.
-- **Autopsy on arm64** — its JavaFX jars and other native parts are x86-64
-  only, and upstream does not support arm64 Linux.
 
 These stay in the lock as `enabled: false` stanzas so the shape is recorded; they
 are validated but never fetched.
-
-## Known issues
-
-- **Autopsy may keep running after its window closes.** On the amd64 live
-  image (QEMU), closing Autopsy's main window left its launcher (`nbexec`) and
-  its Java process running; the embedded Solr stopped.
-  `pgrep -af 'nbexec|temurin'` shows them; end them with `kill` before
-  starting Autopsy again. Not fixed yet. At that point `messages.log` records
-  `NoClassDefFoundError: jdk/swing/interop/SwingInterOpUtils` from JavaFX's
-  Swing bridge (`JFXPanel`): the Temurin JRE image (49 modules) does not
-  include `jdk.unsupported.desktop`, which that bridge needs, so Autopsy's
-  JavaFX panels fail, the likely cause of the hang. A runtime with that module
-  (the Temurin JDK, or a jlinked image) is the probable fix.

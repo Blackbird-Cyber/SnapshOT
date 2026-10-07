@@ -29,9 +29,6 @@ back out. On Apple Silicon it runs under amd64 emulation and takes hours.
    The per-arch `requirements.<arch>.txt` locks are committed; the wheelhouses and
    downloaded archives are gitignored, so this step is required before a build
    that includes the vendor layer. A build without it still works.
-   For amd64, `fetch` also downloads the 1.16 GiB Autopsy zip and builds
-   `libtsk_jni` from The Sleuth Kit source in a pinned trixie container (about
-   5 minutes under emulation on Apple Silicon).
 
 ## Build
 ```
