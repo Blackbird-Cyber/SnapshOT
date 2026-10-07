@@ -1,3 +1,16 @@
+snapshot-menu (0.2.9) unstable; urgency=low
+
+  * 06 Forensics & Response drops "Autopsy" (snapshot-autopsy.desktop).
+    The vendor layer no longer ships Autopsy: it is Windows-first, its
+    Linux build is a documented subset, and fitting it into an offline,
+    read-only, quiet-on-the-wire image kept exposing new assumptions (a
+    TSK JNI build, Java 21, pruned Tesseract data, a JRE module, an update
+    check). The Sleuth Kit, TestDisk/PhotoRec and the field kit stay;
+    analysis with Autopsy happens on a separate workstation after the
+    field kit hand-off.
+
+ -- Blackbird Cyber <snapshot@example.invalid>  Wed, 07 Oct 2026 12:05:00 -0400
+
 snapshot-menu (0.2.8) unstable; urgency=low
 
   * 03 Protocol Tools drops "pymodbus console"
