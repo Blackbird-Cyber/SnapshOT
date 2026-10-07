@@ -16,8 +16,8 @@ operator's overview; the full mechanics are in the repository's
 Every non-apt tool lives under `/opt/snapshot/<tool>/` with its own pinned
 runtime, so versions coexist and nothing a tool needs touches the operating
 system's interpreters or `PATH`. The shared runtimes (a pinned CPython 3.11 for
-the Python tools, a Temurin 21 JRE for Autopsy) live in
-`/opt/snapshot/runtimes/` and are read-only once installed.
+the Python tools) live in `/opt/snapshot/runtimes/` and are read-only once
+installed.
 
 The **only** directory added to `PATH` is `/opt/snapshot/bin`, and it is
 *appended*, so the operating system's own commands always win. Each entry there
@@ -58,9 +58,7 @@ When the vendor layer is present, it provides:
   Linux aarch64 wheels);
 - [**plcscan**](../tools/protocols/plcscan.md) (03 Protocol Tools);
 - the [**Redpoint NSE**](../tools/recon/redpoint-nse.md) scripts (01 Recon &
-  Discovery), symlinked into nmap;
-- **Autopsy** (06 Forensics & Response, amd64 only), with a `libtsk_jni` built
-  from The Sleuth Kit and its own Temurin JRE.
+  Discovery), symlinked into nmap.
 
 ## What is defined but disabled
 
@@ -77,9 +75,14 @@ explaining what it would add and why it is out of scope (from `docs/vendoring.md
 - [s7scan](../tools/protocols/s7scan.md): a Python 3 fork that would need scapy
   pinned in its own venv; not yet vendored.
 - [Ghidra](../tools/firmware/ghidra.md): pinned but disabled because it and its
-  JDK add about 650 MB to every image, which would take the arm64 ISO past
-  GitHub's 2 GiB release-asset limit too (the amd64 one is already published in
-  parts).
+  JDK add about 650 MB to every image, which would take either ISO past
+  GitHub's 2 GiB release-asset limit.
+- [Autopsy](../tools/forensics/autopsy.md): pinned but disabled since
+  2026-10-07, with the Java runtime and the native Sleuth Kit library built for
+  it. It is Windows-first, its Linux build is a documented subset, and fitting
+  it into an offline, read-only image kept exposing new assumptions; analysis
+  with Autopsy happens on a separate workstation after the field kit
+  [hand-off](../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation).
 - [firmware-mod-kit](../tools/firmware/firmware-mod-kit.md): needs its own build
   stage; a placeholder.
 - [searchsploit / Exploit-DB](../tools/reference/exploitdb-searchsploit.md): a

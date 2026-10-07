@@ -32,8 +32,10 @@ Its sources are the case folder and the site's own records:
 - field kit collections, whose folder names and `summary.txt` carry a UTC stamp
   (a cmd fallback without wmic records `stamp=local`, which needs converting), and
   the `chain-of-custody.log` of each import;
-- disk timelines from [The Sleuth Kit](../../tools/forensics/sleuthkit.md) and
-  [Autopsy](../../tools/forensics/autopsy.md);
+- disk timelines from [The Sleuth Kit](../../tools/forensics/sleuthkit.md), and
+  from [Autopsy](../../tools/forensics/autopsy.md) on the analysis workstation
+  when a case went there after the field kit
+  [hand-off](../../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation);
 - the historian, alarm and event journals, operator logs and the engineering
   workstation's project history, from the asset owner;
 - the team's own log of every command, scan and action, with its UTC time.

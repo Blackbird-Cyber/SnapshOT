@@ -19,9 +19,8 @@ arm64 image is for arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion)
 and UEFI arm64 hardware, boots UEFI only, and does not boot an Apple Silicon Mac
 directly. See [architectures](architectures.md) for the full comparison.
 balenaEtcher works as is; with Rufus choose DD Image mode, not ISO mode; with
-Ventoy copy the ISO onto the stick. For a VM, enable UEFI, give it 4 GB of RAM (8
-GB or more to run Autopsy) and a 20 GB disk; remove the network adapter to test
-the offline install path.
+Ventoy copy the ISO onto the stick. For a VM, enable UEFI, give it 4 GB of RAM
+and a 20 GB disk; remove the network adapter to test the offline install path.
 
 ## The live session
 

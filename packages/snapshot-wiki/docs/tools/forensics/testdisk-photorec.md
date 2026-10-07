@@ -45,8 +45,7 @@ image by content alone; TestDisk recovers the partitions and files when the
 damage is to the structure rather than the data. For an OT site the second use
 matters as much as the first: the project files, HMI configuration or recipe
 data on a damaged engineering workstation may be the quickest way back to a
-working process. [Autopsy](autopsy.md) calls the same `photorec` for its carving
-module.
+working process.
 
 ## On the wire
 
@@ -164,7 +163,8 @@ handling](../../lifecycle/evidence-handling.md).
 - [The Sleuth Kit](sleuthkit.md): list the partitions and files first; carve
   only what the file system cannot give back.
 - [Autopsy](autopsy.md): runs PhotoRec as an ingest module and puts the carved
-  files in the case.
+  files in the case; not shipped on this image, used on the analysis
+  workstation.
 - [binwalk](../firmware/binwalk.md): signature carving for firmware images
   rather than disks.
 - [nwipe](../reporting/nwipe.md): the opposite job, for media leaving an

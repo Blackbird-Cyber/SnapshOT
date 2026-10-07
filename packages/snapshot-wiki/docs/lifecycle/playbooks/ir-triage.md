@@ -86,6 +86,8 @@ the plan already authorized.
 
 ## Related pages
 
-- [Field kit](../../tools/forensics/fieldkit.md): the collectors, profiles and import.
+- [Field kit](../../tools/forensics/fieldkit.md): the collectors, profiles and import,
+  and the [hand-off](../../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation) of the case to an
+  analysis workstation when it needs deeper disk analysis.
 - [Containment](../phases/containment.md): the pre-authorized actions and their limits.
 - [Evidence handling](../evidence-handling.md): the case folder and chain of custody.

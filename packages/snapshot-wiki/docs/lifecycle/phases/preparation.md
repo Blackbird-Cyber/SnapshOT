@@ -91,8 +91,8 @@ and explained:
   Debian pin, the build commit and every package
   ([build manifest](../../platform/build-manifest.md)). Copy the manifest into
   the case folder so the report can name the exact tool versions.
-- **Check the architecture and the vendor layer.** Autopsy and the OPC UA GUI
-  client are amd64 only ([architectures](../../platform/architectures.md)). The
+- **Check the architecture and the vendor layer.** The OPC UA GUI client is
+  amd64 only ([architectures](../../platform/architectures.md)). The
   ICS Python libraries and the other vendored tools are present only in an image
   built with the [vendor layer](../../platform/vendor-layer.md); the build
   manifest says `(no vendor layer in this image)` when it is absent.

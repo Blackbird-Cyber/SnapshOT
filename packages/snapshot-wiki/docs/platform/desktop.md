@@ -25,7 +25,7 @@ Each folder has a page in this wiki listing its tools:
 | 03 Protocol Tools | Modbus, S7, EtherNet/IP, OPC UA and BACnet clients | [Protocol Tools](../tools/protocols/index.md) |
 | 04 Firmware & Hardware | flash and JTAG readers, logic analyzers, serial consoles, QEMU | [Firmware & Hardware](../tools/firmware/index.md) |
 | 05 Wireless & SDR | receive-only Wi-Fi survey and software-defined radio | [Wireless & SDR](../tools/wireless/index.md) |
-| 06 Forensics & Response | the field kit, The Sleuth Kit, TestDisk/PhotoRec, Autopsy | [Forensics & Response](../tools/forensics/index.md) |
+| 06 Forensics & Response | the field kit, The Sleuth Kit, TestDisk/PhotoRec | [Forensics & Response](../tools/forensics/index.md) |
 | 07 Reporting & Documentation | notes, screenshots, office suite, password store, disk wiping | [Reporting & Documentation](../tools/reporting/index.md) |
 | 08 Reference | the offline reference folder, the build manifest and this wiki | [Reference](../tools/reference/index.md) |
 

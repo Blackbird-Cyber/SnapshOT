@@ -30,8 +30,9 @@ Three habits keep eradication safe:
 SnapshOT's part is to find and prove: the [field kit](../../tools/forensics/fieldkit.md)
 collects services, scheduled tasks, autostart entries and accounts from Windows
 and Linux hosts so a second collection after clean-up can be compared with the
-first; [The Sleuth Kit](../../tools/forensics/sleuthkit.md) and
-[Autopsy](../../tools/forensics/autopsy.md) (amd64 only) examine disk images;
+first; [The Sleuth Kit](../../tools/forensics/sleuthkit.md) examines disk images,
+with deeper analysis on a separate workstation after the field kit
+[hand-off](../../tools/forensics/fieldkit.md#hand-off-to-an-analysis-workstation);
 [binwalk](../../tools/firmware/binwalk.md) looks inside firmware images; and the
 hashes in the case folder show that what was restored is what was verified.
 Reading or writing flash with [flashrom](../../tools/firmware/flashrom.md) or

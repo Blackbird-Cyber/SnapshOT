@@ -56,10 +56,10 @@ several menu folders:
   monitor mode, and [rtl-sdr](../tools/wireless/rtl-sdr.md) and
   [Gqrx](../tools/wireless/gqrx.md) receive radio with dongles that have no
   transmitter.
-- **Forensics & Response (06):** [Autopsy](../tools/forensics/autopsy.md) and
-  the [Sleuth Kit](../tools/forensics/sleuthkit.md) read evidence without
-  changing it; so does the field kit's import step, though the kit as a whole is
-  a writes tool (below) because preparing the stick formats it.
+- **Forensics & Response (06):** the [Sleuth Kit](../tools/forensics/sleuthkit.md)
+  reads evidence without changing it; so does the field kit's import step,
+  though the kit as a whole is a writes tool (below) because preparing the stick
+  formats it.
 - **Reporting & Documentation (07) and Reference (08):**
   [LibreOffice](../tools/reporting/libreoffice.md),
   [CherryTree](../tools/reporting/cherrytree.md),

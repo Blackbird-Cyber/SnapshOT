@@ -31,17 +31,18 @@ metadata and content, `tsk_recover` whole directory trees, and `mactime` turns a
 file listing into a timeline. It reads raw, split raw, E01, AFF, VMDK and VHD
 images and NTFS, FAT, exFAT, ext2/3/4, HFS+, APFS, UFS and ISO 9660 file systems.
 `img_cat` writes an image's raw contents out, which turns an E01 into a raw
-image for tools that read only raw. [Autopsy](autopsy.md) is the graphical front
-end on the same library.
+image for tools that read only raw. [Autopsy](autopsy.md), the graphical front
+end on the same library, is not shipped on this image; it runs on an analysis
+workstation after the field kit
+[hand-off](fieldkit.md#hand-off-to-an-analysis-workstation).
 
 ## Why it is on SnapshOT
 
 Many HMIs and engineering workstations are virtual machines or have backup
 images, and the quickest way to answer "was this file there, and when did it
 change?" is to read the image without booting or mounting it. TSK does that from
-a terminal, on both amd64 and arm64 images, where [Autopsy](autopsy.md) is amd64
-only. Its one-line commands are easy to record in the case notes, and nothing it
-does changes the image.
+a terminal, on both amd64 and arm64 images. Its one-line commands are easy to
+record in the case notes, and nothing it does changes the image.
 
 ## On the wire
 
@@ -71,8 +72,9 @@ the directories that matter (startup folders, temporary folders, the engineering
 software's project folders) and the deleted entries next to them. Indicators
 already found in captures or in a [field kit](fieldkit.md) collection, such as a
 file name or a tool's location, can be checked against the listing straight
-away. On an arm64 image, where Autopsy is not available, this is the way into a
-disk image.
+away. On SnapshOT this is the way into a disk image; a case that needs a full
+GUI examination goes to the analysis workstation after the
+[hand-off](fieldkit.md#hand-off-to-an-analysis-workstation).
 
 ### Eradication
 
@@ -174,12 +176,12 @@ handling](../../lifecycle/evidence-handling.md).
 
 ## Related tools
 
-- [Autopsy](autopsy.md): the same engine with a GUI, keyword search and reports
-  (amd64 only).
 - [TestDisk and PhotoRec](testdisk-photorec.md): rebuild a lost partition table,
   or carve files the file system no longer lists.
 - [SnapshOT field kit](fieldkit.md): what was running on the host, to compare
   with what is on its disk.
+- [Autopsy](autopsy.md): the same engine with a GUI, keyword search and reports;
+  not shipped on this image, used on the analysis workstation.
 - [binwalk](../firmware/binwalk.md): for firmware images rather than disk
   images.
 
