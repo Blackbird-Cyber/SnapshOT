@@ -24,6 +24,7 @@ scripts/check-installer.sh    # installer configuration, every package changelog
 scripts/check-desktop.sh      # menus, launchers and Xfce defaults
 scripts/check-fieldkit.sh     # field kit collectors, USB tools and package build
 scripts/check-wiki.sh         # strict wiki build and the wiki's own rules
+scripts/check-provenance.sh   # no attribution lines in commits, no embedded manifests in images
 docker run --rm -v "$PWD":/repo -w /repo python:3.11-slim-trixie \
   sh -c 'pip install -q "reuse[charset-normalizer]" && reuse lint'
 ```

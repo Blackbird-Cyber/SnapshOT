@@ -49,5 +49,3 @@ SHA256SUMS
 __pycache__/
 *.pyc
 
-# local assistant and editor session files
-.claude/

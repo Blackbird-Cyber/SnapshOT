@@ -12,6 +12,21 @@ permissions:
   contents: read
 
 jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: scripts/check-provenance.sh
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            range="${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
+          else
+            range="${{ github.event.before }}..${{ github.sha }}"
+          fi
+          scripts/check-provenance.sh "$range"
+
   reuse:
     runs-on: ubuntu-latest
     steps:

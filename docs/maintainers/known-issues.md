@@ -14,6 +14,11 @@ the ones that apply to that release.
 - v0.2.0 was built from 3a77bad (5150f10 since the history rewrite, see [history-rewrite.md](history-rewrite.md)); every item under "Current tree" below applies
   to it too.
 
+- The v0.2.0 and v0.1.0 images were built before the brand PNG files had their
+  embedded content-credential manifests removed, so the icons, the boot splash
+  lockup, the installer welcome image and the wiki favicon inside both published
+  images still carry them. A rebuild from the current tree removes them.
+
 ## Current tree
 
 - **No hibernation.** Swap, when chosen, is a file inside the encrypted root, and
