@@ -212,6 +212,11 @@ and [CONTRIBUTING.md](CONTRIBUTING.md) says how to propose a change.
 - MITRE ATT&CK for ICS data: [MITRE's terms of use](LICENSES/LicenseRef-MITRE-ATTACK-Terms.txt).
 - The SnapshOT name, mark and lockups are trademarks of Blackbird Cyber, LLC:
   [TRADEMARKS.md](TRADEMARKS.md) says how to use them and how to rebrand a fork.
+- **No warranty.** SnapshOT is provided as is, without warranty of any kind, and
+  Blackbird Cyber, LLC accepts no liability for its use, to the extent the law allows
+  (Apache License 2.0, sections 7 and 8; CC BY 4.0, section 5). Every tool on the
+  image can disturb a control system. Running one is your decision and your
+  responsibility: written authorization first, and the wiki's rules of engagement always.
 
 <p align="center">
   SnapshOT is for authorized OT engagements only.<br>

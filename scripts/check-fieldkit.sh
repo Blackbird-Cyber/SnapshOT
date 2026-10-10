@@ -108,7 +108,7 @@ for f in VERSION README.txt windows/Collect-Triage.ps1 windows/collect-triage.cm
          windows/ics-extensions.txt windows/ics-vendors.txt windows/user-supplied/README.txt \
          windows/user-supplied/.keep linux/collect-triage.sh linux/user-supplied/README.txt \
          linux/user-supplied/.keep docs/fieldkit-guide.txt docs/ot-safety.txt \
-         docs/chain-of-custody.txt results/.keep; do
+         docs/chain-of-custody.txt docs/LICENSE.txt results/.keep; do
     [ -e "$K/$f" ] || bad "kit file missing: $f"
 done
 [ "$(find "$K/results" -type f | wc -l)" = 1 ] || bad "results/ must ship with .keep only"

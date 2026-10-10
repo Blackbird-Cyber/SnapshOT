@@ -1,3 +1,15 @@
+snapshot-fieldkit (0.1.3) unstable; urgency=low
+
+  * The stick carries the Apache License 2.0 text (docs/LICENSE.txt) and
+    README.txt gains a "License and warranty" section: no warranty, no
+    liability to the extent the law allows, and the operator's responsibility
+    for running a collector on a control system host.
+  * debian/copyright: the CC-BY-4.0 paragraph now carries the full license
+    text. Debian ships no /usr/share/common-licenses/CC-BY-4.0, so the
+    earlier pointer led nowhere on the image.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Fri, 09 Oct 2026 23:15:55 -0400
+
 snapshot-fieldkit (0.1.2) unstable; urgency=low
 
   * License: Apache-2.0. debian/copyright is rewritten in DEP-5 and replaces

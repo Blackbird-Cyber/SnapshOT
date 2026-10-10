@@ -35,3 +35,14 @@ queries but only reads, and <span class="snapshot-wire snapshot-wire--writes">Wr
 can change a device, its configuration or a disk. Search works offline: press
 <kbd>/</kbd> or <kbd>S</kbd> and type. Pages are also listed by [tag](tags.md):
 phase, tactic, menu folder, wire class and protocol.
+
+## No warranty
+
+!!! warning "No warranty, and the risk is yours"
+
+    SnapshOT and this wiki are provided as is, without warranty of any kind, and
+    Blackbird Cyber, LLC accepts no liability for their use, to the extent the law
+    allows (Apache License 2.0, sections 7 and 8, for the software; CC BY 4.0,
+    section 5, for this wiki). Every tool here can disturb a control system.
+    Running one is your decision and your responsibility: written authorization
+    first, and the [rules of engagement](lifecycle/rules-of-engagement.md) always.
