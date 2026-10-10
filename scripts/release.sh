@@ -2,8 +2,10 @@
 # Publish built ISOs as a GitHub release of Blackbird-Cyber/SnapshOT.
 # Needs the GitHub CLI authenticated with write access (brew install gh; gh auth login).
 #
-#   scripts/release.sh v0.1.0 [--prerelease]
+#   scripts/release.sh v0.2.0 [--prerelease]
 #
+# The tag must be v$SNAPSHOT_VERSION from config/snapshot.env (the version the
+# images carry in /etc/snapshot-release); the script refuses any other tag.
 # Uploads every snapshot-*.hybrid.iso in the repo root plus SHA256SUMS. GitHub
 # caps a single release asset at 2 GiB, so a larger ISO is uploaded as 1900 MiB
 # parts (snapshot-<arch>.hybrid.iso.part-aa, .part-ab, ...). Join them with
@@ -14,7 +16,8 @@
 # there is no single asset to link. If that changed README.md, the script stops
 # so you can commit it; on the re-run the tag is created at HEAD (now including
 # the README) and pushed if it does not exist yet, and an existing release gets
-# its assets replaced.
+# its assets replaced. The release notes are docs/release-notes/<tag>.md when that
+# file exists, else a generic text; they are set only when the release is created.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; cd "$ROOT"
 TAG="${1:?usage: release.sh <tag> [--prerelease]}"; shift || true
@@ -24,9 +27,17 @@ LIMIT=2000000000
 command -v gh >/dev/null 2>&1 || { echo "gh is not installed: brew install gh && gh auth login" >&2; exit 1; }
 gh auth status >/dev/null 2>&1 || { echo "gh is not authenticated: gh auth login" >&2; exit 1; }
 . config/snapshot.env
+if [ "v${SNAPSHOT_VERSION}" != "$TAG" ]; then
+    echo "tag $TAG does not match config/snapshot.env (SNAPSHOT_VERSION=\"${SNAPSHOT_VERSION}\", so the tag must be v${SNAPSHOT_VERSION})." >&2
+    echo "The images carry that version in /etc/snapshot-release: bump it, commit, rebuild, then release." >&2
+    exit 1
+fi
 
 ISOS=(snapshot-*.hybrid.iso)
 [ -e "${ISOS[0]}" ] || { echo "no snapshot-*.hybrid.iso in $ROOT; build first" >&2; exit 1; }
+if [ "${#ISOS[@]}" -lt 2 ]; then
+    echo "WARNING: only ${#ISOS[@]} ISO in $ROOT (${ISOS[*]}); a release normally carries both snapshot-amd64 and snapshot-arm64." >&2
+fi
 
 if command -v sha256sum >/dev/null 2>&1; then sha256sum "${ISOS[@]}" > SHA256SUMS; else shasum -a 256 "${ISOS[@]}" > SHA256SUMS; fi
 ASSETS=(SHA256SUMS)
@@ -133,13 +144,25 @@ NOTES="SnapshOT ${TAG#v}: Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org 
 - amd64 only: the OPC UA GUI client; see 'amd64 and arm64 images' in README.md.
 - Live session: user \`snapshot\`, password \`live\`. Install with the desktop icon (Calamares, LUKS2).
 - Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS (docs/getting-started.md shows how on Linux, macOS and Windows).
-- Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 and Autopsy + its JRE are defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
+- Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 is defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
 
-# Create the release as a draft, upload one asset at a time with retries (a
-# 1.7 GiB POST over a flaky link fails easily), verify every asset's size, then
-# publish. Re-running after a failure resumes into the same draft.
+# The tag's own notes when they exist; otherwise the generic NOTES above.
+NOTES_FILE="docs/release-notes/$TAG.md"
+if [ -f "$NOTES_FILE" ]; then
+    echo "release notes: $NOTES_FILE"
+else
+    NOTES_FILE="$(mktemp)"
+    trap 'rm -f "$NOTES_FILE"' EXIT
+    printf '%s\n' "$NOTES" > "$NOTES_FILE"
+    echo "release notes: no docs/release-notes/$TAG.md; using the generic notes" >&2
+fi
+
+# Create the release as a draft, upload one asset at a time with retries (one
+# POST of up to about 1900 MiB, a 1900 MiB part or a whole ISO under the limit,
+# fails easily over a flaky link), verify every asset's size, then publish.
+# Re-running after a failure resumes into the same draft.
 if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
-    gh release create "$TAG" --repo "$REPO" --draft --title "SnapshOT ${TAG#v}" --notes "$NOTES" "$@"
+    gh release create "$TAG" --repo "$REPO" --draft --title "SnapshOT ${TAG#v}" --notes-file "$NOTES_FILE" "$@"
 fi
 for a in "${ASSETS[@]}"; do
     for try in 1 2 3 4 5; do

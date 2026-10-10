@@ -6,7 +6,9 @@
 # live-build creates device nodes and a full chroot, which do not work on a bind
 # mount from macOS and are slow on any bind mount. A named volume keeps
 # live-build's apt cache across runs so a failed build does not refetch the
-# snapshot. The ISO and build log are copied back to the repo root.
+# snapshot. The ISO is copied back to the repo root and the build log to
+# build/build.log and build/build-<arch>.log, so the two architectures' logs
+# can sit side by side.
 #
 #   docker/build-in-docker.sh                      # amd64 (default)
 #   SNAPSHOT_ARCH=arm64 docker/build-in-docker.sh  # arm64 (UEFI only)
@@ -15,7 +17,8 @@
 #
 # The container platform follows the target architecture, so the build is
 # native when host and target match and emulated otherwise. On Apple Silicon the
-# arm64 build is native; the amd64 build runs under emulation and takes hours.
+# arm64 build is native (about 6 minutes with a warm cache); the amd64 build
+# runs under emulation and takes about 20 minutes with a warm cache.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ARCH="${SNAPSHOT_ARCH:-amd64}"
@@ -46,6 +49,7 @@ docker run --rm --privileged --platform "$PLATFORM" \
         scripts/build.sh || status=$?
         mkdir -p /snapshot/build
         cp -f /build/build/build.log /snapshot/build/ 2>/dev/null || true
+        cp -f /build/build/build.log "/snapshot/build/build-${SNAPSHOT_ARCH}.log" 2>/dev/null || true
         cp -f /build/*.iso /snapshot/ 2>/dev/null || true
         exit $status
     '

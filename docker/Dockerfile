@@ -1,7 +1,8 @@
-# SnapshOT build container. Pin the base by digest for a reproducible builder.
-# TODO(release): replace the tag with a digest, e.g.
-#   FROM debian@sha256:<digest>
-FROM debian:trixie-slim
+# SnapshOT build container. The base is pinned by digest for a reproducible
+# builder: debian:trixie-slim as of 2026-10-10 (the multi-arch index digest, so
+# linux/amd64 and linux/arm64 both resolve). To move the pin, pull the tag and
+# take `docker image inspect debian:trixie-slim --format '{{index .RepoDigests 0}}'`.
+FROM debian@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 
 ENV DEBIAN_FRONTEND=noninteractive
 # mkdocs-material, python3-pymdownx and python3-yaml are snapshot-wiki's
