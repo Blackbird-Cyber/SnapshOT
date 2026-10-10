@@ -1,3 +1,10 @@
+calamares-settings-snapshot (0.1.6) unstable; urgency=low
+
+  * Brand images (the welcome image and banner) are re-exported without embedded
+    content-credential and EXIF chunks; pixels are unchanged.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 10:18:28 -0400
+
 calamares-settings-snapshot (0.1.5) unstable; urgency=low
 
   * License: Apache-2.0. debian/copyright is rewritten in DEP-5 and replaces

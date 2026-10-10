@@ -17,7 +17,8 @@ the ones that apply to that release.
 - The v0.2.0 and v0.1.0 images were built before the brand PNG files had their
   embedded content-credential manifests removed, so the icons, the boot splash
   lockup, the installer welcome image and the wiki favicon inside both published
-  images still carry them. A rebuild from the current tree removes them.
+  images still carry them. v0.2.1 is the rebuild from the clean tree; v0.2.0 and
+  v0.1.0 are withdrawn when it is published.
 
 ## Current tree
 
