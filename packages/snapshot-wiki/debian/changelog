@@ -6,6 +6,15 @@ snapshot-wiki (0.1.5) unstable; urgency=low
   * debian/copyright: the CC-BY-4.0 paragraph now carries the full license
     text. Debian ships no /usr/share/common-licenses/CC-BY-4.0, so the
     earlier pointer led nowhere on the image.
+  * Stale references: the desktop page says which command-line tools have no
+    launcher and that the disabled vendor placeholders' launchers are hidden
+    by TryExec; the vendor layer page lists pyserial and gains "Libraries
+    considered and dropped" (pydnp3, cpppo, pymodbus-repl), which the DNP3
+    primer and pycomm3 pages now link to, and s7scan links to the page's
+    "What is defined but disabled"; Ghidra's size is about 435 MiB
+    without an unmeasured image figure; the architectures page points at the
+    README's release table for sizes; field updates says the update stick
+    serves both architectures and what the script does today.
 
  -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Fri, 09 Oct 2026 23:15:55 -0400
 

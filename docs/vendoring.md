@@ -2,8 +2,8 @@
 
 Debian trixie ships exactly one of each runtime (Python 3.13 only, no Python 2,
 one JDK), but the tools SnapshOT carries disagree: the ICS Python libraries are
-happiest on 3.11, Ghidra wants a full JDK 21. So SnapshOT does **not** install
-those tools against the OS interpreters. Instead:
+happiest on 3.11, and a tool like Ghidra would need a full JDK 21. So SnapshOT
+does **not** install those tools against the OS interpreters. Instead:
 
 > **Every non-apt tool lives under `/opt/snapshot/<tool>/` with its own pinned
 > runtime, so versions coexist and nothing a tool needs touches the OS's own
@@ -208,11 +208,16 @@ was needed.
 | plcscan + Redpoint archives | ~76 KiB | ~76 KiB |
 
 With this set both ISOs are expected to stay under GitHub's 2 GiB release-asset
-limit; `release.sh` splits any image that exceeds it. Ghidra (disabled) is
-456 MiB and pulls the 180+ MiB JDK on both arches. Autopsy (disabled) was the
-largest item on amd64: a 1.16 GiB zip installed as about 925 MiB after the
-prune, plus 158 MiB for its Temurin JRE and 0.9 MiB of `sleuthkit-jni` output,
-which put the amd64 ISO at an estimated 2.6 GiB, published in parts.
+limit; `release.sh` splits any image that exceeds it. Ghidra (disabled) is about
+435 MiB (the lock's 456,551,841-byte zip) and pulls the 180+ MiB JDK on both
+arches, which would push the amd64 image toward that limit. Autopsy (disabled)
+was the largest item on amd64: a 1.16 GiB zip (1808 MiB unpacked) installed as
+about 925 MiB after the prune removed about 885 MiB, plus 158 MiB for its
+Temurin JRE and 0.9 MiB of `sleuthkit-jni` output. The October 6 builds from
+82115b8, the last with Autopsy, measured 2.53 GiB (2,721,531,904 bytes) on amd64
+and 1.72 GiB (1,845,573,632 bytes) on arm64; neither was published.
+
+v0.2.0 sizes: (filled at release).
 
 ## Recipes
 

@@ -4,8 +4,9 @@
 #
 #   sudo scripts/build.sh
 #
-# Steps: build branding .debs -> stage them -> stage the vendor layer (pinned
-# runtimes + tools + per-arch wheelhouses for this arch) -> lb config -> lb build.
+# Steps: build SnapshOT's own .debs and stage them -> stage the vendor layer
+# (pinned runtimes + tools + per-arch wheelhouses for this arch) -> stamp the
+# release identity -> lb config -> lb build.
 # Reproducibility comes from the snapshot pin in config/snapshot.env plus
 # SOURCE_DATE_EPOCH.
 set -euo pipefail
@@ -21,7 +22,7 @@ echo "SnapshOT: arch=${SNAPSHOT_ARCH} debian-pin=${SNAPSHOT_DEBIAN_PIN} SOURCE_D
 need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
 need lb; need dpkg-buildpackage
 
-# 1. Build the four branding packages into config/packages.chroot/.
+# 1. Build SnapshOT's own packages (packages/*) into config/packages.chroot/.
 mkdir -p config/packages.chroot
 for pkg in packages/*/; do
     [ -f "${pkg}debian/control" ] || continue
@@ -42,8 +43,8 @@ STAGE="config/includes.chroot/usr/local/share/snapshot/vendor"
 rm -rf "$STAGE"
 python3 scripts/vendor.py stage --arch "$SNAPSHOT_ARCH" --dest "$STAGE"
 
-# 3b. Stamp the release identity into the image: read by the manifest hook and
-#     available as /etc/snapshot-release on live and installed systems.
+# 3. Stamp the release identity into the image: read by the manifest hook and
+#    available as /etc/snapshot-release on live and installed systems.
 mkdir -p config/includes.chroot/etc
 cat > config/includes.chroot/etc/snapshot-release <<REL
 SNAPSHOT_VERSION="${SNAPSHOT_VERSION:-0.0.0}"

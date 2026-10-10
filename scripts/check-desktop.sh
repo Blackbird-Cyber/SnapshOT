@@ -154,7 +154,7 @@ expected = {
     "05 - Wireless & SDR":            ["snapshot-airodump-ng.desktop",
                                        "snapshot-rtl-sdr.desktop", "snapshot-rtl-power.desktop",
                                        "dk.gqrx.gqrx.desktop"],
-    "06 - Host Forensics":      ["snapshot-sleuthkit.desktop",
+    "06 - Host Forensics":            ["snapshot-sleuthkit.desktop",
                                        "snapshot-fieldkit-prep.desktop", "snapshot-fieldkit-import.desktop",
                                        "snapshot-fieldkit-folder.desktop", "snapshot-fieldkit-guide.desktop"],
     "07 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",

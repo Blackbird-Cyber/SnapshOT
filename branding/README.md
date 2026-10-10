@@ -1,7 +1,13 @@
 # SnapshOT branding
 
-SnapshOT is a product of Blackbird Cyber. This directory is the source of truth
-for brand assets; the copies inside `packages/*/rootfs` are derived from here.
+SnapshOT is a product of Blackbird Cyber, LLC. This directory is the source of
+truth for brand assets; the copies inside `packages/*/rootfs` are derived from
+here.
+
+These files are licensed under
+[`LicenseRef-Blackbird-Brand`](../LICENSES/LicenseRef-Blackbird-Brand.txt), not
+under the Apache License or CC BY 4.0; [`TRADEMARKS.md`](../TRADEMARKS.md) says
+how the name and marks may be used.
 
 ## Name
 - Written form: **SnapshOT** (capital OT, as in operational technology). Use it in
@@ -28,10 +34,13 @@ the image, so text is always rendered from PNG exports, never from the SVGs.
 - `snapshot-mark-*`: the mark alone (viewfinder corners around a captured
   frame with a 45° stencil cut), 1024px PNG + SVG.
 - `snapshot-icon-*`: the mark on a padded 1:1 tile (app icon, GRUB, avatar).
-- `favicon/`: red-on-black tile at 16–512px.
+- `favicon/`: red-on-black tile at 16 to 512 px.
 - SVGs are the designer's exports with the embedded C2PA manifest stripped.
   Lockup SVGs still contain live `<text>`; outline before using them anywhere
   the font is not installed.
+- The PNGs, here and their copies in `packages/`, still carry the designer's
+  embedded C2PA manifests. Whether to strip them too is an open housekeeping
+  item ([`docs/maintainers/status.md`](../docs/maintainers/status.md)).
 
 ## Splash (`splash/`)
 `snapshot-splash-2000x1125.png` is the approved title card (lockup, red rule,

@@ -30,9 +30,9 @@ pseudo-C, and working out what an unknown or implanted routine does.
 ## Why it is not shipped
 
 Ghidra is pinned in `vendor/sources.lock` but its stanza is `enabled: false`. It
-is a large Java application that runs on a full JDK 21: Ghidra is about 456 MiB
-and pulls the 180+ MiB Temurin JDK on both architectures; together they add
-roughly 650 MB and push the ISO past GitHub's 2 GiB asset limit. It is
+is a large Java application that runs on a full JDK 21: Ghidra is about 435 MiB
+and pulls the 180+ MiB Temurin JDK on both architectures, which would push the
+amd64 image toward GitHub's 2 GiB release-asset limit. It is
 defined so the shape is recorded but is not fetched or installed in this image,
 and its menu launcher stays hidden because the program it points at is absent.
 See the [vendor layer](../../platform/vendor-layer.md) platform page for how

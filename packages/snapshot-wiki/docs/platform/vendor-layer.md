@@ -51,8 +51,9 @@ script directory, as symlinks so their provenance stays visible.
 
 When the vendor layer is present, it provides:
 
-- the **ICS Python tools**: pymodbus, pycomm3, BACpypes3, BAC0, asyncua and
-  python-snap7, with the OPC UA command-line tools (03 Protocol Tools);
+- the **ICS Python tools**: pymodbus (with pyserial for serial Modbus),
+  pycomm3, BACpypes3, BAC0, asyncua and python-snap7, with the OPC UA
+  command-line tools (03 Protocol Tools);
 - the **opcua-client** GUI (03 Protocol Tools, amd64 only: PyQt5 publishes no
   Linux aarch64 wheels);
 - [**plcscan**](../tools/protocols/plcscan.md) (03 Protocol Tools);
@@ -73,8 +74,8 @@ explaining what it would add and why it is out of scope (from `docs/vendoring.md
   working Zeek.
 - [s7scan](../tools/protocols/s7scan.md): a Python 3 fork that would need scapy
   pinned in its own venv; not yet vendored.
-- [Ghidra](../tools/firmware/ghidra.md): pinned but disabled because it and its
-  JDK add about 650 MB to every image, which would take either ISO past
+- [Ghidra](../tools/firmware/ghidra.md): pinned but disabled. It is about
+  435 MiB plus the JDK it runs on, which would push the amd64 image toward
   GitHub's 2 GiB release-asset limit.
 - [firmware-mod-kit](../tools/firmware/firmware-mod-kit.md): needs its own build
   stage; a placeholder.
@@ -82,6 +83,23 @@ explaining what it would add and why it is out of scope (from `docs/vendoring.md
   large offline dataset that needs its own data stage; a placeholder.
 
 Arkime (full-packet capture) is also a disabled placeholder with no tool page.
+
+## Libraries considered and dropped
+
+Three Python packages were tried for the ICS Python tools and left out, because
+the vendor layer installs only pinned wheels:
+
+- **pydnp3**: published only as a source release, with no wheel; installing it
+  would need a native build stage. DNP3 in a capture is decoded by
+  [tshark](../tools/traffic/tshark.md) and
+  [Wireshark](../tools/traffic/wireshark.md) instead.
+- **cpppo**: every release pins a version of its greenery dependency that
+  publishes no wheel. [pycomm3](../tools/protocols/pycomm3.md) covers
+  EtherNet/IP.
+- **pymodbus-repl** (the pymodbus console): its last release only runs with
+  pymodbus 3.7.0 to 3.7.2, older than the pinned pymodbus.
+  [mbpoll](../tools/protocols/mbpoll.md) is the interactive Modbus client, and
+  the [pymodbus](../tools/protocols/pymodbus.md) library stays.
 
 ## Related pages
 

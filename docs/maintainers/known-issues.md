@@ -42,6 +42,10 @@ the ones that apply to that release.
   Windows XP reads only with KB955704. For a bare XP host, prepare the stick with
   `snapshot-fieldkit-prep --fat32`, which brings FAT32's 4 GiB file limit
   ([fieldkit.md](../fieldkit.md)).
+- **The offline update stick cannot be built.** `scripts/make-update-usb.sh`
+  publishes to a `file://` target, which aptly 1.6.1 (trixie) rejects with
+  "unknown published storage format: file". Re-image instead
+  ([updates.md](../updates.md)).
 - **Field kit checks not covered by containers.** `scripts/check-fieldkit.sh` does
   not cover PowerShell 2.0 and `cmd.exe` themselves, real USB sticks (udev timing,
   `sdX`/`nvme`/`mmcblk` partition naming), or udisks on a desktop session. The
