@@ -174,7 +174,7 @@ notes: desvert/s7scan Python 3 fork. Needs scapy pinned in its own venv on cpyth
 name: zeek
 type: data
 enabled: false
-notes: network security monitor with Modbus/DNP3 analyzers. Official OBS .deb for Debian_13, upstream prefix /opt/zeek, pulls apt deps — the documented exception to "self-contained". Not yet vendored.
+notes: network security monitor with Modbus/DNP3 analyzers. Official OBS .deb for Debian_13, upstream prefix /opt/zeek, pulls apt deps: the documented exception to "self-contained". Not yet vendored.
 
 name: icsnpp
 type: data
@@ -189,7 +189,7 @@ notes: full-packet capture/index. Ships as a .deb into /opt/arkime; upstream pub
 name: grassmarlin
 type: java
 enabled: false
-notes: archived passive ICS mapper. Java 8 + JavaFX and an x86-only JNetPcap native lib — unsupported on this image. Not vendored.
+notes: archived passive ICS mapper. Java 8 + JavaFX and an x86-only JNetPcap native lib, unsupported on this image. Not vendored.
 
 name: firmware-mod-kit
 type: data

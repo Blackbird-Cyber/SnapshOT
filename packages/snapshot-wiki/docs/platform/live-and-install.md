@@ -8,8 +8,8 @@ incident response. It boots to an Xfce desktop with the discovery, traffic,
 protocol, firmware, radio, forensics and reporting tools documented in this
 wiki, and it installs to disk with LUKS2 encryption and no network. Between
 clients the laptop is wiped and re-imaged. This page is the operator's short
-version; the authoritative detail is in the repository's `README.md` and
-`docs/offline-install.md`.
+version; the authoritative detail is in the repository's
+`docs/getting-started.md` and `docs/offline-install.md`.
 
 ## Writing the image and booting
 
@@ -54,14 +54,6 @@ The themed GRUB menu appears without a passphrase prompt; the Plymouth splash
 then asks for the disk passphrase once and the initramfs unlocks the root volume;
 LightDM shows the login screen. Sign in with the account created during the
 install.
-
-!!! warning "v0.1.0 is a live system only"
-
-    As the repository's status notes record, v0.1.0 cannot install to disk: its
-    installer stops at the display-manager step, and the encrypted layout it
-    would write does not boot under Debian's GRUB. Use v0.1.0 live only; the
-    fixes ship with the next image. Check the release notes of the image in
-    hand before relying on the installer.
 
 ## Related pages
 

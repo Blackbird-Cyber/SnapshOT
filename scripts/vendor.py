@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SnapshOT vendor tool — fetch and stage the per-tool runtimes/tools layer.
+"""SnapshOT vendor tool: fetch and stage the per-tool runtimes/tools layer.
 
 Every non-apt tool ships under /opt/snapshot/<tool>/ with its own pinned runtime
 (see docs/vendoring.md). This script reads vendor/sources.lock (schema v2) and,

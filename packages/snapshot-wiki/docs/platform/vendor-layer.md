@@ -43,10 +43,9 @@ script directory, as symlinks so their provenance stays visible.
 !!! note "The vendor layer is a build-time choice"
 
     An image includes the vendor layer only when the one online fetch step ran
-    before the build; **v0.1.0 ships none of it**. A build without that step
-    still produces a working image, just without these tools, and their launchers
-    stay hidden. Check an image's [build manifest](build-manifest.md) to see what
-    it actually carries.
+    before the build. A build without that step still produces a working image,
+    just without these tools, and their launchers stay hidden. Check an image's
+    [build manifest](build-manifest.md) to see what it actually carries.
 
 ## What is vendored
 

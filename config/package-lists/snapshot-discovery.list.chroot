@@ -1,4 +1,4 @@
-# Discovery — passive-first, careful active. (zeek is not in Debian; it is built
+# Discovery: passive-first, careful active. (zeek is not in Debian; it is built
 # in the source layer. GRASSMARLIN and Redpoint NSE are also source layer.
 # ntopng is not in trixie: upstream apt repo only, not pinned here.)
 wireshark

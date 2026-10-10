@@ -1,9 +1,12 @@
 Source: snapshot-boot
 Section: admin
 Priority: optional
-Maintainer: Blackbird Cyber <snapshot@example.invalid>
+Maintainer: "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.7.0
+Homepage: https://github.com/Blackbird-Cyber/SnapshOT
+Vcs-Browser: https://github.com/Blackbird-Cyber/SnapshOT/tree/main/packages/snapshot-boot
+Vcs-Git: https://github.com/Blackbird-Cyber/SnapshOT.git [packages/snapshot-boot]
 Rules-Requires-Root: no
 
 Package: snapshot-boot

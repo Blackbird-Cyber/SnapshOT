@@ -1,3 +1,14 @@
+snapshot-boot (0.1.2) unstable; urgency=low
+
+  * License: Apache-2.0. debian/copyright is rewritten in DEP-5 and replaces
+    the GPL-3+ placeholder.
+    The GRUB background and the Plymouth images are brand assets
+    (LicenseRef-Blackbird-Brand).
+  * Maintainer: Blackbird Cyber, LLC at its GitHub address; Homepage,
+    Vcs-Browser and Vcs-Git point at the repository.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Fri, 09 Oct 2026 22:45:00 -0400
+
 snapshot-boot (0.1.1) unstable; urgency=low
 
   * 60-snapshot-theme.cfg: append quiet and splash to

@@ -7,11 +7,11 @@ folder with hash checks and a chain-of-custody log.
 
 It lives in two packages:
 
-- `packages/snapshot-fieldkit` — the kit itself under
+- `packages/snapshot-fieldkit`: the kit itself under
   `/usr/share/snapshot/fieldkit/` (collectors, ICS lists, printable docs) and the
   host tools `snapshot-fieldkit-prep` and `snapshot-fieldkit-import`
   (implementation in `/usr/share/snapshot-fieldkit/`, wrappers in `/usr/bin`).
-- `packages/snapshot-menu` — the launchers in **06 - Forensics & Response**:
+- `packages/snapshot-menu`: the launchers in **06 - Forensics & Response**:
   *Prepare Field Kit USB*, *Import Field Kit results* (both in a terminal),
   *Field Kit folder* and *Field Kit guide*, next to The Sleuth Kit.
 
@@ -38,7 +38,7 @@ snapshot-fieldkit-prep --list            # removable disks it would offer
 
 It runs as root (it re-runs itself with sudo; the live user needs no password,
 the installed user is asked). It lists only USB, removable or hot-plug disks, and
-refuses — whatever `--device` says — the disk holding the SnapshOT boot medium
+refuses, whatever `--device` says, the disk holding the SnapshOT boot medium
 (`/run/live/medium`), the disk holding the running system (`/`, `/boot`,
 `/boot/efi`, `/usr`, `/var`, `/home`, swap; through LUKS and LVM), a partition
 instead of a whole disk, and any non-removable disk. The operator types the
@@ -76,8 +76,8 @@ On Linux (any distribution, BusyBox included):
 sudo sh /media/<user>/SNAPKIT/linux/collect-triage.sh [quick|full] [-y]
 ```
 
-Every collector prints a banner — `SnapshOT field kit <version>: read-only
-collection to <results path>, profile <p>` and the expected duration — logs it,
+Every collector prints a banner (`SnapshOT field kit <version>: read-only
+collection to <results path>, profile <p>` and the expected duration), logs it,
 and waits for Enter so the operator can abort on a fragile host (`-y`, or no
 terminal, skips the wait).
 
@@ -219,7 +219,7 @@ fallback writes no manifest (`hasher=none`) and integrity starts at the import.
 
 `scripts/check-fieldkit.sh` (Docker, network) runs:
 
-1. **static** — shellcheck, file modes (755 for the scripts, 644 otherwise),
+1. **static**: shellcheck, file modes (755 for the scripts, 644 otherwise),
    CRLF/LF and ASCII, guardrails on the three collectors, the kit layout, and
    `dpkg-buildpackage` of snapshot-fieldkit with the modes in the `.deb`;
 2. **Linux collector** in `busybox` and `debian:trixie`, as root and as `nobody`,

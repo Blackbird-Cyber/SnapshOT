@@ -6,30 +6,48 @@
 </p>
 
 <p align="center">
-  An offline, reproducible Debian image for OT/ICS assessment and client engagements, by Blackbird Cyber.
+  <b>The offline, reproducible Debian image for OT incident response and assessment.</b><br>
+  Made by <a href="https://github.com/Blackbird-Cyber">Blackbird Cyber, LLC</a>.
 </p>
 
-<!-- Static badges: the repository is private, so shields.io cannot read its
-     releases. Once it is public, the release badge can become
-     https://img.shields.io/github/v/release/Blackbird-Cyber/SnapshOT?include_prereleases
+<!-- Static badges: shields.io cannot read the releases of a private repository.
      scripts/release.sh rewrites the release badge, the pin badge and the download links. -->
 <p align="center">
   <img src="https://img.shields.io/badge/Debian-13_trixie-A81D33?logo=debian&amp;logoColor=white" alt="Debian 13 trixie">
-  <img src="https://img.shields.io/badge/Calamares-3.3-2A2C2F" alt="Calamares 3.3">
-  <img src="https://img.shields.io/badge/Xfce-4.20-2A2C2F?logo=xfce&amp;logoColor=white" alt="Xfce 4.20">
-  <img src="https://img.shields.io/badge/encryption-LUKS2-2A2C2F" alt="LUKS2">
-  <img src="https://img.shields.io/badge/snapshot_pin-2026--09--01-2A2C2F" alt="snapshot.debian.org pin">
   <img src="https://img.shields.io/badge/arch-amd64_%7C_arm64-2A2C2F" alt="amd64 | arm64">
   <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/pre--release-v0.1.0-F1000E" alt="release"></a>
+  <img src="https://img.shields.io/badge/snapshot_pin-2026--09--01-2A2C2F" alt="snapshot.debian.org pin">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2A2C2F" alt="License: Apache-2.0"></a>
+  <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/docs-CC_BY_4.0-2A2C2F" alt="Docs: CC BY 4.0"></a>
 </p>
 
-SnapshOT is a Debian 13 (trixie) live image built with `live-build`, in the way Kali
-is built, but pinned to a single snapshot.debian.org timestamp so that every build of a
-release resolves the same packages. It boots to an Xfce desktop with OT/ICS discovery,
-traffic, protocol, firmware, radio, forensics and reporting tools, and installs to disk with LUKS2
-encryption without any network. Between clients the laptop is wiped and re-imaged.
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/desktop.png" width="100%" alt="SnapshOT desktop with the tools menu open"></td>
+    <td width="50%"><img src="docs/images/wiki-graph.png" width="100%" alt="The SnapshOT Wiki lifecycle graph: every tool linked to its PICERL phases"></td>
+  </tr>
+</table>
 
-## Download
+SnapshOT is a Debian 13 (trixie) live image for incident response and assessment
+on OT and ICS networks. It boots from USB or in a VM to an Xfce desktop of OT
+tools, documents each one in an offline wiki, and installs to an encrypted disk
+with no network. It is built like Kali, with `live-build`, from one fixed
+snapshot of the Debian archive.
+
+## Why SnapshOT
+
+- **Offline and reproducible.** Every build takes its packages from one snapshot.debian.org
+  timestamp, and the image lists every package it carries in its build manifest.
+- **Quiet on the wire.** Nothing on the image sends a packet until the operator brings an
+  interface up, and the radio tools can only receive.
+- **Documented for OT response.** The on-image wiki covers every tool, how it behaves on a plant
+  network and where it fits in SANS PICERL, NIST CSF 2.0 and MITRE ATT&CK for ICS.
+- **A field triage kit.** Read-only collectors for Windows (XP to 11) and Linux hosts run from a
+  USB stick, and their results come back into a case folder with hash checks.
+- **One client per image.** The offline installer encrypts the disk with LUKS2, and the laptop is
+  wiped and re-imaged between engagements.
+
+## Get SnapshOT
 
 <p align="center">
   <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/snapshot-amd64.hybrid.iso"><img src="https://img.shields.io/badge/Download-amd64_ISO-F1000E?style=for-the-badge&amp;logo=debian&amp;logoColor=white" alt="Download the amd64 ISO"></a>
@@ -47,41 +65,67 @@ encryption without any network. Between clients the laptop is wiped and re-image
 Checksums: [`SHA256SUMS`](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.1.0/SHA256SUMS)
 <!-- release-table:end -->
 
-All releases are on the [releases page](https://github.com/Blackbird-Cyber/SnapshOT/releases).
-Read [Status and known issues](#status-and-known-issues) before installing v0.1.0.
-
-### Verify the download
-
-Compare the hash with the table or with `SHA256SUMS` from the same release:
+Read the [release notes](https://github.com/Blackbird-Cyber/SnapshOT/releases) of
+the image you download, verify it, and write it to a USB stick (`/dev/sdX` is erased):
 
 ```sh
-sha256sum -c --ignore-missing SHA256SUMS            # Linux, next to the downloaded ISO
-shasum -a 256 snapshot-amd64.hybrid.iso             # macOS
-certutil -hashfile snapshot-amd64.hybrid.iso SHA256 # Windows
+sha256sum -c --ignore-missing SHA256SUMS
+sudo dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync status=progress
 ```
 
-GitHub limits a release asset to 2 GiB. If an image exceeds the limit, it is published
-as `snapshot-<arch>.hybrid.iso.part-aa`, `.part-ab`, ...; join the parts in order, then
-verify the joined file (`SHA256SUMS` always lists the whole ISO):
+For a VM, enable UEFI and give it 4 GB of RAM and a 20 GB disk (arm64 image for
+UTM, Parallels or VMware Fusion on Apple Silicon). The live user is `snapshot`,
+password `live`; **Install SnapshOT** on the desktop runs the offline installer.
+macOS, Windows, Etcher, Rufus, Ventoy, split downloads and the install:
+[docs/getting-started.md](docs/getting-started.md).
 
-```sh
-cat snapshot-amd64.hybrid.iso.part-* > snapshot-amd64.hybrid.iso
-```
+## What's on the image
 
-On Windows: `copy /b snapshot-amd64.hybrid.iso.part-aa + snapshot-amd64.hybrid.iso.part-ab snapshot-amd64.hybrid.iso`.
+Eight numbered menu folders, in the order of an engagement ([docs/desktop.md](docs/desktop.md)):
 
-### Write to USB or run in a VM
+| Folder | What it is for | Tools |
+|---|---|---|
+| 01 - Recon & Discovery | Find the hosts, services and controllers on a segment, passively first and actively only with approval. | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, passive mDNS listen (tshark) |
+| 02 - Traffic Analysis | Capture, decode, replay and inspect network traffic, including the industrial protocols on it. | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
+| 03 - Protocol Tools | Speak Modbus, S7comm, EtherNet/IP, OPC UA and BACnet to a device, to read it or, with approval, to write to it. | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* in the *ICS Python shell*, with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
+| 04 - Firmware & Hardware | Acquire and examine firmware, talk to serial consoles and debug ports, and capture signals on a bench. | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
+| 05 - Wireless & SDR | Survey Wi-Fi and the radio spectrum around a site, receive only, for transmitters the asset inventory does not explain. | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx |
+| 06 - Forensics & Response | Collect evidence from hosts with the field kit and examine disks and images without changing them. | SnapshOT field triage kit (USB prepare and import, Windows and Linux collectors), The Sleuth Kit, TestDisk/PhotoRec |
+| 07 - Reporting & Documentation | Take notes, capture screens, keep secrets, write the report and wipe media between clients. | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
+| 08 - Reference | Offline reference data, the build manifest of this image and the SnapshOT Wiki. | offline reference folder, the build manifest, the SnapshOT Wiki |
 
-- **Linux:** `sudo dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync status=progress`
-  (`/dev/sdX` is the whole stick, not a partition; everything on it is lost).
-- **macOS:** `diskutil unmountDisk /dev/diskN`, then
-  `sudo dd if=snapshot-amd64.hybrid.iso of=/dev/rdiskN bs=4m`.
-- **balenaEtcher** works as is. **Rufus**: when it asks, choose **DD Image** mode, not
-  ISO mode. **Ventoy**: copy the ISO onto the Ventoy stick.
-- **VMs:** enable UEFI firmware, give the VM 4 GB of RAM and a 20 GB disk. Use the
-  arm64 image for UTM, Parallels or VMware Fusion on Apple Silicon; it does not boot an
-  Apple Silicon Mac directly. To test the offline install, remove the VM's network
-  adapter.
+**The SnapshOT Wiki** documents every tool above: what it does, how it behaves on the
+wire, a quick start and where it fits in each response phase, with rules of
+engagement, playbooks and protocol primers. Search, tags and the graphs work with no
+network. It is the home page of Firefox ESR, which is locked down so it makes no
+connection on its own ([docs/wiki.md](docs/wiki.md)).
+
+![SnapshOT Wiki home page](docs/images/wiki.png)
+
+**The field triage kit** is a USB stick that SnapshOT prepares. Its collectors run on
+Windows (PowerShell 2.0 or plain `cmd.exe`) and Linux (POSIX sh, BusyBox included) and
+write only to the stick; the import checks every hash and appends to the case's
+chain-of-custody log ([docs/fieldkit.md](docs/fieldkit.md)).
+
+Tools in *italics* are not packaged by Debian: the vendor layer pins them in
+[`vendor/sources.lock`](vendor/sources.lock) and installs each under
+`/opt/snapshot/<tool>/` with its own runtime ([docs/vendoring.md](docs/vendoring.md)).
+
+## Security posture
+
+- **Quiet on the wire.** avahi and systemd-timesyncd are masked, ModemManager is
+  not installed, LLMNR, mDNS, connectivity checks, automatic wired profiles and
+  IPv6 autoconfiguration are off, and Firefox ESR runs under a policy that stops
+  it calling home. Interfaces come up only when the operator brings them up.
+- **Receive-only radio.** RTL-SDR and gqrx can only listen, and airodump-ng is the
+  only 802.11 tool: enough to spot a transmitter the asset inventory does not explain.
+- **Encryption at rest.** The installer puts the root filesystem in LUKS2.
+  `/boot` holds only the kernel, initramfs and GRUB files and is not encrypted.
+- **Small, fixed install.** No recommended packages and no network: Calamares copies the live image.
+- **One client per image.** Re-image between engagements; [docs/updates.md](docs/updates.md)
+  covers the signed offline USB mirror for the exception.
+- **Scope.** A defensive and assessment platform for authorized OT engagements, with an
+  OT-focused, passive-first default toolset.
 
 ## amd64 and arm64 images
 
@@ -97,138 +141,22 @@ or upstream software requires it:
 | CPU microcode | `intel-microcode`, `amd64-microcode` | none (x86-only packages) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
 | The Sleuth Kit CLI, TestDisk/PhotoRec | yes | yes |
-| Image size with the vendor layer (approx.) | about 1.8 GiB (expected; not yet measured) | about 1.7 GiB |
 
-Everything else is the same on both: the Debian package lists, the other vendored tools
-(ICS Python libraries and OPC UA command-line tools, plcscan, Redpoint NSE), the desktop,
-the installer and the network defaults. Launchers for amd64-only tools ship on both
+Everything else is the same on both. Launchers for amd64-only tools ship on both
 images and are hidden on arm64.
-
-## Live session and install
-
-The live session logs in automatically as user `snapshot`; the password `live` is only
-needed to unlock the screen (`sudo` and the installer do not ask for it in the live
-session).
-
-**Install SnapshOT** on the desktop starts Calamares, which copies the live system to
-disk and uses no network. Choose **Erase disk** and **Encrypt system**:
-
-- Layout: EFI system partition (UEFI), a 1 GiB unencrypted `/boot`, and the root
-  filesystem (ext4 by default) inside LUKS2. Swap is off by default; if chosen, it is
-  a file inside the encrypted root (no hibernation).
-- First boot: the SnapshOT GRUB menu, then the boot splash asks for the disk passphrase
-  once, then the LightDM login.
-- Administration: the account created in the installer is in group `sudo`, with its
-  password; root stays locked. The password is remembered for 60 minutes across
-  terminals.
-- Packet capture: the live and installed users are in group `wireshark`, so
-  Wireshark, tshark and termshark capture without `sudo`; `tcpdump` still needs it.
-- The installer removes the live-session packages (`live-boot`, `live-config`,
-  `user-setup`) and Calamares itself; the installed desktop has no Install icon.
-
-The details, the module configuration and the QA checklist are in
-[docs/offline-install.md](docs/offline-install.md). The layout and the removals above
-come with the next image; see [Status and known issues](#status-and-known-issues).
-
-## What's inside
-
-- **Base:** Debian 13 trixie, Linux 6.12, Xfce 4.20 with LightDM, NetworkManager.
-  Installed with no recommended packages. Shell tools: `git`, `vim`, `nano`, `tmux`,
-  `htop`, `jq`, `curl`, `wget`, `rsync`, `tree`, `p7zip-full`, `python3` with `pip`,
-  `venv` and `pipx`.
-- **Firmware:** `firmware-linux`, `firmware-linux-nonfree`, `firmware-iwlwifi`,
-  `firmware-realtek`, `firmware-atheros`, `firmware-misc-nonfree`; Intel and AMD CPU
-  microcode on amd64.
-- **Desktop:** v0.1.0 ships a light Xfce desktop with the SnapshOT wallpaper, a
-  SnapshOT menu with a category per tool group, and the SnapshOT GRUB and Plymouth
-  themes. The next release brings the Kali-style desktop: the SnapshOT-Dark theme,
-  Papirus-Dark icons, one top panel with the Whisker menu, and the tools in eight
-  numbered folders ([docs/desktop.md](docs/desktop.md)):
-
-| Folder | Tools |
-|---|---|
-| 01 Recon & Discovery | nmap (with its ICS scripts), *Redpoint NSE*, netdiscover, arp-scan, p0f, fping, nbtscan, passive mDNS listen (tshark) |
-| 02 Traffic Analysis | Wireshark, tshark, termshark, tcpdump, tcpflow, tcpreplay, Suricata, Scapy |
-| 03 Protocol Tools | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
-| 04 Firmware & Hardware | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
-| 05 Wireless & SDR | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx; strictly receive-only |
-| 06 Forensics & Response | SnapshOT field triage kit (USB prepare and import, read-only Windows and Linux collectors; [docs/fieldkit.md](docs/fieldkit.md)), The Sleuth Kit, TestDisk/PhotoRec |
-| 07 Reporting & Documentation | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
-| 08 Reference | offline reference folder, the build manifest, the SnapshOT Wiki |
-
-Items in *italics* are the **vendor layer**: software Debian does not ship, pinned in
-[`vendor/sources.lock`](vendor/sources.lock) and installed under `/opt/snapshot/<tool>/`,
-each with its own pinned runtime (CPython 3.11 for the Python tools) and reached through
-`/opt/snapshot/bin` on `PATH`. It is fetched before a build with
-`python3 scripts/vendor.py fetch --arch all` (Docker and network); a build without that
-step still produces a working image, just without these tools. **v0.1.0 does not include
-the vendor layer.** Zeek with the CISA ICSNPP parsers, Arkime, s7scan, firmware-mod-kit,
-Exploit-DB and GRASSMARLIN are defined in the lock but disabled (not yet vendored, or in
-GRASSMARLIN's case x86-only Java 8); Ghidra is pinned but disabled because it and its JDK
-add about 650 MB. Autopsy is pinned but disabled as well: it is Windows-first, its Linux
-build is a subset, and fitting it into an offline, read-only image kept exposing new
-assumptions, so deeper disk analysis happens on a separate analysis workstation after the
-field kit [hand-off](docs/fieldkit.md#hand-off-to-an-analysis-workstation). See
-[docs/vendoring.md](docs/vendoring.md). Everything else comes from
-the Debian package lists in [`config/package-lists/`](config/package-lists/).
-
-**The SnapshOT Wiki** documents every tool above against the OT incident-response
-lifecycle (SANS PICERL, NIST CSF 2.0, MITRE ATT&CK for ICS): what each tool does, how it
-behaves on the wire, a quick start for using it, and where it fits in each phase, with
-rules of engagement, playbooks, protocol primers and a guide to the platform itself. It
-is a static site of about 13 MB in `/usr/share/snapshot/wiki` (package `snapshot-wiki`),
-and works with no network: search, tags and the interactive graphs run offline. Open it
-from **08 Reference > SnapshOT Wiki** or the Whisker favourites; it is also the
-browser's home page. See [docs/wiki.md](docs/wiki.md).
-
-**Firefox ESR**, the one package in
-[`config/package-lists/snapshot-reference.list.chroot`](config/package-lists/snapshot-reference.list.chroot),
-shows the wiki and is the browser for PLC, HMI and switch web interfaces; it is in
-Usual Applications > Internet. `snapshot-wiki` locks it down: an enterprise policy and
-system preferences stop it making any connection on its own (no telemetry, updates, Safe
-Browsing, DNS over HTTPS or Remote Settings), and its password manager is off in favour
-of KeePassXC. The price is listed under [Status and known issues](#status-and-known-issues).
-Firefox adds about 275 MiB to the image.
-
-## Security posture
-
-- **Quiet on the wire.** avahi and systemd-timesyncd are masked, and ModemManager is
-  not installed; systemd-resolved has LLMNR and mDNS off; NetworkManager does not
-  check connectivity and creates no automatic wired profile; IPv6 autoconfiguration
-  and router advertisements are off. Interfaces come up only when the operator brings
-  them up. avahi-browse needs the masked daemon, so the menu's mDNS entry is a passive
-  tshark listener on udp 5353 instead. Firefox ESR runs under an enterprise policy that
-  stops it calling home (`scripts/check-firefox-quiet.sh` captures no packet while it
-  shows the wiki).
-- **Receive-only radio.** The SDR slice is RTL-SDR and gqrx, hardware that can only
-  listen; it answers "is something transmitting here that is not in the asset
-  inventory?" with a passive sweep, and airodump-ng is the only 802.11 entry. HackRF,
-  GNU Radio and SoapySDR are deliberately not installed, and there is no key-cracking
-  launcher.
-- **Encryption at rest.** The installer sets up LUKS2 on the root filesystem. `/boot`
-  holds only the kernel, initramfs and GRUB files and is not encrypted.
-- **Small, fixed install.** No recommended packages, and no network during the
-  install: Calamares copies the live image.
-- **One client per image.** Re-image between engagements instead of updating in place;
-  [docs/updates.md](docs/updates.md) covers the signed offline USB mirror (one stick
-  serves amd64 and arm64 laptops) for the exception.
-- **Scope.** SnapshOT is a defensive and assessment platform for authorized OT
-  engagements only. The default toolset is OT-focused and passive-first.
 
 ## Reproducible builds
 
 Every apt source in the build points at one snapshot.debian.org timestamp
-(`SNAPSHOT_DEBIAN_PIN` in [`config/snapshot.env`](config/snapshot.env)), and files are
-stamped with the matching `SOURCE_DATE_EPOCH`, so two builds of a release from the same
-pin resolve the same packages. Each image records where it came from:
+(`SNAPSHOT_DEBIAN_PIN` in [`config/snapshot.env`](config/snapshot.env)), and files
+are stamped with the matching `SOURCE_DATE_EPOCH`, so two builds of a release
+resolve the same packages. Each image records where it came from in two files:
 
-- `/etc/snapshot-release`: version, architecture, Debian pin, `SOURCE_DATE_EPOCH` and
-  the build commit.
-- `/usr/share/snapshot/reference/BUILD-MANIFEST.txt`: the same, plus the kernel, every
-  installed package with its version, and the vendor layer.
+- `/etc/snapshot-release`: version, architecture, Debian pin, `SOURCE_DATE_EPOCH`, build commit.
+- `/usr/share/snapshot/reference/BUILD-MANIFEST.txt`: the same, plus the kernel, every package and the vendor layer.
 
-[`scripts/verify-repro.sh`](scripts/verify-repro.sh) builds twice from a clean state
-and compares the two ISOs, running diffoscope when they differ.
+[`scripts/verify-repro.sh`](scripts/verify-repro.sh) builds twice from a clean
+state and compares the two ISOs, running diffoscope when they differ.
 
 ## Build from source
 
@@ -245,43 +173,47 @@ docker/build-in-docker.sh                      # amd64 (emulated on Apple Silico
 sudo scripts/build.sh                          # directly on a Debian trixie host
 ```
 
-The ISO lands in the repository root and the log in `build/build.log`. Requirements,
-the vendor layer and the offline mechanics are in [docs/build.md](docs/build.md) and
-[docs/vendoring.md](docs/vendoring.md).
-Maintainers publish with [`scripts/release.sh`](scripts/release.sh), which also
-refreshes the download table above.
+The ISO lands in the repository root; [docs/build.md](docs/build.md) has the requirements
+and [CONTRIBUTING.md](CONTRIBUTING.md) says how to propose a change.
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [docs/getting-started.md](docs/getting-started.md) | Download, verify, write to USB, run in a VM, the live session and the install |
+| [docs/offline-install.md](docs/offline-install.md) | The offline LUKS2 install: disk layout, first boot, administration, module configuration, QA checklist |
+| [docs/desktop.md](docs/desktop.md) | The Xfce desktop, the menu folders and how the defaults are applied |
+| [docs/fieldkit.md](docs/fieldkit.md) | The field triage kit: workflow, profiles, what each collector collects, checks |
+| [docs/wiki.md](docs/wiki.md) | The SnapshOT Wiki: authoring guide, data files, graphs, checks, the Firefox ESR lockdown |
+| [docs/updates.md](docs/updates.md) | Re-imaging, and the signed offline USB mirror |
+| [docs/build.md](docs/build.md) | Building the image, the offline mechanics and reproducibility |
+| [docs/vendoring.md](docs/vendoring.md) | The vendor layer: the lock, the fetch step, recipes and licenses |
+| The SnapshOT Wiki | On the image at `/usr/share/snapshot/wiki`; sources in [`packages/snapshot-wiki/docs/`](packages/snapshot-wiki/docs/) |
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| [`auto/`](auto/), [`config/`](config/) | the live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
-| [`packages/`](packages/) | SnapshOT's own Debian packages: `snapshot-themes`, `snapshot-boot` (GRUB and Plymouth), `snapshot-menu`, `snapshot-fieldkit` (the field triage kit), `snapshot-wiki` (the offline wiki and the Firefox ESR policy), `calamares-settings-snapshot` (the installer) |
-| [`branding/`](branding/) | brand assets, the source for the copies in `packages/` |
-| [`vendor/`](vendor/) | the lock and per-arch requirement files for the vendor layer, `recipes/` (source builds) and `setup/` (per-tool install steps); runtimes, wheelhouses, archives and build output are fetched or built, not committed |
-| [`scripts/`](scripts/) | build, `vendor.py` and `vendor-install.py`, the installer, desktop, field kit and wiki checks, the Firefox network check, the vendor layer test, reproducibility test, update USB, release |
-| [`docker/`](docker/) | the build container |
-| [`docs/`](docs/) | build, vendoring, desktop, field kit, wiki, offline install and field updates |
+| [`auto/`](auto/), [`config/`](config/) | The live-build project: snapshot pin, package lists, hooks, files copied into the image, boot menu |
+| [`packages/`](packages/) | SnapshOT's own Debian packages: themes, boot branding, menu, field kit, wiki, installer settings |
+| [`branding/`](branding/) | Brand assets, the source for the copies in `packages/` |
+| [`vendor/`](vendor/) | The lock and per-arch requirement files for the vendor layer, source-build recipes and setup steps |
+| [`scripts/`](scripts/) | Build, vendor fetch and install, checks, reproducibility test, update USB, release |
+| [`docker/`](docker/) | The build container |
 
-## Status and known issues
+## License and trademarks
 
-- **v0.1.0 cannot install to disk.** Its installer stops at the display-manager step,
-  and the encrypted layout it would have written does not boot: Calamares formats
-  LUKS2 with Argon2id, which Debian's GRUB cannot unlock. Use v0.1.0 as a live system
-  only. The fixes are in this tree (`calamares-settings-snapshot` 0.1.3,
-  `snapshot-boot` 0.1.1) and ship with the next image.
-- An image only includes the vendor layer when `python3 scripts/vendor.py fetch` ran
-  before the build; v0.1.0 has none of it.
-- No hibernation: swap, when chosen, is a file inside the encrypted root and the
-  installer writes no resume parameter.
-- Firefox ESR receives no certificate revocation or intermediate-certificate updates,
-  add-on blocklists or security-list updates: Remote Settings is held off so the browser
-  never calls home, and the pinned ESR 140 has no policy for it, so its hosts resolve to
-  loopback ([docs/wiki.md](docs/wiki.md)). Re-image rather than update in place.
-- Product and support URLs and the package maintainer address are `example.invalid`
-  placeholders.
+- Code, configuration and packaging: [Apache License 2.0](LICENSE) (see [`NOTICE`](NOTICE)).
+- The SnapshOT Wiki and `docs/`: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- Debian packages and vendored tools keep their own licenses: see
+  `/usr/share/doc/<package>/copyright` and `BUILD-MANIFEST.txt` on the image. Files
+  derived from Kali, live-build and Xfce keep their GPL or LGPL license;
+  [`REUSE.toml`](REUSE.toml) lists every exception.
+- MITRE ATT&CK for ICS data: [MITRE's terms of use](LICENSES/LicenseRef-MITRE-ATTACK-Terms.txt).
+- The SnapshOT name, mark and lockups are trademarks of Blackbird Cyber, LLC:
+  [TRADEMARKS.md](TRADEMARKS.md) says how to use them and how to rebrand a fork.
 
-## Licensing
-
-SnapshOT is assembled from Debian packages and third-party tools. Each keeps its own
-license; on a running system the terms are in `/usr/share/doc/<package>/copyright`.
+<p align="center">
+  SnapshOT is for authorized OT engagements only.<br>
+  <a href="https://github.com/Blackbird-Cyber">Blackbird Cyber on GitHub</a> · <a href="https://github.com/Blackbird-Cyber/SnapshOT/issues">Issues</a> · <a href="SECURITY.md">Security policy</a>
+</p>
