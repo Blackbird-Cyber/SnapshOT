@@ -40,8 +40,9 @@ pycomm3 lets a responder ask such a device for its identity, list its tags and
 read named values, which is the quickest way to confirm what a capture showed
 without guessing offsets. It is the shipped answer for EtherNet/IP: cpppo, the
 other common option, was dropped because it cannot be installed under the
-vendor layer's wheels-only rule (see the [vendor
-layer](../../platform/vendor-layer.md)).
+vendor layer's wheels-only rule (see
+[Libraries considered and dropped](../../platform/vendor-layer.md#libraries-considered-and-dropped)
+on the vendor layer page).
 
 ## On the wire
 

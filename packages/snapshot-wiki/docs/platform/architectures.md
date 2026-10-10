@@ -27,7 +27,7 @@ the operator's summary.
 | CPU microcode | Intel and AMD microcode | none (those packages are x86 only) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
 | The Sleuth Kit CLI, TestDisk/PhotoRec | yes | yes |
-| Image size with the vendor layer | slightly larger | slightly smaller |
+| Image size | in the release table of the repository's `README.md` | in the same table |
 
 Everything else is the same on both: the Debian package lists, the other
 vendored tools (the ICS Python libraries and OPC UA command-line tools, plcscan,

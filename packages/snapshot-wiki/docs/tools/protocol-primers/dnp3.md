@@ -69,8 +69,8 @@ SnapshOT reads DNP3 passively and does not ship a DNP3 client. **pydnp3 is not
 shipped**: it is published only as a source distribution with no wheel, so it
 cannot be installed under the vendor layer's wheels-only, hash-pinned contract,
 and building it would need a native build stage. The reason is recorded under
-"Out of scope and why" on the [vendor layer](../../platform/vendor-layer.md)
-page. **Decoding DNP3 in a capture is the shipped path:**
+[Libraries considered and dropped](../../platform/vendor-layer.md#libraries-considered-and-dropped)
+on the vendor layer page. **Decoding DNP3 in a capture is the shipped path:**
 
 - [tshark](../traffic/tshark.md) and [Wireshark](../traffic/wireshark.md):
   capture and fully decode DNP3, including the application functions and
