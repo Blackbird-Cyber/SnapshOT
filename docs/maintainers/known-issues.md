@@ -11,7 +11,7 @@ the ones that apply to that release.
   but an end-to-end install on VMware Fusion has not been run on this build. Do
   not rely on a v0.2.0 install for an engagement until it has; the release is
   promoted from pre-release after that run.
-- v0.2.0 was built from 3a77bad; every item under "Current tree" below applies
+- v0.2.0 was built from 3a77bad (5150f10 since the history rewrite, see [history-rewrite.md](history-rewrite.md)); every item under "Current tree" below applies
   to it too.
 
 ## Current tree

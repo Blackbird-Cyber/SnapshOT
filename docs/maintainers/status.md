@@ -8,7 +8,7 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 
 | | v0.1.0 (published pre-release) | v0.2.0 (published pre-release) |
 |---|---|---|
-| Built from | 2fba3d1, published 2026-09-30 | 3a77bad, published 2026-10-10; the tag also carries the README screenshot and release-table commits |
+| Built from | 2fba3d1, published 2026-09-30 | 3a77bad (now 5150f10, see [history-rewrite.md](history-rewrite.md)), published 2026-10-10; the tag also carries the README screenshot and release-table commits |
 | Images | amd64 1,731,487,744 bytes (1.61 GiB), arm64 1,751,322,624 bytes (1.63 GiB) | amd64 1,879,412,736 bytes (1.75 GiB), arm64 1,837,701,120 bytes (1.71 GiB), neither split |
 | Verified | live boot | both images booted in QEMU to the live desktop with smoke checks of the menu, `/etc/snapshot-release`, capture without sudo, the vendor layer, package versions and the wiki; the installer was not run |
 | Desktop | light Xfce desktop with the SnapshOT wallpaper and a SnapshOT menu with a category per tool group | SnapshOT-Dark theme, Papirus-Dark icons, one top panel, the Whisker menu with eight numbered folders |
@@ -60,6 +60,14 @@ from it. Known problems are in [known-issues.md](known-issues.md).
    as the social preview (Settings > General), and check that GitHub reports the
    license as Apache License 2.0 once `LICENSE` is on main.
 
+## Before going public
+
+- The history rewrite of 2026-10-10 (see [history-rewrite.md](history-rewrite.md))
+  replaced every commit, but GitHub keeps the ten pull requests' branch refs
+  (`refs/pull/N/head`), so the pre-rewrite commits are still reachable on the PR
+  pages and by hash. Ask GitHub support to purge unreachable objects, or recreate
+  the repository from the rewritten history, before the repository goes public.
+
 ## Housekeeping
 
 - The wiki still has British spellings in places (favourites, authorisation,
@@ -70,7 +78,7 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 ## Screenshots
 
 `docs/images/desktop.png` (the Whisker menu on 01 Recon & Discovery) is from the
-v0.2.0 arm64 build (3a77bad), taken in QEMU on 2026-10-10. `docs/images/wiki.png`
+v0.2.0 arm64 build (3a77bad, now 5150f10), taken in QEMU on 2026-10-10. `docs/images/wiki.png`
 and `docs/images/wiki-graph.png` were taken from the October 6 arm64 build
 (82115b8); the v0.2.0 wiki looks the same. Re-shoot them when the wiki's look
 changes.

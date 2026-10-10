@@ -217,7 +217,7 @@ Temurin JRE and 0.9 MiB of `sleuthkit-jni` output. The October 6 builds from
 82115b8, the last with Autopsy, measured 2.53 GiB (2,721,531,904 bytes) on amd64
 and 1.72 GiB (1,845,573,632 bytes) on arm64; neither was published.
 
-The v0.2.0 images, built from 3a77bad without Autopsy, measured 1.75 GiB
+The v0.2.0 images, built from 3a77bad (5150f10 since the 2026-10-10 history rewrite) without Autopsy, measured 1.75 GiB
 (1,879,412,736 bytes) on amd64 and 1.71 GiB (1,837,701,120 bytes) on arm64,
 both under the limit, so neither is split.
 
