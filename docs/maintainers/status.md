@@ -37,9 +37,17 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 4. The next release: bump `SNAPSHOT_VERSION`, run `scripts/release.sh`, and add the
    release's caveats to its notes and to [known-issues.md](known-issues.md).
 5. Re-shoot the screenshots after the master build (see below).
-6. CI: `.github/workflows/checks.yml` has not run yet. Its first run happens when
-   the branch is pushed; add a workflow badge to the README after the first green
-   run.
+6. CI: `.github/workflows/checks.yml` (`reuse lint`, then `check-installer.sh`,
+   `check-desktop.sh` and `check-wiki.sh` with `SNAPSHOT_CHECK_PLATFORM=linux/amd64`)
+   has not run yet. Its first run happens when the branch is pushed. Add a
+   workflow badge to the README after the first green run; if it is not green
+   after two fix attempts, remove the workflow and record why here.
+7. When the repository goes public: enable private vulnerability reporting
+   (`gh api -X PUT repos/Blackbird-Cyber/SnapshOT/private-vulnerability-reporting`;
+   GitHub offers it only on public repositories and the call returned 404 while
+   the repository was private), upload `branding/splash/snapshot-splash-1920x1080.png`
+   as the social preview (Settings > General), and check that GitHub reports the
+   license as Apache License 2.0 once `LICENSE` is on main.
 
 ## Housekeeping
 

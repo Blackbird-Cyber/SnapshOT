@@ -1,0 +1,37 @@
+# REUSE compliance, then the container-based checks that need no image build.
+# The check scripts run Docker themselves; on the x86-64 runner they use the
+# linux/amd64 trixie image instead of their Apple Silicon default.
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  reuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: reuse lint
+        run: |
+          docker run --rm -v "$PWD":/repo:ro -w /repo python:3.11-slim-trixie \
+            sh -c 'pip install -q --root-user-action=ignore "reuse[charset-normalizer]" && reuse lint'
+
+  check:
+    needs: reuse
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        script: [check-installer, check-desktop, check-wiki]
+    env:
+      SNAPSHOT_CHECK_PLATFORM: linux/amd64
+    steps:
+      - uses: actions/checkout@v4
+      - name: scripts/${{ matrix.script }}.sh
+        run: scripts/${{ matrix.script }}.sh
