@@ -11,6 +11,15 @@ house standard; a specific engagement can only make them stricter, never looser.
 SnapshOT works [passive first](wire-classes.md): everything here is about the
 moment the team wants to send a packet, open a port or touch a device.
 
+!!! warning "No warranty, and the risk is yours"
+
+    These rules reduce risk; they do not remove it. SnapshOT is provided as is,
+    without warranty of any kind, and Blackbird Cyber, LLC accepts no liability
+    for its use, to the extent the law allows (Apache License 2.0, sections 7
+    and 8; CC BY 4.0, section 5). What the team sends, writes or connects on a
+    plant floor is the team's decision and the team's responsibility, under the
+    authorization agreed below.
+
 ## Authorization in writing, and its scope
 
 No active work happens without written authorization from the asset owner. A

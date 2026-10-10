@@ -42,8 +42,19 @@ Layout
     windows\user-supplied\   put Sysinternals autorunsc / sigcheck here (optional)
     linux\             collect-triage.sh
     linux\user-supplied\     optional static tools (listed, not run)
-    docs\              fieldkit-guide.txt, ot-safety.txt, chain-of-custody.txt
+    docs\              fieldkit-guide.txt, ot-safety.txt, chain-of-custody.txt, LICENSE.txt
     results\           one folder per collection: <HOST>_<UTC time>
 
-Scripts are licensed Apache-2.0 and these documents CC BY 4.0, both
-Copyright 2026 Blackbird Cyber, LLC (github.com/Blackbird-Cyber/SnapshOT).
+License and warranty
+--------------------
+The scripts are licensed under the Apache License 2.0 (the text is in
+docs\LICENSE.txt) and these documents under CC BY 4.0, both Copyright 2026
+Blackbird Cyber, LLC (github.com/Blackbird-Cyber/SnapshOT). SnapshOT is a
+trademark of Blackbird Cyber, LLC.
+
+NO WARRANTY. The kit is provided "AS IS", without warranty of any kind, and
+Blackbird Cyber, LLC accepts no liability for its use, to the extent the law
+allows (Apache License 2.0, sections 7 and 8). Running a collector on a host
+that supervises a process is your decision and your responsibility: have
+written authorisation, read docs\ot-safety.txt first, and prefer a
+maintenance window.

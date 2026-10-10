@@ -28,6 +28,13 @@ precedence = "closest"
 SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
 SPDX-License-Identifier = "CC-BY-4.0"
 
+# The Apache License text shipped on the field kit stick.
+[[annotations]]
+path = "packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/docs/LICENSE.txt"
+precedence = "closest"
+SPDX-FileCopyrightText = "2004 The Apache Software Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
 # The Contributor Covenant, adopted as published.
 [[annotations]]
 path = "CODE_OF_CONDUCT.md"
