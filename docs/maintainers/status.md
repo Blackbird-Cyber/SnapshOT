@@ -39,9 +39,11 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 5. Re-shoot the screenshots after the master build (see below).
 6. CI: `.github/workflows/checks.yml` (`reuse lint`, then `check-installer.sh`,
    `check-desktop.sh` and `check-wiki.sh` with `SNAPSHOT_CHECK_PLATFORM=linux/amd64`)
-   has not run yet. Its first run happens when the branch is pushed. Add a
-   workflow badge to the README after the first green run; if it is not green
-   after two fix attempts, remove the workflow and record why here.
+   passed on its first run, on the merge commit 2802faf (run 38019385569,
+   2026-10-10 03:06 UTC). Add the workflow badge
+   (`https://github.com/Blackbird-Cyber/SnapshOT/actions/workflows/checks.yml/badge.svg`)
+   to the README when the repository goes public: GitHub's image proxy fetches
+   badges without credentials, so a private repository's badge renders broken.
 7. When the repository goes public: enable private vulnerability reporting
    (`gh api -X PUT repos/Blackbird-Cyber/SnapshOT/private-vulnerability-reporting`;
    GitHub offers it only on public repositories and the call returned 404 while
