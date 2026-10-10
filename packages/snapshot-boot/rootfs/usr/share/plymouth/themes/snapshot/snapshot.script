@@ -1,6 +1,7 @@
 # SnapshOT Plymouth theme (script plugin).
 # Ink background, the SnapshOT lockup centred, a short signal-red rule under it,
-# and text prompts for the LUKS passphrase, questions, and boot messages.
+# and text prompts for the LUKS passphrase (with a blinking caret), questions,
+# and boot messages.
 # Palette: ink #0A0B0C, signal red #F1000E, light #F4F5F6.
 
 Window.SetBackgroundTopColor(0.039, 0.043, 0.047);
@@ -38,7 +39,12 @@ rule.sprite.SetPosition(screen.x + (screen.w - rule.w) / 2, rule.y, 10);
 prompt.sprite = NULL;
 answer.sprite = NULL;
 message.sprite = NULL;
+hint.sprite = NULL;
 bullets.count = 0;
+caret.sprite = NULL;
+caret.active = 0;
+caret.visible = 1;
+caret.frame = 0;
 
 # ---- text rows --------------------------------------------------------------
 # Image.Text yields an empty image when no label plugin or font can be loaded;
@@ -58,6 +64,15 @@ dot.max = Math.Int(screen.w * 0.6 / dot.pitch);
 dot.image = Image("rule.png").Scale(dot.size, dot.size);
 dot.y = text.y + text.line + Math.Int((text.line - dot.size) / 2);
 
+# ---- caret: a signal-red bar after the last bullet that blinks while the
+# passphrase is awaited, so the operator knows to type ----------------------
+caret.w = Math.Int(dot.size / 2) + 1;
+caret.h = dot.size * 3;
+caret.image = Image("rule.png").Scale(caret.w, caret.h);
+caret.y = dot.y + Math.Int((dot.size - caret.h) / 2);
+caret.half_period = 25;   # refresh runs about 50 times a second: 0.5 s on, 0.5 s off
+hint.y = text.y + Math.Int(text.line * 2.8);
+
 # Returns a sprite with the text centered at row y, or NULL if nothing rendered.
 fun CentredText(str, r, g, b, y) {
     if (!str)
@@ -70,6 +85,8 @@ fun CentredText(str, r, g, b, y) {
     return spr;
 }
 
+# Draws count bullets centred on the bullet row and returns the x where the
+# caret goes: just after the last bullet, or the middle of the row when empty.
 fun ShowBullets(count) {
     if (count > dot.max)
         count = dot.max;
@@ -81,21 +98,56 @@ fun ShowBullets(count) {
         bullets.sprite[i].SetPosition(x + i * dot.pitch, dot.y, 20);
     }
     bullets.count = count;
+    if (count == 0)
+        return screen.x + Math.Int((screen.w - caret.w) / 2);
+    return x + count * dot.pitch;
+}
+
+fun ShowCaret(x) {
+    caret.sprite = Sprite(caret.image);
+    caret.sprite.SetPosition(x, caret.y, 21);
+    caret.active = 1;
+    caret.visible = 1;      # a keystroke shows the caret at once, then it blinks
+    caret.frame = 0;
+    caret.sprite.SetOpacity(1);
+}
+
+fun HideCaret() {
+    caret.active = 0;
+    caret.sprite = NULL;
 }
 
 fun ClearPrompt() {
     prompt.sprite = NULL;
     answer.sprite = NULL;
+    hint.sprite = NULL;
+    HideCaret();
     ShowBullets(0);
 }
 
-# Passphrase prompt (LUKS unlock): light prompt text, signal-red bullets.
+# Called by Plymouth on every frame; toggles the caret while a passphrase is
+# awaited.
+fun RefreshCallback() {
+    if (!caret.active || !caret.sprite)
+        return;
+    caret.frame++;
+    if (caret.frame < caret.half_period)
+        return;
+    caret.frame = 0;
+    caret.visible = 1 - caret.visible;
+    caret.sprite.SetOpacity(caret.visible);
+}
+Plymouth.SetRefreshFunction(RefreshCallback);
+
+# Passphrase prompt (LUKS unlock): light prompt text, signal-red bullets, a
+# blinking caret after them and a muted hint below.
 fun DisplayPasswordCallback(prompt_text, bullet_count) {
     ClearPrompt();
     if (!prompt_text)
         prompt_text = "Enter passphrase";
     prompt.sprite = CentredText(prompt_text, 0.957, 0.961, 0.965, text.y);
-    ShowBullets(bullet_count);
+    ShowCaret(ShowBullets(bullet_count));
+    hint.sprite = CentredText("Type the passphrase, then press Enter", 0.54, 0.55, 0.57, hint.y);
 }
 Plymouth.SetDisplayPasswordFunction(DisplayPasswordCallback);
 

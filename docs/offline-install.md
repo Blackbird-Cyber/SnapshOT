@@ -57,8 +57,10 @@ for the passphrase twice. There is no hibernation.
 ## 4. First boot
 
 1. The themed GRUB menu appears without asking for a passphrase.
-2. The Plymouth splash asks for the disk passphrase once; the initramfs unlocks the
-   root volume.
+2. The Plymouth splash asks for the disk passphrase once: under the lockup it shows
+   "Please unlock disk luks-...", a blinking red caret, and the hint "Type the
+   passphrase, then press Enter". Each keystroke adds a red square. The initramfs
+   then unlocks the root volume.
 3. LightDM shows the login screen; sign in with the account created during the install.
 
 ## 5. Administration
@@ -120,7 +122,8 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 2. Install with **Erase disk** and **Encrypt system**; the install completes.
 3. The installer reboots on its own five seconds after the progress bar completes;
    the themed GRUB menu appears with no text passphrase prompt.
-4. Plymouth asks for the passphrase once; LightDM shows the login screen; log in.
+4. Plymouth asks for the passphrase once, with a blinking caret, the hint line and one
+   red square per keystroke (BackSpace removes one); LightDM shows the login screen; log in.
 5. `lsblk -f` shows the ESP (vfat), `/boot` (ext4) and the root on a `luks-*`
    mapping.
 6. `groups` lists `sudo`, `dialout`, `kvm`, `plugdev`, `netdev` and `wireshark`;
