@@ -120,11 +120,11 @@ Tools in *italics* are not packaged by Debian: the vendor layer pins them in
   IPv6 autoconfiguration are off, and Firefox ESR runs under a policy that stops
   it calling home. Interfaces come up only when the operator brings them up.
 - **Wi-Fi off until you turn it on.** NetworkManager can join Wi-Fi and wired 802.1X
-  networks, but its Wi-Fi switch ships off (live and installed), which also
-  soft-blocks the radios through rfkill: the laptop sends no probe requests at a
-  site. Turn Wi-Fi on from the network icon (**Enable Wi-Fi**) or with
-  `nmcli radio wifi on`; it then scans in the background, with a random MAC address
-  for its probes.
+  networks, but its Wi-Fi switch ships off (live and installed): it leaves every
+  Wi-Fi adapter unused, so the laptop sends no probe requests at a site. Turn Wi-Fi
+  on from the network icon (**Enable Wi-Fi**) or with `nmcli radio wifi on`; it then
+  scans in the background, with a random MAC address for its probes. Switching it
+  off also soft-blocks the radios through rfkill.
 - **Secure Boot.** The live ISO and installed systems boot with Secure Boot on:
   shim signed by Microsoft, GRUB and the kernel signed by Debian. The kernel then
   runs in lockdown, which blocks unsigned modules and raw memory access (flashrom's
