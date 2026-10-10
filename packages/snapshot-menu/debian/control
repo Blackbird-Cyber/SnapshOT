@@ -1,7 +1,7 @@
 Source: snapshot-menu
 Section: x11
 Priority: optional
-Maintainer: Blackbird Cyber, LLC <293711495+matthew-blackbird-cyber@users.noreply.github.com>
+Maintainer: "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.7.0
 Homepage: https://github.com/Blackbird-Cyber/SnapshOT
