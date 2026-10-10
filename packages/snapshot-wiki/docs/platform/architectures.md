@@ -23,7 +23,7 @@ the operator's summary.
 | Use it on | x86-64 laptops, desktops and VMs | arm64 VMs on Apple Silicon and UEFI arm64 hardware |
 | Live ISO boots with | BIOS or UEFI | UEFI only |
 | Installed bootloader | GRUB for BIOS, or shim and Debian-signed GRUB for UEFI, matching how the live system started | shim and Debian-signed GRUB for UEFI |
-| Secure Boot | live ISO and UEFI installs | the same shim and signed GRUB; not yet tested with Secure Boot enforced |
+| Secure Boot | live ISO and UEFI installs | live ISO; installs get the same shim and signed GRUB but have not yet been tested with Secure Boot enforced |
 | Kernel | Debian amd64 kernel | Debian arm64 kernel |
 | CPU microcode | Intel and AMD microcode | none (those packages are x86 only) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |

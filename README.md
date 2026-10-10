@@ -149,7 +149,7 @@ or upstream software requires it:
 | Use it on | x86-64 laptops, desktops and VMs (VMware, VirtualBox, Hyper-V, QEMU/KVM) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware; it does not boot an Apple Silicon Mac directly |
 | Live ISO boots with | BIOS or UEFI | UEFI only |
 | Installed bootloader | GRUB for BIOS (`grub-pc-bin`), or for UEFI shim (`shim-signed`) and Debian-signed GRUB (`grub-efi-amd64-signed`), matching how the live system started; EFI system partition only on UEFI installs | shim (`shim-signed`) and Debian-signed GRUB for UEFI (`grub-efi-arm64-signed`) |
-| Secure Boot | live ISO and UEFI installs | the same packages; not yet tested with Secure Boot enforced |
+| Secure Boot | live ISO and UEFI installs | live ISO; installs get the same shim and signed GRUB but have not yet been tested with Secure Boot enforced |
 | Kernel | Debian `linux-image-amd64` | Debian `linux-image-arm64` |
 | CPU microcode | `intel-microcode`, `amd64-microcode` | none (x86-only packages) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
