@@ -115,7 +115,16 @@ launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and The Sleuth Kit,
 which moved there from Reporting in snapshot-menu 0.2.3. The Autopsy launcher
 that moved with it was dropped in snapshot-menu 0.2.9, when the vendor layer
-stopped shipping Autopsy ([`docs/vendoring.md`](vendoring.md)).
+stopped shipping Autopsy ([`docs/vendoring.md`](vendoring.md)). The folder got
+its name in snapshot-menu 0.2.11: its tools collect and examine evidence from
+hosts, and none of them contains, eradicates or recovers anything; the
+directory file, the `X-SnapshOT-Forensics` category and the launchers kept
+their names.
+03 Protocol Tools lost its *pymodbus console* entry in snapshot-menu 0.2.8:
+pymodbus-repl only runs with pymodbus 3.7.0 to 3.7.2, so the vendor layer
+dropped it ([`docs/vendoring.md`](vendoring.md#out-of-scope-and-why)). mbpoll is
+the interactive Modbus client, and the pymodbus library stays in the ICS
+Python shell.
 05 Wireless & SDR is strictly receive-only (snapshot-menu 0.2.4): airodump-ng
 for the passive 802.11 survey, a dongle check (rtl_eeprom, since snapshot-menu
 0.2.6; rtl_test -t only benchmarked E4000 tuners) and rtl_power for RTL-SDR
@@ -130,7 +139,7 @@ operator picks), because avahi-daemon is masked and avahi-browse cannot work.
 08 Reference holds the offline reference folder, the build manifest and the
 **SnapshOT Wiki** (`snapshot-wiki.desktop`, snapshot-menu 0.2.7), which runs
 `exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`. The
-Whisker favourites list it after the two terminals (snapshot-themes 0.2.1).
+Whisker favorites list it after the two terminals (snapshot-themes 0.2.1).
 Firefox ESR itself is a general browser, not a SnapshOT tool, so it stays in
 Usual Applications (Internet).
 
@@ -158,7 +167,7 @@ The GTK/xfwm4 theme lives at
 `packages/snapshot-themes/rootfs/usr/share/themes/SnapshOT-Dark/` and is vendored
 from Kali's `Kali-Red-Dark` by `packages/snapshot-themes/scripts/import-theme.sh`
 (records version/URL/sha256 in `THEME-ORIGIN.md`). To refresh or re-derive it,
-run that script; it strips the trademarked logo assets and recolours the accent to
+run that script; it strips the trademarked logo assets and recolors the accent to
 `#f1000e`. To point the desktop at a different theme, change `Net/ThemeName` in
 `xsettings.xml`, `theme` in `xfwm4.xml` and `theme-name` in the greeter config.
 
@@ -168,8 +177,9 @@ run that script; it strips the trademarked logo assets and recolours the accent 
 
 - runs `desktop-file-validate` on every `.desktop` (the `X-SnapshOT-*` category
   hints are expected), including snapshot-wiki's files,
-- fails if a launcher retired in snapshot-menu 0.2.4 is back (HackRF, SoapySDR,
-  aircrack-ng, avahi-browse) or the menu still pulls in GNU Radio Companion, and
+- fails if a retired launcher is back (HackRF, SoapySDR, aircrack-ng and
+  avahi-browse, retired in snapshot-menu 0.2.4; `snapshot-autopsy.desktop`,
+  retired in 0.2.9) or the menu still pulls in GNU Radio Companion, and
   checks that the `exec-in-shell` and `mdns-listen` helpers are executable and parse,
 - runs `xmllint --noout` on every `.xml`/`.menu`,
 - parses the staged menu with `python3-xdg` and asserts the eight folders are

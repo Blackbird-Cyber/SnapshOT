@@ -126,14 +126,16 @@ images and imported collections, in Autopsy for example, happens on a separate
 analysis workstation: Autopsy's Windows build is the usual choice, installed by
 the operator and not redistributed with SnapshOT (the vendor layer dropped it on
 2026-10-07; see [`docs/vendoring.md`](vendoring.md#out-of-scope-and-why)). The
-transfer unit is the case folder, `~/cases/<case>/`, with its `SHA256SUMS`
-(which points at the import manifests) and `chain-of-custody.log`. Check
-`SHA256SUMS` before the case leaves the laptop; its lines carry the laptop's
-absolute paths, so also write a transfer manifest with paths relative to the
-case folder, copy the folder whole, verify the copy against that manifest on
-the workstation before opening anything, and record the transfer in the chain
-of custody. The wiki's field kit page has the commands. The stick stays
-collectors-only.
+transfer unit is the case folder, `~/cases/<case>/`, with the import manifests
+the import wrote (`fieldkit/IMPORT-MANIFEST-*.sha256`), the case `SHA256SUMS`
+and `chain-of-custody.log`. The import does not write `SHA256SUMS`: the operator
+keeps it as the case's running hash file and adds the import manifests to it
+(the wiki's evidence handling page). Check `SHA256SUMS` before the case leaves
+the laptop; its lines carry the laptop's absolute paths, so also write a
+transfer manifest with paths relative to the case folder, copy the folder
+whole, verify the copy against that manifest on the workstation before opening
+anything, and record the transfer in the chain of custody. The wiki's field kit
+page has the commands. The stick stays collectors-only.
 
 ## Profiles
 

@@ -161,7 +161,7 @@ state and compares the two ISOs, running diffoscope when they differ.
 ## Build from source
 
 ```sh
-python3 scripts/vendor.py fetch --arch all     # once, online (Docker): runtimes and tools for the vendor layer
+python3 scripts/vendor.py fetch --arch all     # online (Docker): the vendor layer; re-run when the lock or a requirements.in changes
 scripts/check-installer.sh                     # validate the installer configuration
 scripts/check-desktop.sh                       # validate the desktop menu and launchers
 scripts/check-fieldkit.sh                      # validate the field kit collectors and USB tools
