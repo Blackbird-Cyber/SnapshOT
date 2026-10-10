@@ -135,6 +135,10 @@ is not in the asset inventory?
   key-cracking tool. The `aircrack-ng` package that provides airodump-ng also
   installs `aireplay-ng`, `airbase-ng` and the key cracker; they stay out of
   the workflow.
+- The laptop's own Wi-Fi client does transmit: scanning sends probe requests
+  and joining a network sends traffic. SnapshOT ships it switched off
+  ([quiet network defaults](../platform/network-defaults.md)); turning it on is
+  bringing an interface up like any other, and a survey does not need it.
 - Transmitting (Wi-Fi deauthentication or injection, or any other radio
   transmission) is out of scope unless the authorization names it and it is
   **lawful** for the band. Radio law varies by country and band, and some bands

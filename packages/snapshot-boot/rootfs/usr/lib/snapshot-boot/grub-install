@@ -1,0 +1,70 @@
+#!/bin/sh
+# grub-install for the SnapshOT installer: the grubInstall command of
+# calamares-settings-snapshot's bootloader.conf. Calamares runs it inside the
+# target as
+#   grub-install --target=<x86_64|arm64>-efi --efi-directory=/boot/efi --bootloader-id=SnapshOT --force
+# on UEFI and
+#   grub-install --target=i386-pc --recheck --force <disk>
+# on BIOS. It ships in snapshot-boot because Calamares' packages step removes
+# calamares-settings-snapshot from the target before the bootloader step runs.
+#
+# BIOS targets go to grub-install unchanged. EFI targets get two more options:
+#   --uefi-secure-boot       install shim (signed by Microsoft), MokManager and
+#                            the GRUB image signed by Debian into EFI/<id>, and
+#                            fail rather than fall back to an unsigned GRUB when
+#                            shim-signed or grub-efi-<arch>-signed is missing;
+#   --force-extra-removable  also install shim (as BOOTX64.EFI or BOOTAA64.EFI),
+#                            its fallback, signed GRUB and MokManager at the
+#                            removable media path EFI/BOOT, which the firmware
+#                            boots when it has no boot entry (a reset NVRAM, a
+#                            fresh VM).
+# Started from EFI/BOOT, shim runs its fallback, which recreates the boot entry
+# from EFI/<id>/BOOT<ARCH>.CSV and boots it. That file comes from shim and names
+# the entry "debian", so it is rewritten to name it <id>, like the entry
+# grub-install makes. If the fallback cannot help, shim starts the GRUB beside it,
+# so EFI/<id>/grub.cfg is also copied to EFI/BOOT/grub.cfg: Debian's signed GRUB
+# reads grub.cfg from its own directory first and otherwise from its built-in
+# prefix /EFI/debian, which a SnapshOT install does not have.
+#
+# bootloader.conf sets installEFIFallback: false. Calamares' fallback copies
+# EFI/<id>/grubx64.efi to EFI/boot/bootx64.efi, over the shim, and the firmware
+# refuses GRUB started without shim when Secure Boot is on.
+set -eu
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+efi=0
+efidir=/boot/efi
+id=
+for arg in "$@"; do
+    case "$arg" in
+        --target=*-efi) efi=1 ;;
+        --efi-directory=*) efidir="${arg#*=}" ;;
+        --bootloader-id=*) id="${arg#*=}" ;;
+    esac
+done
+
+if [ "$efi" = 0 ]; then
+    exec grub-install "$@"
+fi
+
+if [ -z "$id" ]; then
+    echo "snapshot-boot grub-install: an EFI target needs --bootloader-id" >&2
+    exit 2
+fi
+
+grub-install --uefi-secure-boot --force-extra-removable "$@"
+
+# grub-install creates EFI/<id> and EFI/BOOT as named here; FAT lookups ignore
+# case anyway.
+cp "$efidir/EFI/$id/grub.cfg" "$efidir/EFI/BOOT/grub.cfg"
+echo "snapshot-boot grub-install: copied EFI/$id/grub.cfg to EFI/BOOT/grub.cfg"
+
+# The fallback's CSV is UTF-16LE, one line: loader,label,options,description.
+for csv in "$efidir/EFI/$id"/[Bb][Oo][Oo][Tt]*.[Cc][Ss][Vv]; do
+    [ -f "$csv" ] || continue
+    loader=$(iconv -f UTF-16LE -t UTF-8 "$csv" | cut -d, -f1)
+    [ -n "$loader" ] || continue
+    printf '%s,%s,,This is the boot entry for %s\n' "$loader" "$id" "$id" |
+        iconv -f UTF-8 -t UTF-16LE > "$csv"
+    echo "snapshot-boot grub-install: $csv names the boot entry $id"
+done

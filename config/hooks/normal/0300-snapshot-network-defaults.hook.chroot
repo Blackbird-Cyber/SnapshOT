@@ -31,4 +31,19 @@ no-auto-default=*
 enabled=false
 NM
 
+# NetworkManager's persistent radio switch: Wi-Fi starts off. With wpasupplicant
+# installed, NetworkManager would otherwise scan as soon as an adapter appears
+# and send probe requests at every site. The operator turns Wi-Fi on
+# deliberately (the network applet's "Enable Wi-Fi", or `nmcli radio wifi on`),
+# and NetworkManager writes the choice back to this file. The file is in the
+# squashfs, so the live session and every installed system (Calamares' unpackfs
+# copies the squashfs) start with the radio off.
+mkdir -p /var/lib/NetworkManager
+cat > /var/lib/NetworkManager/NetworkManager.state <<'STATE'
+[main]
+NetworkingEnabled=true
+WirelessEnabled=false
+WWANEnabled=false
+STATE
+
 echo "SnapshOT: quiet-on-the-wire defaults applied."

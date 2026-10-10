@@ -20,6 +20,12 @@ case "$ARCH" in
 	*) echo "auto/config: unsupported SNAPSHOT_ARCH='$ARCH' (use amd64 or arm64)" >&2; exit 1 ;;
 esac
 
+# --uefi-secure-boot enable: the ISO boots through shim and signed GRUB, and the
+# build fails if they are missing. shim-signed and grub-efi-<arch>-signed are in
+# the installer package list (the installed system needs them). In the default
+# "auto" mode live-build's binary stage records them as its own temporary
+# packages anyway and purges them from the build chroot (after the squashfs is
+# made, so the image keeps them), with a warning about protected packages.
 lb config noauto \
 	--mode debian \
 	--distribution "${SNAPSHOT_DIST}" \
@@ -38,6 +44,7 @@ lb config noauto \
 	--apt-options "--yes -o Acquire::Retries=5 -o Acquire::Check-Valid-Until=false -o Acquire::AllowInsecureRepositories=false" \
 	--binary-images iso-hybrid \
 	--bootloaders "${BOOTLOADERS}" \
+	--uefi-secure-boot enable \
 	--debian-installer none \
 	--memtest none \
 	--firmware-chroot true \

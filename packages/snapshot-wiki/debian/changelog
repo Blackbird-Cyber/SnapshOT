@@ -1,3 +1,26 @@
+snapshot-wiki (0.1.7) unstable; urgency=low
+
+  * Quiet network defaults: a Wi-Fi section. wpasupplicant is now on the
+    image, so NetworkManager joins Wi-Fi and wired 802.1X networks, and
+    NetworkManager's Wi-Fi switch ships off: adapters stay unavailable and
+    send no probe requests until the operator turns Wi-Fi on (network icon,
+    or nmcli radio wifi on). The switch is also an rfkill soft block; once
+    on, NetworkManager scans with a random MAC address.
+  * airodump-ng: monitor mode next to the Wi-Fi switch. Unblock only the
+    survey adapter with rfkill and leave the switch off; airmon-ng check now
+    lists NetworkManager and wpa_supplicant, and check kill also drops the
+    wired connections. The quick start gains the rfkill steps. The wireless
+    survey playbook and the rules of engagement say the same.
+  * Live session and install: Secure Boot works on the live ISO and on
+    installed systems (shim and signed GRUB in EFI/SnapshOT and at the
+    removable media path EFI/BOOT), with the kernel lockdown it brings;
+    the live session points at the Wi-Fi switch. Architectures: the
+    installed bootloader row and a Secure Boot row.
+  * flashrom: with Secure Boot on, lockdown stops the internal programmer;
+    external programmers are unaffected.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 17:17:47 -0400
+
 snapshot-wiki (0.1.6) unstable; urgency=low
 
   * Brand images (the favicon) are re-exported without embedded

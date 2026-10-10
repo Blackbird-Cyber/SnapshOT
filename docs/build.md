@@ -87,7 +87,11 @@ partition take theirs from the Calamares source at the matching tag). It also
 runs `dpkg-parsechangelog` on every `packages/*/debian/changelog`,
 `desktop-file-validate` on the installer's `.desktop` files, runs the sudo
 hook (which checks its sudoers file with `visudo -cf`), and asserts that the
-exec sequence in `settings.conf` runs `packages` before `initramfscfg`.
+exec sequence in `settings.conf` runs `packages` before `initramfscfg`. Finally it
+checks the Secure Boot setup: `bootloader.conf` runs `snapshot-boot`'s
+`grub-install` wrapper with `installEFIFallback` off, and the wrapper, run against
+a stub `grub-install`, adds `--uefi-secure-boot --force-extra-removable` for EFI
+targets, copies `grub.cfg` to `EFI/BOOT` and leaves BIOS calls unchanged.
 
 ## Checking the wiki
 `packages/snapshot-wiki` builds the SnapshOT Wiki with MkDocs during

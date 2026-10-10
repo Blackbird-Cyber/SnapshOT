@@ -74,8 +74,10 @@ sudo dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync status=progres
 ```
 
 For a VM, enable UEFI and give it 4 GB of RAM and a 20 GB disk (arm64 image for
-UTM, Parallels or VMware Fusion on Apple Silicon). The live user is `snapshot`,
-password `live`; **Install SnapshOT** on the desktop runs the offline installer.
+UTM, Parallels or VMware Fusion on Apple Silicon). Secure Boot can stay on: the
+live system and installed systems boot through shim signed by Microsoft. The live
+user is `snapshot`, password `live`; **Install SnapshOT** on the desktop runs the
+offline installer.
 macOS, Windows, Etcher, Rufus, Ventoy, split downloads and the install:
 [docs/getting-started.md](docs/getting-started.md).
 
@@ -117,6 +119,16 @@ Tools in *italics* are not packaged by Debian: the vendor layer pins them in
   not installed, LLMNR, mDNS, connectivity checks, automatic wired profiles and
   IPv6 autoconfiguration are off, and Firefox ESR runs under a policy that stops
   it calling home. Interfaces come up only when the operator brings them up.
+- **Wi-Fi off until you turn it on.** NetworkManager can join Wi-Fi and wired 802.1X
+  networks, but its Wi-Fi switch ships off (live and installed): it leaves every
+  Wi-Fi adapter unused, so the laptop sends no probe requests at a site. Turn Wi-Fi
+  on from the network icon (**Enable Wi-Fi**) or with `nmcli radio wifi on`; it then
+  scans in the background, with a random MAC address for its probes. Switching it
+  off also soft-blocks the radios through rfkill.
+- **Secure Boot.** The live ISO and installed systems boot with Secure Boot on:
+  shim signed by Microsoft, GRUB and the kernel signed by Debian. The kernel then
+  runs in lockdown, which blocks unsigned modules and raw memory access (flashrom's
+  `internal` programmer; external programmers work).
 - **Receive-only radio.** RTL-SDR and gqrx can only listen, and airodump-ng is the
   only 802.11 tool: enough to spot a transmitter the asset inventory does not explain.
 - **Encryption at rest.** The installer puts the root filesystem in LUKS2.
@@ -136,7 +148,8 @@ or upstream software requires it:
 |---|---|---|
 | Use it on | x86-64 laptops, desktops and VMs (VMware, VirtualBox, Hyper-V, QEMU/KVM) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware; it does not boot an Apple Silicon Mac directly |
 | Live ISO boots with | BIOS or UEFI | UEFI only |
-| Installed bootloader | GRUB for BIOS (`grub-pc-bin`) or UEFI (`grub-efi-amd64`), matching how the live system started; EFI system partition only on UEFI installs | GRUB for UEFI (`grub-efi-arm64`) |
+| Installed bootloader | GRUB for BIOS (`grub-pc-bin`), or for UEFI shim (`shim-signed`) and Debian-signed GRUB (`grub-efi-amd64-signed`), matching how the live system started; EFI system partition only on UEFI installs | shim (`shim-signed`) and Debian-signed GRUB for UEFI (`grub-efi-arm64-signed`) |
+| Secure Boot | live ISO and UEFI installs | live ISO; installs get the same shim and signed GRUB but have not yet been tested with Secure Boot enforced |
 | Kernel | Debian `linux-image-amd64` | Debian `linux-image-arm64` |
 | CPU microcode | `intel-microcode`, `amd64-microcode` | none (x86-only packages) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |

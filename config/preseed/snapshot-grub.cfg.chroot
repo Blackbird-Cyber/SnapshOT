@@ -1,0 +1,11 @@
+# Debconf answers for the GRUB packages, loaded by live-build (chroot_preseed)
+# before any package is installed.
+#
+# When an upgrade of grub-efi-<arch> or shim-signed reruns grub-install on an
+# installed system (the offline update mirror is the only way that happens),
+# also refresh the removable media path EFI/BOOT, which the SnapshOT installer
+# fills with shim, signed GRUB and MokManager (snapshot-boot's grub-install
+# wrapper). Left at the default, an upgrade would update EFI/SnapshOT and leave
+# an older shim and GRUB at EFI/BOOT.
+grub-efi-amd64 grub2/force_efi_extra_removable boolean true
+grub-efi-arm64 grub2/force_efi_extra_removable boolean true

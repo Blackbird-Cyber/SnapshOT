@@ -6,6 +6,12 @@ xfce4-terminal
 lightdm
 lightdm-gtk-greeter
 network-manager-gnome
+# Wi-Fi client and wired 802.1X. NetworkManager only recommends wpasupplicant,
+# and recommends are off (the same trap as user-setup and librsvg2-common), so
+# without it NetworkManager can neither scan for nor join a Wi-Fi network.
+# Hook 0300 ships the Wi-Fi radio switched off, so the laptop sends no probe
+# requests until the operator turns Wi-Fi on.
+wpasupplicant
 xdg-utils
 polkitd
 pkexec
