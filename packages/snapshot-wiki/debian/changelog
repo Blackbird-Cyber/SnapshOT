@@ -10,7 +10,8 @@ snapshot-wiki (0.1.5) unstable; urgency=low
     launcher and that the disabled vendor placeholders' launchers are hidden
     by TryExec; the vendor layer page lists pyserial and gains "Libraries
     considered and dropped" (pydnp3, cpppo, pymodbus-repl), which the DNP3
-    primer and pycomm3 pages now link to; Ghidra's size is about 435 MiB
+    primer and pycomm3 pages now link to, and s7scan links to the page's
+    "What is defined but disabled"; Ghidra's size is about 435 MiB
     without an unmeasured image figure; the architectures page points at the
     README's release table for sizes; field updates says the update stick
     serves both architectures and what the script does today.

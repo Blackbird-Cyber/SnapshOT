@@ -33,8 +33,9 @@ The launcher is present but hidden, because the s7scan stanza in
 `vendor/sources.lock` is `enabled: false`. The maintained Python 3 fork (desvert)
 depends on scapy pinned in its own virtual environment, which has not yet been
 vendored under the layer's wheels-only, hash-pinned contract. It is recorded as a
-disabled placeholder so its shape is captured; see "Out of scope and why" in the
-[vendor layer](../../platform/vendor-layer.md) platform page.
+disabled placeholder so its shape is captured; see
+[What is defined but disabled](../../platform/vendor-layer.md#what-is-defined-but-disabled)
+on the vendor layer platform page.
 
 ## What to use instead
 
