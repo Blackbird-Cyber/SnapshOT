@@ -8,6 +8,8 @@ network at any point, so it works the same at an air-gapped site.
 - Write the ISO to a USB stick (`dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M
   conv=fsync`, or Ventoy), or attach it to a VM with UEFI firmware. For a test of the
   offline path, give the VM no network adapter.
+- Secure Boot can stay on: the ISO and the installed system both boot through
+  shim ([Secure Boot](#secure-boot)).
 - The SnapshOT boot menu appears; the first entry starts the live system.
 - The live session logs in automatically as user `snapshot`. The password `live` is
   only needed to unlock the screen; `sudo` and the installer do not ask for it.
@@ -77,6 +79,48 @@ dependencies nothing else needs. The Install SnapshOT icon goes with
 `calamares-settings-snapshot`: it is placed by that package's autostart entry, and
 only when the system was booted live.
 
+## Secure Boot
+
+The live ISO and the installed system both boot with Secure Boot on, on UEFI
+firmware that trusts Microsoft's UEFI CA (most laptops, and the Secure Boot option
+of VMware, Hyper-V and OVMF). The image carries `shim-signed` (shim, signed by
+Microsoft, and MokManager) and `grub-efi-amd64-signed` or `grub-efi-arm64-signed`
+(GRUB signed by Debian); the kernel is Debian's signed kernel.
+
+Calamares' bootloader step runs `/usr/lib/snapshot-boot/grub-install` instead of
+`grub-install`. The wrapper ships in `snapshot-boot`, which stays installed, because
+the `packages` step has already removed `calamares-settings-snapshot` from the target
+when the bootloader step runs. On UEFI it adds `--uefi-secure-boot
+--force-extra-removable` to Calamares' `--target`, `--efi-directory`,
+`--bootloader-id=SnapshOT` and `--force`, then copies `grub.cfg` to the removable
+media path, so the EFI system partition holds (amd64 names; arm64 has `aa64` in place
+of `x64`):
+
+| Directory | Files |
+|---|---|
+| `EFI/SnapshOT/` | `shimx64.efi` (shim), `grubx64.efi` (signed GRUB), `mmx64.efi` (MokManager), `fbx64.efi` (shim's fallback), `BOOTX64.CSV`, `grub.cfg` (finds `/boot` by its UUID and loads `/boot/grub/grub.cfg`) |
+| `EFI/BOOT/` | `BOOTX64.EFI` (shim), `grubx64.efi`, `mmx64.efi`, `grub.cfg` (a copy) |
+
+The firmware's boot entry `SnapshOT` starts `\EFI\SnapshOT\shimx64.efi`. A machine
+with no boot entry (its NVRAM was reset, or a VM got a fresh variable store) starts
+the removable media path `\EFI\BOOT\BOOTX64.EFI`, the same shim and GRUB. The signed
+GRUB reads `grub.cfg` from its own directory, else from its built-in prefix
+`/EFI/debian`, which a SnapshOT install does not have: hence the copy.
+`bootloader.conf` turns Calamares' `installEFIFallback` off, because it copies
+`grubx64.efi` to `EFI/boot/bootx64.efi`, over the shim, and firmware with Secure
+Boot on refuses GRUB started without shim. BIOS installs (amd64) pass through the
+wrapper unchanged (`--target=i386-pc`). `config/preseed/snapshot-grub.cfg.chroot`
+answers `grub2/force_efi_extra_removable` with true, so a `grub-efi-*` or
+`shim-signed` upgrade from the offline mirror refreshes `EFI/BOOT` along with
+`EFI/SnapshOT`.
+
+With Secure Boot on, Debian's kernel runs in lockdown (integrity mode): it loads
+only signed modules (an out-of-tree module needs a Machine Owner Key enrolled with
+`mokutil --import`) and refuses raw access to memory and I/O ports, so flashrom's
+`internal` programmer, which reads and writes the laptop's own firmware, does not
+work; external SPI programmers are unaffected. `mokutil --sb-state` prints the state,
+and `sudo dmesg | grep -i secure` shows `secureboot: Secure boot enabled`.
+
 ## Module configuration
 
 The installer sequence lives in
@@ -97,7 +141,7 @@ without one.
 | `fstab.conf` | crypttab options and no extra `/tmp` entry (trixie already mounts `/tmp` as tmpfs). The root entry gets key `none` and no options because `/boot` is unencrypted. |
 | `displaymanager.conf` | LightDM with the GTK greeter and the Xfce session. |
 | `packages.conf` | the removals in section 6 (apt, offline; `update_db: false`). |
-| `bootloader.conf` | GRUB, EFI entry `SnapshOT`, plus the removable-media fallback path. |
+| `bootloader.conf` | GRUB through `snapshot-boot`'s wrapper `/usr/lib/snapshot-boot/grub-install`: on UEFI, shim, MokManager and the Debian-signed GRUB in `EFI/SnapshOT` (boot entry `SnapshOT`) and at the removable media path `EFI/BOOT`; `installEFIFallback: false`, because Calamares' fallback would copy GRUB over that shim ([Secure Boot](#secure-boot)). |
 | `finished.conf` | the restart prompt at the end. |
 
 Run `scripts/check-installer.sh` after changing any of these: it validates every file
@@ -119,3 +163,15 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 8. `dpkg -l 'live-*' 'calamares*' user-setup` reports no installed packages.
 9. There is no Install SnapshOT icon on the desktop.
 10. `cat /etc/default/grub` and `cat /proc/cmdline` each show `splash` exactly once.
+11. `nmcli radio wifi` prints `disabled`. On a machine with a Wi-Fi adapter,
+    `nmcli radio wifi on` makes it available and `nmcli device wifi list` lists
+    networks; `nmcli radio wifi off` switches it off again.
+12. `sudo ls /boot/efi/EFI/SnapshOT /boot/efi/EFI/BOOT` shows shim, GRUB, MokManager
+    and `grub.cfg` in both directories ([Secure Boot](#secure-boot)).
+13. Secure Boot, on a second VM with Secure Boot on and Microsoft's keys (VMware:
+    "Enable secure boot"; QEMU: OVMF's `OVMF_CODE_4M.secboot.fd` with a copy of
+    `OVMF_VARS_4M.ms.fd`): the ISO boots, the install completes, and the installed
+    system boots and unlocks; `mokutil --sb-state` prints `SecureBoot enabled`.
+    Then power off, reset the VM's NVRAM (VMware: delete the `.nvram` file; QEMU: a
+    fresh copy of the variable store) and boot again: the removable media path
+    starts the same system.

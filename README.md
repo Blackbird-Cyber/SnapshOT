@@ -74,8 +74,10 @@ sudo dd if=snapshot-amd64.hybrid.iso of=/dev/sdX bs=4M conv=fsync status=progres
 ```
 
 For a VM, enable UEFI and give it 4 GB of RAM and a 20 GB disk (arm64 image for
-UTM, Parallels or VMware Fusion on Apple Silicon). The live user is `snapshot`,
-password `live`; **Install SnapshOT** on the desktop runs the offline installer.
+UTM, Parallels or VMware Fusion on Apple Silicon). Secure Boot can stay on: the
+live system and installed systems boot through shim signed by Microsoft. The live
+user is `snapshot`, password `live`; **Install SnapshOT** on the desktop runs the
+offline installer.
 macOS, Windows, Etcher, Rufus, Ventoy, split downloads and the install:
 [docs/getting-started.md](docs/getting-started.md).
 
@@ -136,7 +138,8 @@ or upstream software requires it:
 |---|---|---|
 | Use it on | x86-64 laptops, desktops and VMs (VMware, VirtualBox, Hyper-V, QEMU/KVM) | arm64 VMs on Apple Silicon (UTM, Parallels, VMware Fusion) and UEFI arm64 hardware; it does not boot an Apple Silicon Mac directly |
 | Live ISO boots with | BIOS or UEFI | UEFI only |
-| Installed bootloader | GRUB for BIOS (`grub-pc-bin`) or UEFI (`grub-efi-amd64`), matching how the live system started; EFI system partition only on UEFI installs | GRUB for UEFI (`grub-efi-arm64`) |
+| Installed bootloader | GRUB for BIOS (`grub-pc-bin`), or for UEFI shim (`shim-signed`) and Debian-signed GRUB (`grub-efi-amd64-signed`), matching how the live system started; EFI system partition only on UEFI installs | shim (`shim-signed`) and Debian-signed GRUB for UEFI (`grub-efi-arm64-signed`) |
+| Secure Boot | live ISO and UEFI installs | the same packages; not yet tested with Secure Boot enforced |
 | Kernel | Debian `linux-image-amd64` | Debian `linux-image-arm64` |
 | CPU microcode | `intel-microcode`, `amd64-microcode` | none (x86-only packages) |
 | OPC UA GUI client (*opcua-client*) | yes | no: PyQt5 publishes no Linux aarch64 wheels, and the vendor layer installs wheels only |
