@@ -26,11 +26,11 @@ there sets the desktop up for every new user with no per-user seeding:
 | `xfce4/xfconf/.../xsettings.xml` | theme, icons, fonts, hinting |
 | `xfce4/xfconf/.../xfwm4.xml` | window-manager theme, titlebar, workspaces |
 | `xfce4/xfconf/.../xfce4-desktop.xml` | desktop icons (not the wallpaper) |
-| `xfce4/xfconf/.../xfce4-power-manager.xml` | power/lid/battery behaviour |
+| `xfce4/xfconf/.../xfce4-power-manager.xml` | power/lid/battery behavior |
 | `xfce4/xfconf/.../xfce4-screensaver.xml` | idle blank and lock |
 | `xfce4/xfconf/.../xfce4-keyboard-shortcuts.xml` | shortcuts (stock + SnapshOT) |
-| `xfce4/whiskermenu/defaults.rc` | the Whisker menu button and favourites |
-| `xfce4/terminal/terminalrc` | xfce4-terminal colours |
+| `xfce4/whiskermenu/defaults.rc` | the Whisker menu button and favorites |
+| `xfce4/terminal/terminalrc` | xfce4-terminal colors |
 | `qt5ct/qt5ct.conf`, `qt6ct/qt6ct.conf` | dark Qt (Fusion + SnapshOT-Dark palette) |
 | `menus/xfce-applications.menu` | the root menu layout (snapshot-menu) |
 | `menus/applications-merged/snapshot.menu` | the eight SnapshOT folders |
