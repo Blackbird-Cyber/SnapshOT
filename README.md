@@ -21,6 +21,13 @@
   <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/docs-CC_BY_4.0-2A2C2F" alt="Docs: CC BY 4.0"></a>
 </p>
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/desktop.png" width="100%" alt="SnapshOT desktop with the tools menu open"></td>
+    <td width="50%"><img src="docs/images/wiki-graph.png" width="100%" alt="The SnapshOT Wiki lifecycle graph: every tool linked to its PICERL phases"></td>
+  </tr>
+</table>
+
 SnapshOT is a Debian 13 (trixie) live image for incident response and assessment
 on OT and ICS networks. It boots from USB or in a VM to an Xfce desktop of OT
 tools, documents each one in an offline wiki, and installs to an encrypted disk
@@ -92,6 +99,8 @@ wire, a quick start and where it fits in each response phase, with rules of
 engagement, playbooks and protocol primers. Search, tags and the graphs work with no
 network. It is the home page of Firefox ESR, which is locked down so it makes no
 connection on its own ([docs/wiki.md](docs/wiki.md)).
+
+![SnapshOT Wiki home page](docs/images/wiki.png)
 
 **The field triage kit** is a USB stick that SnapshOT prepares. Its collectors run on
 Windows (PowerShell 2.0 or plain `cmd.exe`) and Linux (POSIX sh, BusyBox included) and
