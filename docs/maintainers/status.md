@@ -19,9 +19,11 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 - The ISOs in the repository root on the build Mac are the October 6 builds from
   82115b8, not a release. The `SHA256SUMS` beside them is from October 1 and does
   not match them.
-- `SNAPSHOT_VERSION` in `config/snapshot.env` is still `0.1.0`. Bump it before the
-  next release; `scripts/release.sh` refreshes the README's release table and
-  badges and stops so the change can be committed.
+- `SNAPSHOT_VERSION` in `config/snapshot.env` is `0.2.0`, for the v0.2.0
+  pre-release; its notes are [`docs/release-notes/v0.2.0.md`](../release-notes/v0.2.0.md).
+  `scripts/release.sh` refuses a tag other than `v$SNAPSHOT_VERSION`, uses that
+  notes file, refreshes the README's release table and badges, and stops so the
+  change can be committed.
 - The v0.1.0 release notes on GitHub start with a preview notice (live session
   only; no wiki, field kit or vendor layer), so the README can describe main
   without misleading anyone who downloads v0.1.0.
@@ -34,8 +36,9 @@ from it. Known problems are in [known-issues.md](known-issues.md).
    LUKS2, the wiki in Firefox ESR, the field kit tools.
 3. Field kit manual QA: a real USB stick and Windows XP, 7 and 10 VMs, using the
    checklist in [fieldkit.md](../fieldkit.md).
-4. The next release: bump `SNAPSHOT_VERSION`, run `scripts/release.sh`, and add the
-   release's caveats to its notes and to [known-issues.md](known-issues.md).
+4. The v0.2.0 pre-release: the version is bumped and the notes are written;
+   build, check, then `scripts/release.sh v0.2.0 --prerelease`. Promote it to a
+   full release after the VMware Fusion installer run.
 5. Re-shoot the screenshots after the master build (see below).
 6. CI: `.github/workflows/checks.yml` (`reuse lint`, then `check-installer.sh`,
    `check-desktop.sh` and `check-wiki.sh` with `SNAPSHOT_CHECK_PLATFORM=linux/amd64`)
@@ -53,12 +56,13 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 
 ## Housekeeping
 
-- Package-list comments still name tools that were dropped or disabled:
-  `snapshot-protocols` (cpppo, pydnp3), `snapshot-discovery` (zeek and the "source
-  layer"), `snapshot-traffic` (arkime) and `snapshot-firmware-re` (ghidra, "source
-  layer").
-- `packages/calamares-settings-snapshot/debian/changelog` has two 0.1.3 entries.
-- `scripts/build.sh` says "four branding packages"; there are six packages.
+- `scripts/make-update-usb.sh` publishes to `file://<stick>/snapshot-cache`,
+  which aptly 1.6.1 (trixie) rejects ("unknown published storage format:
+  file"), so the update stick cannot be built
+  ([known-issues.md](known-issues.md)). A fix needs a `FileSystemPublishEndpoints`
+  entry in an aptly config and `filesystem:<name>:` as the target.
+- The wiki still has British spellings in places (favourites, authorisation,
+  coloured, organises, behaviour); house style is American.
 - 34 brand PNGs (`branding/` and their copies in `packages/`) carry C2PA manifests
   that name "Anthropic Files" as a possible creator. The SVGs had theirs stripped
   (`branding/README.md`). Decide whether to strip the PNGs too.
