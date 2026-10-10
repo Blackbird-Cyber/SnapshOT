@@ -15,7 +15,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Debian-13_trixie-A81D33?logo=debian&amp;logoColor=white" alt="Debian 13 trixie">
   <img src="https://img.shields.io/badge/arch-amd64_%7C_arm64-2A2C2F" alt="amd64 | arm64">
-  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/pre--release-v0.2.0-F1000E" alt="release"></a>
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/tag/v0.2.1"><img src="https://img.shields.io/badge/pre--release-v0.2.1-F1000E" alt="release"></a>
   <img src="https://img.shields.io/badge/snapshot_pin-2026--09--01-2A2C2F" alt="snapshot.debian.org pin">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2A2C2F" alt="License: Apache-2.0"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/docs-CC_BY_4.0-2A2C2F" alt="Docs: CC BY 4.0"></a>
@@ -50,19 +50,19 @@ snapshot of the Debian archive.
 ## Get SnapshOT
 
 <p align="center">
-  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.0/snapshot-amd64.hybrid.iso"><img src="https://img.shields.io/badge/Download-amd64_ISO-F1000E?style=for-the-badge&amp;logo=debian&amp;logoColor=white" alt="Download the amd64 ISO"></a>
-  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.0/snapshot-arm64.hybrid.iso"><img src="https://img.shields.io/badge/Download-arm64_ISO-F1000E?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Download the arm64 ISO"></a>
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.1/snapshot-amd64.hybrid.iso"><img src="https://img.shields.io/badge/Download-amd64_ISO-F1000E?style=for-the-badge&amp;logo=debian&amp;logoColor=white" alt="Download the amd64 ISO"></a>
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.1/snapshot-arm64.hybrid.iso"><img src="https://img.shields.io/badge/Download-arm64_ISO-F1000E?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Download the arm64 ISO"></a>
 </p>
 
 <!-- release-table:start -->
-**v0.2.0** (pre-release): Debian trixie pinned to snapshot.debian.org `20260901T022952Z`.
+**v0.2.1** (pre-release): Debian trixie pinned to snapshot.debian.org `20260901T022952Z`.
 
 | Image | Hardware | Boot | Size | SHA-256 |
 |---|---|---|---|---|
-| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.0/snapshot-amd64.hybrid.iso) | x86-64 laptops and VMs | BIOS + UEFI | 1.75 GiB | `b3386d4a1a5ae6c9a772a752b697c08fb0007339145b9c60fd5f0c3e2802963d` |
-| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.0/snapshot-arm64.hybrid.iso) | arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware | UEFI | 1.71 GiB | `748749e0ccd7bd3717d10e827ae9b34343554c4c834c3a5d987e764ab7d9c6be` |
+| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.1/snapshot-amd64.hybrid.iso) | x86-64 laptops and VMs | BIOS + UEFI | 1.75 GiB | `5dab970932abbe33ee7be69462b1d6e79f2f53b125088b50709af4fd7bfdf6f4` |
+| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.1/snapshot-arm64.hybrid.iso) | arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware | UEFI | 1.71 GiB | `22a63281e5d9d997992b030c7ac993a27a9a2329ec525ba064ed52a6784046c0` |
 
-Checksums: [`SHA256SUMS`](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.0/SHA256SUMS)
+Checksums: [`SHA256SUMS`](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.2.1/SHA256SUMS)
 <!-- release-table:end -->
 
 Read the [release notes](https://github.com/Blackbird-Cyber/SnapshOT/releases) of
