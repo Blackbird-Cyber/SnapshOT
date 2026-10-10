@@ -190,7 +190,7 @@ cover the same job.
 
 A problem with the tool on the current build goes in a `!!! warning "Known
 issue on this build"` admonition straight after the facts marker, and in the
-repository's records too (`README.md` Status and known issues, and
+repository's records too (`docs/maintainers/known-issues.md`, and
 `docs/vendoring.md` for the vendor layer).
 
 ### Adding a tool

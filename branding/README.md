@@ -22,13 +22,13 @@ is Light. Type is Space Grotesk 500 (SIL Open Font License); it is not shipped i
 the image, so text is always rendered from PNG exports, never from the SVGs.
 
 ## Assets (`exports/`)
-- `snapshot-lockup-*` — horizontal lockup, wordmark + mark, 2400px PNG + SVG.
+- `snapshot-lockup-*`: horizontal lockup, wordmark + mark, 2400px PNG + SVG.
   `red-transparent` is light wordmark + red OT + red mark on alpha (the one to
   use on ink). `on-black` / `on-white` carry a solid background.
-- `snapshot-mark-*` — the mark alone (viewfinder corners around a captured
+- `snapshot-mark-*`: the mark alone (viewfinder corners around a captured
   frame with a 45° stencil cut), 1024px PNG + SVG.
-- `snapshot-icon-*` — the mark on a padded 1:1 tile (app icon, GRUB, avatar).
-- `favicon/` — red-on-black tile at 16–512px.
+- `snapshot-icon-*`: the mark on a padded 1:1 tile (app icon, GRUB, avatar).
+- `favicon/`: red-on-black tile at 16–512px.
 - SVGs are the designer's exports with the embedded C2PA manifest stripped.
   Lockup SVGs still contain live `<text>`; outline before using them anywhere
   the font is not installed.

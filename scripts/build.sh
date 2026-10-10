@@ -61,4 +61,4 @@ mkdir -p build
 auto/config
 auto/build
 
-echo "SnapshOT: build finished. ISO:"; ls -1 *.iso 2>/dev/null || echo "(no .iso produced — check build/build.log)"
+echo "SnapshOT: build finished. ISO:"; ls -1 *.iso 2>/dev/null || echo "(no .iso produced; check build/build.log)"

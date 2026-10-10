@@ -132,7 +132,7 @@ NOTES="SnapshOT ${TAG#v}: Debian ${SNAPSHOT_DIST} pinned to snapshot.debian.org 
 - snapshot-arm64.hybrid.iso: UEFI only, for arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware$(iso_note snapshot-arm64.hybrid.iso). Not bootable on Apple Silicon bare metal.
 - amd64 only: the OPC UA GUI client; see 'amd64 and arm64 images' in README.md.
 - Live session: user \`snapshot\`, password \`live\`. Install with the desktop icon (Calamares, LUKS2).
-- Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS.
+- Any .part-* files are one ISO split for GitHub's 2 GiB asset limit: cat them together in order, then verify against SHA256SUMS (docs/getting-started.md shows how on Linux, macOS and Windows).
 - Vendor layer: enabled tools ship under /opt/snapshot/<tool>/ with their own pinned runtime (CPython 3.11 for the ICS Python libs, plcscan, the OPC UA GUI client on amd64; Redpoint NSE scripts in nmap). Ghidra + JDK 21 and Autopsy + its JRE are defined but disabled. Reached via /opt/snapshot/bin on PATH; BUILD-MANIFEST.txt lists every runtime and tool. Run scripts/vendor.py fetch (network + Docker) before a build to populate it; a build without it still produces a working image."
 
 # Create the release as a draft, upload one asset at a time with retries (a

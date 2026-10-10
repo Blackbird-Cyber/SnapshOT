@@ -1,4 +1,4 @@
-# SnapshOT ICS Python libraries — human-edited source of truth for the
+# SnapshOT ICS Python libraries: human-edited source of truth for the
 # `ics-python` tool (one venv on the pinned cpython-3.11.16 runtime).
 #
 # The hash-pinned lock (requirements.txt, committed) and the per-arch wheelhouse

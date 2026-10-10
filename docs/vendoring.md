@@ -70,19 +70,19 @@ Each runtime and tool gets `/opt/snapshot/<name>/MANIFEST` (key=value: `name`,
 `type`, `version`, `arch`, `runtime`, `url`, `sha256`, `uses`, `setup`,
 `license`, `built`, `commands`). `uses` is `<build>@<version>:<build.sha256>`
 for each source build the tool consumed. `built` is `SOURCE_DATE_EPOCH` in ISO
-8601 — manifests carry **no wall-clock values**, so the image stays
+8601: manifests carry **no wall-clock values**, so the image stays
 reproducible. Every manifest is also
 copied to `/usr/share/snapshot/vendor/<name>.manifest`, and hook 0900 dumps that
 glob plus `ls /opt/snapshot/bin` into `BUILD-MANIFEST.txt`.
 
-## The lock — `vendor/sources.lock`
+## The lock: `vendor/sources.lock`
 
 Stanza text (blank-line separated, `key: value`), one stanza per artifact. Fields:
 
 | field | meaning |
 |---|---|
 | `type` | `runtime` \| `python` \| `java` \| `data` \| `build` (`build`: fetched and built by `vendor.py`, never installed alone) |
-| `kind` | `tarball` \| `zip` \| `git-archive` \| `deb` (archive handling; `deb` is reserved — not yet implemented) |
+| `kind` | `tarball` \| `zip` \| `git-archive` \| `deb` (archive handling; `deb` is reserved, not yet implemented) |
 | `arch` | `noarch` \| `amd64` \| `arm64` \| `amd64, arm64` (which images get it) |
 | `url` / `sha256` | an arch-independent artifact |
 | `url.<arch>` / `sha256.<arch>` | one artifact per architecture |
@@ -96,7 +96,7 @@ Stanza text (blank-line separated, `key: value`), one stanza per artifact. Field
 | `build.sha256.<arch>` | sha256 of the build's `SHA256SUMS` (a `TODO` is filled by `update-hashes`) |
 | `uses` | build stanzas whose output the tool's setup consumes |
 | `setup` | `vendor/setup/<tool>.py`, run in the chroot after extraction |
-| `enabled` | `true` (default) \| `false` — disabled stanzas are validated, never fetched |
+| `enabled` | `true` (default) \| `false`; disabled stanzas are validated, never fetched |
 | `license` | recorded in the MANIFEST |
 
 `sha256: TODO` is filled by `vendor.py update-hashes`; `vendor.py fetch` refuses
@@ -105,7 +105,7 @@ an **enabled** tool references it; the runtime's own `enabled` is ignored (so th
 JDK 21 does not ship until Ghidra is enabled). The same holds for source builds
 and the tools that `uses:` them.
 
-## The one online step — `scripts/vendor.py`
+## The one online step: `scripts/vendor.py`
 
 Run on a networked host with Docker (the Mac is fine) **before** `build.sh`:
 
@@ -120,7 +120,7 @@ python3 scripts/vendor.py verify                 # recheck sha256 under vendor/s
 
 Per **python** tool and arch, `fetch` runs inside a throwaway `debian:trixie`
 container with `--platform linux/<arch>` (arm64 native on Apple Silicon, amd64
-emulated — it only resolves and downloads, so minutes not hours). It unpacks that
+emulated: it only resolves and downloads, so minutes not hours). It unpacks that
 arch's pinned CPython, runs `pip-compile --generate-hashes` to produce
 `requirements.<arch>.txt`, then `pip download --require-hashes --no-deps
 --only-binary=:all:` into `wheelhouse/<arch>`. Because it uses the **exact target

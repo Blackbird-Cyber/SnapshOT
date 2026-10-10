@@ -5,9 +5,9 @@ desktop: the **SnapshOT-Dark** GTK/xfwm4 theme, **Papirus-Dark** icons, one top
 panel with a **Whisker** menu, and the SnapshOT tools grouped into eight numbered
 engagement-phase folders. Two packages own all of this:
 
-- `packages/snapshot-themes` — the theme, icons, fonts and every system-wide Xfce
+- `packages/snapshot-themes`: the theme, icons, fonts and every system-wide Xfce
   default (`/etc/xdg`), the Qt defaults and the LightDM greeter.
-- `packages/snapshot-menu` — the tool launchers, the eight folders and the root
+- `packages/snapshot-menu`: the tool launchers, the eight folders and the root
   Xfce menu. All launchers live here, including those for tools other SnapshOT
   packages ship (the field kit's in `snapshot-fieldkit`, the wiki's in
   `snapshot-wiki`).
@@ -46,22 +46,22 @@ is diverted to the SnapshOT wallpaper (see below).
 
 Several of these files are owned by other packages. Because the image installs no
 recommends and is never apt-upgraded (it is re-imaged), SnapshOT uses
-`dpkg-divert` to replace them the way Kali's `kali-themes` does — the owning
+`dpkg-divert` to replace them the way Kali's `kali-themes` does: the owning
 package's copy is renamed to `<file>.distrib` and the SnapshOT copy wins, in
 either install order.
 
 `snapshot-themes` (preinst/postrm, `FILES_TO_DIVERT`):
 
-- `/usr/share/backgrounds/xfce/xfce-x.svg` — xfdesktop (wallpaper fallback)
-- `/etc/xdg/xfce4/panel/default.xml` — xfce4-panel
-- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml` — xfce4-settings
-- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml` — libxfce4ui-common
-- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml` — xfce4-power-manager
-- `/etc/xdg/xfce4/whiskermenu/defaults.rc` — xfce4-whiskermenu-plugin
+- `/usr/share/backgrounds/xfce/xfce-x.svg`: xfdesktop (wallpaper fallback)
+- `/etc/xdg/xfce4/panel/default.xml`: xfce4-panel
+- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`: xfce4-settings
+- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml`: libxfce4ui-common
+- `/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml`: xfce4-power-manager
+- `/etc/xdg/xfce4/whiskermenu/defaults.rc`: xfce4-whiskermenu-plugin
 
 `snapshot-menu` (preinst/postrm):
 
-- `/etc/xdg/menus/xfce-applications.menu` — libgarcon-common
+- `/etc/xdg/menus/xfce-applications.menu`: libgarcon-common
 
 `snapshot-wiki` (preinst/postinst/postrm):
 
@@ -142,7 +142,7 @@ Usual Applications (Internet).
    (which keeps the output on screen; Ctrl-C stops the tool and still leaves the
    operator in the shell). A vendor-layer tool is always reached by
    its absolute per-tool wrapper path `/opt/snapshot/<tool>/bin/<cmd>` in both
-   `Exec` and `TryExec`, never `/opt/snapshot/venv/...` or a bare path — the
+   `Exec` and `TryExec`, never `/opt/snapshot/venv/...` or a bare path. The
    wrapper sets the tool's runtime up and the `TryExec` hides the entry when the
    vendor layer is absent. `check-desktop.sh` enforces this. See
    [`docs/vendoring.md`](vendoring.md).
