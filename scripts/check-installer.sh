@@ -31,6 +31,12 @@
 #      --uefi-secure-boot --force-extra-removable for an EFI target, copies
 #      EFI/<id>/grub.cfg to EFI/BOOT, names the fallback's boot entry after the
 #      bootloader id in BOOTX64.CSV, and passes a BIOS call through unchanged.
+#   8. Checks the reserved login names: users.conf carries the BEGIN and END
+#      lines and a seed with names such as operator and wireshark, and
+#      config/hooks/normal/0950-snapshot-installer-reserved-names.hook.chroot
+#      (mode 755, valid sh), run on a copy after adding a system user and
+#      group, lists exactly this container's user and group names plus
+#      autologin and changes nothing else in users.conf.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 IMAGE="${SNAPSHOT_TRIXIE_IMAGE:-debian:trixie}"
@@ -253,6 +259,51 @@ else
     echo "FAIL BIOS call: grub-install got '$(cat /tmp/grub-install.args 2>/dev/null)'"; fail=1
 fi
 rm -f /usr/sbin/grub-install
+
+echo "== reserved login names =="
+hook=/snapshot/config/hooks/normal/0950-snapshot-installer-reserved-names.hook.chroot
+if [ "$(stat -c %a "$hook" 2>/dev/null)" = 755 ] && sh -n "$hook"; then
+    echo "ok   ${hook#/snapshot/} (mode 755, sh syntax)"
+else echo "FAIL ${hook#/snapshot/}: missing, not mode 755 or not valid sh"; fail=1; fi
+# The seed in the package: the markers once each, and names an operator might pick.
+python3 - "$PKG/etc/calamares/modules/users.conf" <<'PY' || fail=1
+import sys, yaml
+text = open(sys.argv[1]).read()
+for marker in ("# BEGIN snapshot-reserved-login-names", "# END snapshot-reserved-login-names"):
+    if text.count(marker) != 1:
+        print(f"FAIL users.conf: {marker!r} must appear exactly once"); sys.exit(1)
+names = yaml.safe_load(text)["user"]["forbidden_names"]
+missing = sorted({"operator", "wireshark", "sudo", "lightdm", "autologin"} - set(names))
+if missing:
+    print("FAIL users.conf forbidden_names lacks", ", ".join(missing)); sys.exit(1)
+print(f"ok   users.conf seed: {len(names)} forbidden login names, markers present")
+PY
+# Run the hook on a copy in this container, after adding a system user and group
+# the way a package postinst would: the list must become exactly the container's
+# user and group names plus autologin, and nothing else in users.conf may change.
+mkdir -p /etc/calamares/modules
+cp "$PKG/etc/calamares/modules/users.conf" /etc/calamares/modules/users.conf
+groupadd -r snapshot-test-group
+useradd -r -M -N -s /usr/sbin/nologin snapshot-test-svc
+if sh "$hook" && python3 - "$PKG/etc/calamares/modules/users.conf" /etc/calamares/modules/users.conf <<'PY'
+import sys, yaml
+seed = yaml.safe_load(open(sys.argv[1]))
+out = yaml.safe_load(open(sys.argv[2]))
+names = out["user"]["forbidden_names"]
+accounts = {l.split(":")[0] for f in ("/etc/passwd", "/etc/group") for l in open(f) if l.strip()}
+want = sorted(accounts | {"autologin"})
+if names != want:
+    print("FAIL hook: forbidden_names differ from the account names; extra:",
+          sorted(set(names) - set(want)), "missing:", sorted(set(want) - set(names))); sys.exit(1)
+if not {"snapshot-test-svc", "snapshot-test-group"} <= set(names):
+    print("FAIL hook: a system user or group added before the hook is not listed"); sys.exit(1)
+del seed["user"]["forbidden_names"]; del out["user"]["forbidden_names"]
+if seed != out:
+    print("FAIL hook: changed users.conf outside the forbidden names"); sys.exit(1)
+print(f"ok   hook: {len(names)} names, exactly this container's users and groups plus autologin;"
+      " the rest of users.conf unchanged")
+PY
+then :; else echo "FAIL ${hook#/snapshot/} run"; fail=1; fi
 
 if [ "$fail" -ne 0 ]; then echo "== check-installer: FAIL =="; exit 1; fi
 echo "== check-installer: OK =="
