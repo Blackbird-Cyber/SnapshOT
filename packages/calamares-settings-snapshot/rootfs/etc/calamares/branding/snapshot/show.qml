@@ -2,12 +2,15 @@ import QtQuick 2.0;
 import calamares.slideshow 1.0;
 
 // SnapshOT install slideshow. Ink background, lockup, short factual copy.
+// A Slide is inset by 5% left and right and 10% top and bottom, so the
+// background is painted here at the root, over the whole viewport, not per
+// slide: otherwise the viewport's default white shows around each slide.
 Presentation {
     id: presentation
+    Rectangle { anchors.fill: parent; color: "#0A0B0C"; z: -1 }
     Timer { interval: 7000; running: true; repeat: true; onTriggered: presentation.goToNextSlide() }
 
     Slide {
-        Rectangle { anchors.fill: parent; color: "#0A0B0C" }
         Image {
             id: lockup
             source: "welcome.png"
@@ -38,7 +41,6 @@ Presentation {
     }
 
     Slide {
-        Rectangle { anchors.fill: parent; color: "#0A0B0C" }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter; anchors.verticalCenterOffset: -parent.height * 0.08
@@ -55,7 +57,6 @@ Presentation {
     }
 
     Slide {
-        Rectangle { anchors.fill: parent; color: "#0A0B0C" }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter; anchors.verticalCenterOffset: -parent.height * 0.08
@@ -72,7 +73,6 @@ Presentation {
     }
 
     Slide {
-        Rectangle { anchors.fill: parent; color: "#0A0B0C" }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter; anchors.verticalCenterOffset: -parent.height * 0.08

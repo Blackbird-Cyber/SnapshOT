@@ -1,3 +1,15 @@
+calamares-settings-snapshot (0.1.8) unstable; urgency=low
+
+  * Slideshow: the ink background is painted at the root of the presentation
+    instead of inside each slide. A slide is inset by 5% left and right and
+    10% top and bottom, so the viewport's default white used to frame every
+    slide during the install.
+  * Automatic restart: a shellprocess job after umount shows "Restarting in
+    5 seconds" in the progress line and reboots, so nobody has to click
+    Restart now; the Finished page is reached only if that reboot fails.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 14:48:44 -0400
+
 calamares-settings-snapshot (0.1.7) unstable; urgency=medium
 
   * welcome.conf: require 3 GiB of RAM instead of 1 GiB. The LUKS2 format of

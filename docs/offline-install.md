@@ -34,7 +34,9 @@ network at any point, so it works the same at an air-gapped site.
    and must not be a dictionary word or contain the login name (libpwquality with
    the cracklib dictionary). This account administers the system through `sudo`;
    there is no root password.
-6. Summary, then **Install**. When it finishes, reboot and remove the USB stick.
+6. Summary, then **Install**. When the progress bar completes, the installer shows
+   "Restarting in 5 seconds" and reboots on its own; remove the USB stick as the
+   screen goes dark. The Finished page only appears if that reboot fails.
 
 ## 3. Disk layout
 
@@ -106,7 +108,8 @@ without one.
 | `displaymanager.conf` | LightDM with the GTK greeter and the Xfce session. |
 | `packages.conf` | the removals in section 6 (apt, offline; `update_db: false`). |
 | `bootloader.conf` | GRUB, EFI entry `SnapshOT`, plus the removable-media fallback path. |
-| `finished.conf` | the restart prompt at the end. |
+| `finished.conf` | the restart prompt at the end, reached only if the automatic restart fails. |
+| `shellprocess.conf` | the automatic restart: last in the sequence, after `umount`, it waits five seconds with "Restarting in 5 seconds" in the progress line and runs `systemctl -i reboot` on the live system. |
 
 Run `scripts/check-installer.sh` after changing any of these: it validates every file
 against the schema of the Calamares release the image ships (see `docs/build.md`).
@@ -115,7 +118,8 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 
 1. Create a VM with UEFI firmware and no network adapter; boot the ISO.
 2. Install with **Erase disk** and **Encrypt system**; the install completes.
-3. Reboot: the themed GRUB menu appears with no text passphrase prompt.
+3. The installer reboots on its own five seconds after the progress bar completes;
+   the themed GRUB menu appears with no text passphrase prompt.
 4. Plymouth asks for the passphrase once; LightDM shows the login screen; log in.
 5. `lsblk -f` shows the ESP (vfat), `/boot` (ext4) and the root on a `luks-*`
    mapping.
