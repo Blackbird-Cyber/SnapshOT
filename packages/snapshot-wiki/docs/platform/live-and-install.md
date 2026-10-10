@@ -54,7 +54,8 @@ if chosen, is a file inside the encrypted root, so there is no hibernation.
 Debian's GRUB cannot unlock.
 
 The account created in the installer administers the system through `sudo`; root
-stays locked. The installer removes the live-session packages (`live-boot`,
+stays locked. Its login must not already exist on the system: the installer
+refuses names such as `operator`, `daemon` or `wireshark` on its users page. The installer removes the live-session packages (`live-boot`,
 `live-config`, `user-setup`) and Calamares itself, so the installed desktop has
 no Install icon.
 
