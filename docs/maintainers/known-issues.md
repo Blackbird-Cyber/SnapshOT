@@ -4,21 +4,20 @@ Problems that affect a published image or the current tree, kept here so the
 README stays a description of the product. Each release's notes on GitHub repeat
 the ones that apply to that release.
 
-## v0.2.0 (pre-release, published 2026-10-10)
+## v0.2.1 (pre-release, published 2026-10-10)
 
 - **Installer QA is not finished.** The installer configuration passes
   `scripts/check-installer.sh` and the live session passed smoke checks in QEMU,
   but an end-to-end install on VMware Fusion has not been run on this build. Do
-  not rely on a v0.2.0 install for an engagement until it has; the release is
+  not rely on a v0.2.1 install for an engagement until it has; the release is
   promoted from pre-release after that run.
-- v0.2.0 was built from 3a77bad (5150f10 since the history rewrite, see [history-rewrite.md](history-rewrite.md)); every item under "Current tree" below applies
+- v0.2.1 was built from 8a5ba28; every item under "Current tree" below applies
   to it too.
-
-- The v0.2.0 and v0.1.0 images were built before the brand PNG files had their
-  embedded content-credential manifests removed, so the icons, the boot splash
-  lockup, the installer welcome image and the wiki favicon inside both published
-  images still carry them. v0.2.1 is the rebuild from the clean tree; v0.2.0 and
-  v0.1.0 are withdrawn when it is published.
+- Fixed in v0.2.1: the brand images inside the withdrawn v0.2.0 and v0.1.0
+  images (the icons, the boot splash lockup, the installer welcome image and the
+  wiki favicon) carried embedded content-credential manifests. v0.2.1 was built
+  from the clean tree, and the same four files inside both v0.2.1 images carry no
+  embedded content-credential or EXIF chunks.
 
 ## Current tree
 
