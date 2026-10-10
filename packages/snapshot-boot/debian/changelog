@@ -1,3 +1,30 @@
+snapshot-boot (0.1.5) unstable; urgency=low
+
+  * Plymouth theme: a signal-red caret blinks after the passphrase bullets,
+    half a second on and half a second off, driven by the refresh
+    callback, and a muted line under it reads "Type the passphrase, then
+    press Enter", so the operator knows the splash is waiting for input.
+    A keystroke shows the caret at once; the caret and the hint go away
+    with the prompt.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 16:01:26 -0400
+
+snapshot-boot (0.1.4) unstable; urgency=low
+
+  * Plymouth theme: the LUKS passphrase prompt and its bullets are visible.
+    The callbacks stored their sprites in prompt, bullets and message, names
+    that existed nowhere at the top level of the script, so each call made
+    them local and the sprites were freed, and taken off the screen, as the
+    call returned. An encrypted install showed only the lockup and the rule
+    while the initramfs waited for a passphrase. The hashes are now created
+    at the top level; boot messages and questions had the same fault.
+  * Bullets are small signal-red squares cut from rule.png instead of text,
+    capped at 60% of the screen width, so keystrokes show even when no font
+    renders. Text that renders empty is not drawn, and the line height falls
+    back to a size taken from the screen.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 15:14:42 -0400
+
 snapshot-boot (0.1.3) unstable; urgency=low
 
   * Brand images (the Plymouth lockup) are re-exported without embedded
