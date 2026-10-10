@@ -1,6 +1,6 @@
-# Firmware, hardware, and reverse engineering. (ghidra is not in Debian; it is
-# vendored in the source layer. radare2 and rizin are not in trixie either;
-# rizin ships upstream .debs, so add it via vendor/sources.lock if needed.)
+# Firmware, hardware, and reverse engineering. ghidra is not in Debian; it is
+# pinned in the vendor layer (vendor/sources.lock) but disabled. radare2 and rizin
+# are not in trixie either.
 binwalk
 qemu-system-x86
 qemu-utils

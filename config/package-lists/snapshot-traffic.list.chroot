@@ -1,4 +1,5 @@
-# Traffic capture and offline analysis. (arkime is vendored; not in Debian.)
+# Traffic capture and offline analysis. arkime is not in Debian; it is a disabled
+# placeholder in the vendor layer (vendor/sources.lock), not vendored.
 tcpreplay
 suricata
 python3-scapy

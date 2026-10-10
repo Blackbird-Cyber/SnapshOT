@@ -1,4 +1,4 @@
 # ICS protocol tools available from Debian apt.
-# The Python protocol libraries (pymodbus, pycomm3, cpppo, pydnp3, bacpypes3,
-# BAC0, asyncua, python-snap7) install from the pinned wheelhouse, not here.
+# The Python protocol libraries (pymodbus, pyserial, pycomm3, bacpypes3, BAC0,
+# asyncua, python-snap7) install from the pinned wheelhouse, not here.
 mbpoll
