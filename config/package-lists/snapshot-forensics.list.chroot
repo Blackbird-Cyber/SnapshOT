@@ -1,4 +1,4 @@
-# Forensics & Response: field kit USB tooling and disk/image forensics.
+# Host Forensics: field kit USB tooling and disk/image forensics.
 # Field kit host tooling (snapshot-fieldkit-prep / -import). snapshot-fieldkit
 # recommends these, and recommends are off, so they are listed here:
 # - exFAT for the stick (mkfs.exfat); dosfstools (FAT32) is in the installer list;

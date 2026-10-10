@@ -109,8 +109,8 @@ so they are not listed twice. (LibreOffice Writer is intentionally left in both
 *Office* and *Reporting*.)
 
 The folders are 01 Recon & Discovery, 02 Traffic Analysis, 03 Protocol Tools,
-04 Firmware & Hardware, 05 Wireless & SDR, 06 Forensics & Response, 07 Reporting
-& Documentation and 08 Reference. 06 Forensics & Response holds the field kit
+04 Firmware & Hardware, 05 Wireless & SDR, 06 Host Forensics, 07 Reporting
+& Documentation and 08 Reference. 06 Host Forensics holds the field kit
 launchers (Prepare Field Kit USB, Import Field Kit results, Field Kit folder,
 Field Kit guide; see [`docs/fieldkit.md`](fieldkit.md)) and The Sleuth Kit,
 which moved there from Reporting in snapshot-menu 0.2.3. The Autopsy launcher

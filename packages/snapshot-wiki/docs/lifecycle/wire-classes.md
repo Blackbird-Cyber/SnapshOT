@@ -56,7 +56,7 @@ several menu folders:
   monitor mode, and [rtl-sdr](../tools/wireless/rtl-sdr.md) and
   [Gqrx](../tools/wireless/gqrx.md) receive radio with dongles that have no
   transmitter.
-- **Forensics & Response (06):** the [Sleuth Kit](../tools/forensics/sleuthkit.md)
+- **Host Forensics (06):** the [Sleuth Kit](../tools/forensics/sleuthkit.md)
   reads evidence without changing it; so does the field kit's import step,
   though the kit as a whole is a writes tool (below) because preparing the stick
   formats it.
@@ -143,7 +143,7 @@ window, and is read back and recorded. Writes appear across folders:
   wire, so both are writes tools even though they live among the capture tools.
 - **Reporting & Documentation (07):** [nwipe](../tools/reporting/nwipe.md)
   destroys data on media, used to re-image a stick between clients.
-- **Forensics & Response (06):** the [field kit](../tools/forensics/fieldkit.md)
+- **Host Forensics (06):** the [field kit](../tools/forensics/fieldkit.md)
   prepare step formats the USB stick (its collectors on the target are
   read-only; preparing the stick is the write), and
   [TestDisk](../tools/forensics/testdisk-photorec.md) can rewrite a partition

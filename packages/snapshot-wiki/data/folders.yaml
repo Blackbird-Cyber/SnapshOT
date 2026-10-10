@@ -52,7 +52,7 @@ folders:
 
   - slug: forensics
     number: "06"
-    name: Forensics & Response
+    name: Host Forensics
     directory: snapshot-forensics.directory
     category: X-SnapshOT-Forensics
     color: "#FF3B45"
