@@ -1,0 +1,57 @@
+name: Tool request
+description: Propose a tool for the image.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        SnapshOT carries tools that work offline and come from the pinned Debian snapshot or the vendor layer. Each one gets a page in the SnapshOT Wiki.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      description: Name and upstream URL.
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: The tool's license, as upstream states it.
+    validations:
+      required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where it comes from
+      options:
+        - Debian trixie package
+        - Upstream release (would need the vendor layer)
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: wire
+    attributes:
+      label: What it does on the wire
+      description: Does it only listen, send probes, read from devices or write to them? Which protocols and ports? Can it run with no network at all?
+    validations:
+      required: true
+  - type: checkboxes
+    id: phase
+    attributes:
+      label: Response phase (SANS PICERL)
+      options:
+        - label: Preparation
+        - label: Identification
+        - label: Containment
+        - label: Eradication
+        - label: Recovery
+        - label: Lessons learned
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it belongs on the image
+      description: The job it does on an OT engagement, and why the tools already on the image do not do it.
+    validations:
+      required: true
