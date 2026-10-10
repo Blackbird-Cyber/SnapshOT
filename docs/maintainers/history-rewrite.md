@@ -28,7 +28,8 @@ to its new one (old first, new second, one pair per line). A full backup of the
 pre-rewrite repository is kept outside the repository as a git bundle on the
 build Mac (`SnapshOT-pre-rewrite-2026-10-10.bundle`, beside the checkout).
 
-Known limit: GitHub keeps a branch ref for each pull request, so the ten merged
-pull requests' original commits remain reachable on the pull request pages and
-by hash until GitHub purges them. See the "Before going public" note in
-[status.md](status.md).
+GitHub keeps a branch ref for each pull request, which would have kept the ten
+merged pull requests' original commits reachable. The repository was therefore
+recreated from the rewritten history on the same day, with only `main`, the two
+tags and the two releases; the pull request history ended with the old
+repository. See the "Before going public" note in [status.md](status.md).

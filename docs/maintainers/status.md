@@ -62,11 +62,11 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 
 ## Before going public
 
-- The history rewrite of 2026-10-10 (see [history-rewrite.md](history-rewrite.md))
-  replaced every commit, but GitHub keeps the ten pull requests' branch refs
-  (`refs/pull/N/head`), so the pre-rewrite commits are still reachable on the PR
-  pages and by hash. Ask GitHub support to purge unreachable objects, or recreate
-  the repository from the rewritten history, before the repository goes public.
+- The repository was recreated on 2026-10-10 from the rewritten history (see
+  [history-rewrite.md](history-rewrite.md)): only `main` and the two release tags
+  were pushed, and both releases were re-uploaded with their original notes and
+  verified assets. The previous repository was renamed `SnapshOT-old`, stays
+  private, and is to be deleted; nothing else needs to come over from it.
 
 ## Housekeeping
 
