@@ -90,7 +90,7 @@ Eight numbered menu folders, in the order of an engagement ([docs/desktop.md](do
 | 03 - Protocol Tools | Speak Modbus, S7comm, EtherNet/IP, OPC UA and BACnet to a device, to read it or, with approval, to write to it. | mbpoll; *pymodbus, pycomm3, BACpypes3, BAC0, asyncua and python-snap7* in the *ICS Python shell*, with the *OPC UA command-line tools*; *opcua-client* (GUI, amd64 only); *plcscan* |
 | 04 - Firmware & Hardware | Acquire and examine firmware, talk to serial consoles and debug ports, and capture signals on a bench. | binwalk, flashrom, OpenOCD, sigrok-cli, PulseView, sdcc, minicom, picocom, tio, screen, QEMU |
 | 05 - Wireless & SDR | Survey Wi-Fi and the radio spectrum around a site, receive only, for transmitters the asset inventory does not explain. | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx |
-| 06 - Forensics & Response | Collect evidence from hosts with the field kit and examine disks and images without changing them. | SnapshOT field triage kit (USB prepare and import, Windows and Linux collectors), The Sleuth Kit, TestDisk/PhotoRec |
+| 06 - Host Forensics | Collect evidence from hosts with the field kit and examine disks and images without changing them. | SnapshOT field triage kit (USB prepare and import, Windows and Linux collectors), The Sleuth Kit, TestDisk/PhotoRec |
 | 07 - Reporting & Documentation | Take notes, capture screens, keep secrets, write the report and wipe media between clients. | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
 | 08 - Reference | Offline reference data, the build manifest of this image and the SnapshOT Wiki. | offline reference folder, the build manifest, the SnapshOT Wiki |
 

@@ -11,7 +11,7 @@ It lives in two packages:
   `/usr/share/snapshot/fieldkit/` (collectors, ICS lists, printable docs) and the
   host tools `snapshot-fieldkit-prep` and `snapshot-fieldkit-import`
   (implementation in `/usr/share/snapshot-fieldkit/`, wrappers in `/usr/bin`).
-- `packages/snapshot-menu`: the launchers in **06 - Forensics & Response**:
+- `packages/snapshot-menu`: the launchers in **06 - Host Forensics**:
   *Prepare Field Kit USB*, *Import Field Kit results* (both in a terminal),
   *Field Kit folder* and *Field Kit guide*, next to The Sleuth Kit.
 
@@ -238,7 +238,7 @@ fallback writes no manifest (`hasher=none`) and integrity starts at the import.
    its self-test, PSScriptAnalyzer with the PowerShell 3.0 profile (advisory
    except syntax), and unit tests of the collector's helpers.
 
-`scripts/check-desktop.sh` covers the menu (06 Forensics & Response holds the
+`scripts/check-desktop.sh` covers the menu (06 Host Forensics holds the
 four field kit launchers and The Sleuth Kit) and
 `scripts/check-installer.sh` the package changelog.
 

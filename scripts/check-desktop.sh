@@ -154,7 +154,7 @@ expected = {
     "05 - Wireless & SDR":            ["snapshot-airodump-ng.desktop",
                                        "snapshot-rtl-sdr.desktop", "snapshot-rtl-power.desktop",
                                        "dk.gqrx.gqrx.desktop"],
-    "06 - Forensics & Response":      ["snapshot-sleuthkit.desktop",
+    "06 - Host Forensics":      ["snapshot-sleuthkit.desktop",
                                        "snapshot-fieldkit-prep.desktop", "snapshot-fieldkit-import.desktop",
                                        "snapshot-fieldkit-folder.desktop", "snapshot-fieldkit-guide.desktop"],
     "07 - Reporting & Documentation": ["snapshot-pandoc.desktop", "cherrytree.desktop",
@@ -171,11 +171,11 @@ for name, want in expected.items():
         if w not in have:
             problems.append(name + ": expected entry " + w + " not present")
 
-# Moved out of Reporting into Forensics & Response (snapshot-menu 0.2.3).
+# Moved out of Reporting into Host Forensics (snapshot-menu 0.2.3).
 for name, gone in {"07 - Reporting & Documentation": ["snapshot-sleuthkit.desktop"]}.items():
     if name in top:
         for g in sorted(set(ids_recursive(top[name])) & set(gone)):
-            problems.append(name + ": " + g + " should be in 06 - Forensics & Response only")
+            problems.append(name + ": " + g + " should be in 06 - Host Forensics only")
 
 ua = top.get("Usual Applications")
 if ua is None:

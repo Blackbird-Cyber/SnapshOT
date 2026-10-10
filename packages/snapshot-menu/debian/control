@@ -15,7 +15,7 @@ Depends: ${misc:Depends}, desktop-file-utils
 Description: SnapshOT categorized tool menu (Kali-style)
  A Kali-style Xfce applications menu for SnapshOT: eight numbered engagement-phase
  folders (Recon, Traffic Analysis, Protocol Tools, Firmware & Hardware, Wireless &
- SDR, Forensics & Response, Reporting, Reference) at the top level, with the stock
+ SDR, Host Forensics, Reporting, Reference) at the top level, with the stock
  Xfce categories nested under "Usual Applications". Ships the tool launchers, the
  folder definitions, the root menu (diverting libgarcon-common's
  xfce-applications.menu) and a helper that keeps CLI tool output on screen.

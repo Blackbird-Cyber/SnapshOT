@@ -1,3 +1,14 @@
+snapshot-menu (0.2.11) unstable; urgency=low
+
+  * Folder 06 is "Host Forensics", not "Forensics & Response": its tools
+    (the field kit, The Sleuth Kit, TestDisk/PhotoRec) collect and examine
+    evidence from hosts; none of them contains, eradicates or recovers
+    anything, and the SnapshOT Wiki carries the response lifecycle. The
+    directory file, category X-SnapshOT-Forensics and the launchers are
+    unchanged.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Fri, 09 Oct 2026 23:40:50 -0400
+
 snapshot-menu (0.2.10) unstable; urgency=low
 
   * License: Apache-2.0. debian/copyright is rewritten in DEP-5 and replaces

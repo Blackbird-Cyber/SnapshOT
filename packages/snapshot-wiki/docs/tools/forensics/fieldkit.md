@@ -34,7 +34,7 @@ plain POSIX `sh` and runs under BusyBox. They record processes, network
 connections, services, scheduled tasks, autostart entries, users, installed
 software, devices, serial ports, OPC servers and ICS project files.
 
-The four launchers in **06 - Forensics & Response** are *Prepare Field Kit USB*
+The four launchers in **06 - Host Forensics** are *Prepare Field Kit USB*
 and *Import Field Kit results* (both in a terminal), *Field Kit folder* (the kit
 in the file manager, `/usr/share/snapshot/fieldkit`) and *Field Kit guide*
 (`docs/fieldkit-guide.txt`: workflow, profiles, OT safety and chain of custody).

@@ -3,7 +3,7 @@ SnapshOT field kit guide
 
 1. Workflow
 -----------
-  Prepare   On the SnapshOT laptop: menu 06 - Forensics & Response >
+  Prepare   On the SnapshOT laptop: menu 06 - Host Forensics >
             "Prepare Field Kit USB" (snapshot-fieldkit-prep). It erases the
             stick, makes one exFAT partition labelled SNAPKIT (or FAT32 with
             --fat32) and copies this kit with a MANIFEST.sha256 of its files.
