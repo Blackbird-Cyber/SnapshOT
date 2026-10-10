@@ -29,45 +29,85 @@ rule.sprite = Sprite(rule.image);
 rule.y = lockup.y + lockup.h + Math.Int(lockup.h * 0.5);
 rule.sprite.SetPosition(screen.x + (screen.w - rule.w) / 2, rule.y, 10);
 
+# ---- state kept on screen by the callbacks ----------------------------------
+# A name first assigned inside a function is local to that call, and a sprite
+# is taken off the screen when its last reference goes away. The callbacks
+# therefore keep their sprites in these global hashes, created here at the top
+# level; without them the prompt and the bullets vanished as each callback
+# returned.
+prompt.sprite = NULL;
+answer.sprite = NULL;
+message.sprite = NULL;
+bullets.count = 0;
+
 # ---- text rows --------------------------------------------------------------
+# Image.Text yields an empty image when no label plugin or font can be loaded;
+# fall back to a line height derived from the screen so the layout holds.
 probe = Image.Text("Xg", 1, 1, 1);
-text.line = Math.Int(probe.GetHeight() * 1.6);
+if (probe && probe.GetHeight() > 0)
+    text.line = Math.Int(probe.GetHeight() * 1.6);
+else
+    text.line = Math.Int(screen.h / 30) + 1;
 text.y = rule.y + text.line * 2;
 
+# ---- passphrase bullets: small signal-red squares cut from rule.png ---------
+# Sprites, not text, so keystrokes show even when no font renders.
+dot.size = Math.Int(screen.h / 110) + 2;
+dot.pitch = dot.size * 2;
+dot.max = Math.Int(screen.w * 0.6 / dot.pitch);
+dot.image = Image("rule.png").Scale(dot.size, dot.size);
+dot.y = text.y + text.line + Math.Int((text.line - dot.size) / 2);
+
+# Returns a sprite with the text centered at row y, or NULL if nothing rendered.
 fun CentredText(str, r, g, b, y) {
+    if (!str)
+        return NULL;
     img = Image.Text(str, r, g, b);
+    if (!img || img.GetWidth() < 1)
+        return NULL;
     spr = Sprite(img);
-    spr.SetPosition(screen.x + (screen.w - img.GetWidth()) / 2, y, 20);
+    spr.SetPosition(screen.x + Math.Int((screen.w - img.GetWidth()) / 2), y, 20);
     return spr;
 }
 
-# Passphrase prompt (LUKS unlock). Bullets are drawn in signal red.
-fun DisplayPasswordCallback(prompt_text, bullet_count) {
+fun ShowBullets(count) {
+    if (count > dot.max)
+        count = dot.max;
+    for (i = 0; i < bullets.count; i++)
+        bullets.sprite[i] = NULL;
+    x = screen.x + Math.Int((screen.w - (count * dot.pitch - dot.size)) / 2);
+    for (i = 0; i < count; i++) {
+        bullets.sprite[i] = Sprite(dot.image);
+        bullets.sprite[i].SetPosition(x + i * dot.pitch, dot.y, 20);
+    }
+    bullets.count = count;
+}
+
+fun ClearPrompt() {
     prompt.sprite = NULL;
-    bullets.sprite = NULL;
-    if (prompt_text == "")
+    answer.sprite = NULL;
+    ShowBullets(0);
+}
+
+# Passphrase prompt (LUKS unlock): light prompt text, signal-red bullets.
+fun DisplayPasswordCallback(prompt_text, bullet_count) {
+    ClearPrompt();
+    if (!prompt_text)
         prompt_text = "Enter passphrase";
     prompt.sprite = CentredText(prompt_text, 0.957, 0.961, 0.965, text.y);
-    dots = "";
-    for (i = 0; i < bullet_count; i++)
-        dots += "* ";
-    if (dots == "")
-        dots = " ";
-    bullets.sprite = CentredText(dots, 0.945, 0.0, 0.055, text.y + text.line);
+    ShowBullets(bullet_count);
 }
 Plymouth.SetDisplayPasswordFunction(DisplayPasswordCallback);
 
 fun DisplayQuestionCallback(prompt_text, entry) {
-    prompt.sprite = NULL;
-    bullets.sprite = NULL;
+    ClearPrompt();
     prompt.sprite = CentredText(prompt_text, 0.957, 0.961, 0.965, text.y);
-    bullets.sprite = CentredText(entry, 0.957, 0.961, 0.965, text.y + text.line);
+    answer.sprite = CentredText(entry, 0.957, 0.961, 0.965, text.y + text.line);
 }
 Plymouth.SetDisplayQuestionFunction(DisplayQuestionCallback);
 
 fun DisplayNormalCallback() {
-    prompt.sprite = NULL;
-    bullets.sprite = NULL;
+    ClearPrompt();
 }
 Plymouth.SetDisplayNormalFunction(DisplayNormalCallback);
 
@@ -79,8 +119,7 @@ fun MessageCallback(str) {
 Plymouth.SetMessageFunction(MessageCallback);
 
 fun QuitCallback() {
-    prompt.sprite = NULL;
-    bullets.sprite = NULL;
+    ClearPrompt();
     message.sprite = NULL;
 }
 Plymouth.SetQuitFunction(QuitCallback);
