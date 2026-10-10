@@ -35,12 +35,11 @@ the image, so text is always rendered from PNG exports, never from the SVGs.
   frame with a 45° stencil cut), 1024px PNG + SVG.
 - `snapshot-icon-*`: the mark on a padded 1:1 tile (app icon, GRUB, avatar).
 - `favicon/`: red-on-black tile at 16 to 512 px.
-- SVGs are the designer's exports with the embedded C2PA manifest stripped.
-  Lockup SVGs still contain live `<text>`; outline before using them anywhere
-  the font is not installed.
-- The PNGs, here and their copies in `packages/`, still carry the designer's
-  embedded C2PA manifests. Whether to strip them too is an open housekeeping
-  item ([`docs/maintainers/status.md`](../docs/maintainers/status.md)).
+- SVGs and PNGs are the designer's exports with embedded metadata removed (no
+  C2PA, EXIF or text chunks); keep it that way when re-exporting, and re-copy
+  the files in `packages/` so the copies stay byte-identical. Lockup SVGs
+  still contain live `<text>`; outline before using them anywhere the font is
+  not installed.
 
 ## Splash (`splash/`)
 `snapshot-splash-2000x1125.png` is the approved title card (lockup, red rule,
