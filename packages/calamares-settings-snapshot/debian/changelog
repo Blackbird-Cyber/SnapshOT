@@ -1,3 +1,18 @@
+calamares-settings-snapshot (0.1.7) unstable; urgency=medium
+
+  * welcome.conf: require 3 GiB of RAM instead of 1 GiB. The LUKS2 format of
+    the root runs cryptsetup with Argon2id, which takes up to 1 GiB (half the
+    RAM on a 2 GiB machine) on top of a live session that already uses about
+    1.3 GB and has no swap. On a 2 GiB VMware Fusion VM the kernel killed
+    cryptsetup for lack of memory. KPMcore's helper, which runs cryptsetup, is
+    started by the system D-Bus daemon and lives in dbus.service, so systemd
+    stopped the system bus; LightDM restarted without logind and the new
+    session showed "Unable to contact settings server" (dbus-launch). The
+    install never got past formatting. The welcome page now stops a machine
+    with less than 3 GiB before anything is written.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 14:30:00 -0400
+
 calamares-settings-snapshot (0.1.6) unstable; urgency=low
 
   * Brand images (the welcome image and banner) are re-exported without embedded
