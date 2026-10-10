@@ -64,9 +64,6 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 
 - The wiki still has British spellings in places (favourites, authorisation,
   coloured, organises, behaviour); house style is American.
-- 34 brand PNGs (`branding/` and their copies in `packages/`) carry C2PA manifests
-  that name "Anthropic Files" as a possible creator. The SVGs had theirs stripped
-  (`branding/README.md`). Decide whether to strip the PNGs too.
 - House style has no em-dashes. The only one left in the tree is in
   `scripts/check-wiki.sh`, on purpose: it is the character the wiki check looks for.
 

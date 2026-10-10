@@ -101,7 +101,7 @@ strip: 1
 url: https://github.com/eloraux/plcscan/archive/33270ff4ca05f1d1844ce652661d8a37a15792d3.tar.gz
 sha256: 29b33732f0e22211061e6c7c90b666f6cb74af7546e6ab733638af0a55c7cca0
 commands: plcscan=python app/plcscan.py
-notes: GPL-3.0 Python 3 port of Dmitry Efanov's PLCScan (Positive Research / SCADA StrangeLove, 2012; Modbus + S7); plcscan.py, modbus.py, s7.py at top level. Fresh AI-assisted port (2026-09-30), so the hook test must run it against a live pymodbus server.
+notes: GPL-3.0 Python 3 port of Dmitry Efanov's PLCScan (Positive Research / SCADA StrangeLove, 2012; Modbus + S7); plcscan.py, modbus.py, s7.py at top level. A recent port (2026-09-30) with little upstream testing, so the hook test must run it against a live pymodbus server.
 
 name: redpoint-nse
 type: data

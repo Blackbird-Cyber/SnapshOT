@@ -48,3 +48,6 @@ SHA256SUMS
 # python bytecode
 __pycache__/
 *.pyc
+
+# local assistant and editor session files
+.claude/
