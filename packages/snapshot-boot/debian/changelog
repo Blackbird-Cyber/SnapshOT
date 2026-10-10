@@ -1,3 +1,18 @@
+snapshot-boot (0.1.4) unstable; urgency=low
+
+  * Add /usr/lib/snapshot-boot/grub-install, the grub-install wrapper the
+    installer's bootloader step runs in the target (calamares-settings-snapshot
+    bootloader.conf grubInstall). For EFI targets it adds --uefi-secure-boot
+    and --force-extra-removable, so EFI/SnapshOT and the removable media path
+    EFI/BOOT both hold shim, MokManager and the GRUB image signed by Debian,
+    and copies EFI/SnapshOT/grub.cfg to EFI/BOOT/grub.cfg: the signed GRUB
+    reads grub.cfg from its own directory, else from its built-in prefix
+    /EFI/debian. BIOS targets pass through unchanged. It ships here because
+    the installer removes calamares-settings-snapshot from the target before
+    the bootloader step.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 16:32:16 -0400
+
 snapshot-boot (0.1.3) unstable; urgency=low
 
   * Brand images (the Plymouth lockup) are re-exported without embedded

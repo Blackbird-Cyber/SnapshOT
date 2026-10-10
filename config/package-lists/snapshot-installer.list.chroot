@@ -20,10 +20,21 @@ dosfstools
 e2fsprogs
 gdisk
 parted
+# Secure Boot on the installed system: shim-signed (shim signed by Microsoft,
+# with MokManager) and grub-efi-<arch>-signed (GRUB signed by Debian). Without
+# them grub-install lays down an unsigned GRUB, which firmware with Secure Boot
+# on refuses; the live ISO's own shim and signed GRUB are copied by live-build
+# and do not reach the installed system. snapshot-boot's grub-install wrapper
+# (calamares-settings-snapshot bootloader.conf) also puts shim, signed GRUB and
+# MokManager at the removable media path EFI/BOOT.
 #if ARCHITECTURES amd64
 grub-efi-amd64
+grub-efi-amd64-signed
+shim-signed
 grub-pc-bin
 #endif
 #if ARCHITECTURES arm64
 grub-efi-arm64
+grub-efi-arm64-signed
+shim-signed
 #endif

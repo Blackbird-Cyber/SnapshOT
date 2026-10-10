@@ -25,6 +25,11 @@
 #      that users.conf and the live-config defaults both add group wireshark.
 #   6. Parses settings.conf and asserts that the exec sequence runs packages
 #      before initramfscfg, so the installed initramfs has no live-boot hooks.
+#   7. Checks the bootloader setup: bootloader.conf runs snapshot-boot's
+#      grub-install wrapper with installEFIFallback off, and the wrapper (mode
+#      755, valid sh), run against a stub grub-install, adds
+#      --uefi-secure-boot --force-extra-removable for an EFI target, copies
+#      EFI/<id>/grub.cfg to EFI/BOOT, and passes a BIOS call through unchanged.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 IMAGE="${SNAPSHOT_TRIXIE_IMAGE:-debian:trixie}"
@@ -197,6 +202,53 @@ defaults = sorted(m for m in shown if not os.path.exists(os.path.join(confdir, m
 print("ok   packages runs before initramfscfg")
 print("info modules on upstream defaults (no .conf):", " ".join(defaults))
 PY
+
+echo "== bootloader: Secure Boot wrapper =="
+wrapper_path=/usr/lib/snapshot-boot/grub-install
+wrapper=/snapshot/packages/snapshot-boot/rootfs$wrapper_path
+python3 - "$PKG/etc/calamares/modules/bootloader.conf" "$wrapper_path" <<'PY' || fail=1
+import sys, yaml
+conf = yaml.safe_load(open(sys.argv[1]))
+if conf.get("grubInstall") != sys.argv[2]:
+    print(f"FAIL bootloader.conf grubInstall is {conf.get('grubInstall')!r}, not {sys.argv[2]!r}"); sys.exit(1)
+if conf.get("installEFIFallback") is not False:
+    print("FAIL bootloader.conf installEFIFallback must be false (the fallback copies GRUB over the shim)"); sys.exit(1)
+print(f"ok   bootloader.conf: grubInstall {sys.argv[2]}, installEFIFallback false")
+PY
+if [ "$(stat -c %a "$wrapper" 2>/dev/null)" = 755 ] && sh -n "$wrapper"; then
+    echo "ok   ${wrapper#/snapshot/} (mode 755, sh syntax)"
+else echo "FAIL ${wrapper#/snapshot/}: missing, not mode 755 or not valid sh"; fail=1; fi
+# A stub grub-install records its arguments and lays out EFI/<id> and EFI/BOOT
+# the way the real one does. The wrapper puts /usr/sbin first in PATH.
+cat > /usr/sbin/grub-install <<'STUB'
+#!/bin/sh
+printf '%s\n' "$*" > /tmp/grub-install.args
+efidir= id=
+for a; do case "$a" in --efi-directory=*) efidir=${a#*=} ;; --bootloader-id=*) id=${a#*=} ;; esac; done
+if [ -n "$efidir" ]; then
+    mkdir -p "$efidir/EFI/$id" "$efidir/EFI/BOOT"
+    echo "search.fs_uuid stub root" > "$efidir/EFI/$id/grub.cfg"
+fi
+STUB
+chmod 755 /usr/sbin/grub-install
+esp=/tmp/esp; mkdir -p "$esp"
+efi_call="--target=x86_64-efi --efi-directory=$esp --bootloader-id=SnapshOT --force"
+# shellcheck disable=SC2086
+if sh "$wrapper" $efi_call >/dev/null \
+   && [ "$(cat /tmp/grub-install.args)" = "--uefi-secure-boot --force-extra-removable $efi_call" ] \
+   && cmp -s "$esp/EFI/SnapshOT/grub.cfg" "$esp/EFI/BOOT/grub.cfg"; then
+    echo "ok   EFI call: --uefi-secure-boot --force-extra-removable added, grub.cfg copied to EFI/BOOT"
+else
+    echo "FAIL EFI call: grub-install got '$(cat /tmp/grub-install.args 2>/dev/null)'"; fail=1
+fi
+bios_call="--target=i386-pc --recheck --force /dev/sda"
+# shellcheck disable=SC2086
+if sh "$wrapper" $bios_call >/dev/null && [ "$(cat /tmp/grub-install.args)" = "$bios_call" ]; then
+    echo "ok   BIOS call passed through unchanged"
+else
+    echo "FAIL BIOS call: grub-install got '$(cat /tmp/grub-install.args 2>/dev/null)'"; fail=1
+fi
+rm -f /usr/sbin/grub-install
 
 if [ "$fail" -ne 0 ]; then echo "== check-installer: FAIL =="; exit 1; fi
 echo "== check-installer: OK =="
