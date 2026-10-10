@@ -14,13 +14,17 @@
 #                            fail rather than fall back to an unsigned GRUB when
 #                            shim-signed or grub-efi-<arch>-signed is missing;
 #   --force-extra-removable  also install shim (as BOOTX64.EFI or BOOTAA64.EFI),
-#                            signed GRUB and MokManager at the removable media
-#                            path EFI/BOOT, which the firmware boots when it has
-#                            no boot entry (a reset NVRAM, a fresh VM).
-# Then EFI/<id>/grub.cfg is copied to EFI/BOOT/grub.cfg. Debian's signed GRUB
+#                            its fallback, signed GRUB and MokManager at the
+#                            removable media path EFI/BOOT, which the firmware
+#                            boots when it has no boot entry (a reset NVRAM, a
+#                            fresh VM).
+# Started from EFI/BOOT, shim runs its fallback, which recreates the boot entry
+# from EFI/<id>/BOOT<ARCH>.CSV and boots it. That file comes from shim and names
+# the entry "debian", so it is rewritten to name it <id>, like the entry
+# grub-install makes. If the fallback cannot help, shim starts the GRUB beside it,
+# so EFI/<id>/grub.cfg is also copied to EFI/BOOT/grub.cfg: Debian's signed GRUB
 # reads grub.cfg from its own directory first and otherwise from its built-in
-# prefix /EFI/debian, which a SnapshOT install does not have: without the copy
-# the removable path stops at a grub> prompt.
+# prefix /EFI/debian, which a SnapshOT install does not have.
 #
 # bootloader.conf sets installEFIFallback: false. Calamares' fallback copies
 # EFI/<id>/grubx64.efi to EFI/boot/bootx64.efi, over the shim, and the firmware
@@ -54,3 +58,13 @@ grub-install --uefi-secure-boot --force-extra-removable "$@"
 # case anyway.
 cp "$efidir/EFI/$id/grub.cfg" "$efidir/EFI/BOOT/grub.cfg"
 echo "snapshot-boot grub-install: copied EFI/$id/grub.cfg to EFI/BOOT/grub.cfg"
+
+# The fallback's CSV is UTF-16LE, one line: loader,label,options,description.
+for csv in "$efidir/EFI/$id"/[Bb][Oo][Oo][Tt]*.[Cc][Ss][Vv]; do
+    [ -f "$csv" ] || continue
+    loader=$(iconv -f UTF-16LE -t UTF-8 "$csv" | cut -d, -f1)
+    [ -n "$loader" ] || continue
+    printf '%s,%s,,This is the boot entry for %s\n' "$loader" "$id" "$id" |
+        iconv -f UTF-8 -t UTF-16LE > "$csv"
+    echo "snapshot-boot grub-install: $csv names the boot entry $id"
+done

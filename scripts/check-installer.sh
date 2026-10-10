@@ -29,7 +29,8 @@
 #      grub-install wrapper with installEFIFallback off, and the wrapper (mode
 #      755, valid sh), run against a stub grub-install, adds
 #      --uefi-secure-boot --force-extra-removable for an EFI target, copies
-#      EFI/<id>/grub.cfg to EFI/BOOT, and passes a BIOS call through unchanged.
+#      EFI/<id>/grub.cfg to EFI/BOOT, names the fallback's boot entry after the
+#      bootloader id in BOOTX64.CSV, and passes a BIOS call through unchanged.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 IMAGE="${SNAPSHOT_TRIXIE_IMAGE:-debian:trixie}"
@@ -228,6 +229,8 @@ for a; do case "$a" in --efi-directory=*) efidir=${a#*=} ;; --bootloader-id=*) i
 if [ -n "$efidir" ]; then
     mkdir -p "$efidir/EFI/$id" "$efidir/EFI/BOOT"
     echo "search.fs_uuid stub root" > "$efidir/EFI/$id/grub.cfg"
+    printf 'shimx64.efi,debian,,This is the boot entry for debian\n' |
+        iconv -f UTF-8 -t UTF-16LE > "$efidir/EFI/$id/BOOTX64.CSV"
 fi
 STUB
 chmod 755 /usr/sbin/grub-install
@@ -236,8 +239,9 @@ efi_call="--target=x86_64-efi --efi-directory=$esp --bootloader-id=SnapshOT --fo
 # shellcheck disable=SC2086
 if sh "$wrapper" $efi_call >/dev/null \
    && [ "$(cat /tmp/grub-install.args)" = "--uefi-secure-boot --force-extra-removable $efi_call" ] \
-   && cmp -s "$esp/EFI/SnapshOT/grub.cfg" "$esp/EFI/BOOT/grub.cfg"; then
-    echo "ok   EFI call: --uefi-secure-boot --force-extra-removable added, grub.cfg copied to EFI/BOOT"
+   && cmp -s "$esp/EFI/SnapshOT/grub.cfg" "$esp/EFI/BOOT/grub.cfg" \
+   && [ "$(iconv -f UTF-16LE -t UTF-8 "$esp/EFI/SnapshOT/BOOTX64.CSV")" = "shimx64.efi,SnapshOT,,This is the boot entry for SnapshOT" ]; then
+    echo "ok   EFI call: --uefi-secure-boot --force-extra-removable added, grub.cfg copied to EFI/BOOT, fallback CSV names SnapshOT"
 else
     echo "FAIL EFI call: grub-install got '$(cat /tmp/grub-install.args 2>/dev/null)'"; fail=1
 fi

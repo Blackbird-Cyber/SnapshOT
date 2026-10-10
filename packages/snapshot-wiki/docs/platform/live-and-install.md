@@ -62,7 +62,8 @@ On UEFI the installer puts shim, signed GRUB and MokManager in the EFI system
 partition twice: under `EFI/SnapshOT`, which the firmware's `SnapshOT` boot
 entry starts, and at the removable media path `EFI/BOOT`, which the firmware
 starts when it has no boot entry (after an NVRAM reset, or in a VM given a fresh
-variable store). Either way the installed system boots with Secure Boot on.
+variable store); shim then recreates the `SnapshOT` entry. Either way the
+installed system boots with Secure Boot on.
 
 ## First boot
 

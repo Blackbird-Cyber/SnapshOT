@@ -92,21 +92,23 @@ Calamares' bootloader step runs `/usr/lib/snapshot-boot/grub-install` instead of
 the `packages` step has already removed `calamares-settings-snapshot` from the target
 when the bootloader step runs. On UEFI it adds `--uefi-secure-boot
 --force-extra-removable` to Calamares' `--target`, `--efi-directory`,
-`--bootloader-id=SnapshOT` and `--force`, then copies `grub.cfg` to the removable
-media path, so the EFI system partition holds (amd64 names; arm64 has `aa64` in place
-of `x64`):
+`--bootloader-id=SnapshOT` and `--force`, copies `grub.cfg` to the removable media
+path and names the fallback's boot entry, so the EFI system partition holds (amd64
+names; arm64 has `aa64` in place of `x64`):
 
 | Directory | Files |
 |---|---|
-| `EFI/SnapshOT/` | `shimx64.efi` (shim), `grubx64.efi` (signed GRUB), `mmx64.efi` (MokManager), `fbx64.efi` (shim's fallback), `BOOTX64.CSV`, `grub.cfg` (finds `/boot` by its UUID and loads `/boot/grub/grub.cfg`) |
-| `EFI/BOOT/` | `BOOTX64.EFI` (shim), `grubx64.efi`, `mmx64.efi`, `grub.cfg` (a copy) |
+| `EFI/SnapshOT/` | `shimx64.efi` (shim), `grubx64.efi` (signed GRUB), `mmx64.efi` (MokManager), `fbx64.efi` (shim's fallback), `BOOTX64.CSV` (the boot entry the fallback recreates), `grub.cfg` (finds `/boot` by its UUID and loads `/boot/grub/grub.cfg`) |
+| `EFI/BOOT/` | `BOOTX64.EFI` (shim), `fbx64.efi`, `grubx64.efi`, `mmx64.efi`, `grub.cfg` (a copy) |
 
 The firmware's boot entry `SnapshOT` starts `\EFI\SnapshOT\shimx64.efi`. A machine
 with no boot entry (its NVRAM was reset, or a VM got a fresh variable store) starts
-the removable media path `\EFI\BOOT\BOOTX64.EFI`, the same shim and GRUB. The signed
-GRUB reads `grub.cfg` from its own directory, else from its built-in prefix
-`/EFI/debian`, which a SnapshOT install does not have: hence the copy.
-`bootloader.conf` turns Calamares' `installEFIFallback` off, because it copies
+the removable media path `\EFI\BOOT\BOOTX64.EFI`: shim runs its fallback, which
+recreates the `SnapshOT` entry from `EFI/SnapshOT/BOOTX64.CSV` and boots it (shim's
+own copy of that file names the entry `debian`; the wrapper rewrites it). If the
+fallback cannot help, shim starts the signed GRUB beside it, which reads `grub.cfg`
+from its own directory, else from its built-in prefix `/EFI/debian`, which a SnapshOT
+install does not have: hence the copy. `bootloader.conf` turns Calamares' `installEFIFallback` off, because it copies
 `grubx64.efi` to `EFI/boot/bootx64.efi`, over the shim, and firmware with Secure
 Boot on refuses GRUB started without shim. BIOS installs (amd64) pass through the
 wrapper unchanged (`--target=i386-pc`). `config/preseed/snapshot-grub.cfg.chroot`
