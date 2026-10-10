@@ -92,7 +92,7 @@ Eight numbered menu folders, in the order of an engagement ([docs/desktop.md](do
 | 05 - Wireless & SDR | Survey Wi-Fi and the radio spectrum around a site, receive only, for transmitters the asset inventory does not explain. | airodump-ng, rtl-sdr (rtl_eeprom dongle check, rtl_power), gqrx |
 | 06 - Forensics & Response | Collect evidence from hosts with the field kit and examine disks and images without changing them. | SnapshOT field triage kit (USB prepare and import, Windows and Linux collectors), The Sleuth Kit, TestDisk/PhotoRec |
 | 07 - Reporting & Documentation | Take notes, capture screens, keep secrets, write the report and wipe media between clients. | LibreOffice, CherryTree, Flameshot, pandoc, KeePassXC, nwipe |
-| 08 - Reference | Offline reference data, the build manifest of this image and this wiki. | offline reference folder, the build manifest, the SnapshOT Wiki |
+| 08 - Reference | Offline reference data, the build manifest of this image and the SnapshOT Wiki. | offline reference folder, the build manifest, the SnapshOT Wiki |
 
 **The SnapshOT Wiki** documents every tool above: what it does, how it behaves on the
 wire, a quick start and where it fits in each response phase, with rules of
