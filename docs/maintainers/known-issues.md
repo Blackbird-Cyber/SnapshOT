@@ -4,16 +4,15 @@ Problems that affect a published image or the current tree, kept here so the
 README stays a description of the product. Each release's notes on GitHub repeat
 the ones that apply to that release.
 
-## v0.1.0 (published 2026-09-30)
+## v0.2.0 (pre-release, published 2026-10-10)
 
-- **v0.1.0 cannot install to disk.** Its installer stops at the display-manager
-  step, and the encrypted layout it would have written does not boot: Calamares
-  formats LUKS2 with Argon2id, which Debian's GRUB cannot unlock. Use v0.1.0 as a
-  live system only. The fixes are on main (`calamares-settings-snapshot` 0.1.3
-  and later, now 0.1.5; `snapshot-boot` 0.1.1 and later) and ship with the next
-  image.
-- An image only includes the vendor layer when `python3 scripts/vendor.py fetch`
-  ran before the build; v0.1.0 has none of it.
+- **Installer QA is not finished.** The installer configuration passes
+  `scripts/check-installer.sh` and the live session passed smoke checks in QEMU,
+  but an end-to-end install on VMware Fusion has not been run on this build. Do
+  not rely on a v0.2.0 install for an engagement until it has; the release is
+  promoted from pre-release after that run.
+- v0.2.0 was built from 3a77bad; every item under "Current tree" below applies
+  to it too.
 
 ## Current tree
 
