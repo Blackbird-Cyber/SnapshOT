@@ -1,0 +1,165 @@
+# Copyright and license of every file in the repository, by path (REUSE
+# specification 3.3). When several annotations match a file, the last one wins,
+# so the list runs from the general rule to the exceptions. `reuse lint` checks
+# it; see CONTRIBUTING.md.
+version = 1
+
+# Code, configuration and packaging: Apache-2.0.
+[[annotations]]
+path = "**"
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Documentation: docs/, the SnapshOT Wiki pages, templates and text data, and the
+# field kit's printed documents.
+[[annotations]]
+path = [
+    "docs/**",
+    "packages/snapshot-wiki/docs/**",
+    "packages/snapshot-wiki/templates/**",
+    "packages/snapshot-wiki/data/folders.yaml",
+    "packages/snapshot-wiki/data/lifecycle.yaml",
+    "packages/snapshot-wiki/data/protocols.yaml",
+    "packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/docs/*.txt",
+    "packages/snapshot-fieldkit/rootfs/usr/share/snapshot/fieldkit/README.txt",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# The Contributor Covenant, adopted as published.
+[[annotations]]
+path = "CODE_OF_CONDUCT.md"
+precedence = "override"
+SPDX-FileCopyrightText = "Contributor Covenant contributors <https://www.contributor-covenant.org>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# MITRE ATT&CK for ICS ids, names and tactic descriptions. The field_view text
+# in the same file is Blackbird Cyber's.
+[[annotations]]
+path = "packages/snapshot-wiki/data/attack-ics.yaml"
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 The MITRE Corporation", "2026 Blackbird Cyber, LLC"]
+SPDX-License-Identifier = "LicenseRef-MITRE-ATTACK-Terms"
+
+# Wiki pages that quote ATT&CK for ICS ids and names, and the hook that writes
+# MITRE's credit line. Their own "(c) MITRE" lines would otherwise be taken as
+# the whole copyright of the file.
+[[annotations]]
+path = [
+    "packages/snapshot-wiki/docs/lifecycle/attack-ics/index.md",
+    "packages/snapshot-wiki/docs/lifecycle/crosswalk.md",
+]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 Blackbird Cyber, LLC", "2026 The MITRE Corporation"]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-MITRE-ATTACK-Terms"
+
+[[annotations]]
+path = ["NOTICE", "packages/snapshot-wiki/hooks/snapshot_wiki.py"]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Brand assets: all rights reserved, see TRADEMARKS.md.
+[[annotations]]
+path = [
+    "branding/**",
+    "config/bootloaders/grub-pc/splash.png",
+    "docs/images/**",
+    "packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/banner.png",
+    "packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/icon.svg",
+    "packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/logo.svg",
+    "packages/calamares-settings-snapshot/rootfs/etc/calamares/branding/snapshot/welcome.png",
+    "packages/snapshot-boot/rootfs/**/*.png",
+    "packages/snapshot-themes/rootfs/usr/share/backgrounds/**",
+    "packages/snapshot-themes/rootfs/usr/share/icons/**",
+    "packages/snapshot-wiki/assets/img/**",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
+SPDX-License-Identifier = "LicenseRef-Blackbird-Brand"
+
+# The two README files inside the brand folders are documentation.
+[[annotations]]
+path = [
+    "branding/README.md",
+    "packages/snapshot-themes/rootfs/usr/share/backgrounds/snapshot/README.md",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Blackbird Cyber, LLC"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# Derived from Kali's kali-themes (Kali-Red-Dark and the Kali-Dark Qt color
+# scheme); see packages/snapshot-themes/THEME-ORIGIN.md.
+[[annotations]]
+path = [
+    "packages/snapshot-themes/rootfs/usr/share/themes/SnapshOT-Dark/**",
+    "packages/snapshot-themes/rootfs/usr/share/qt5ct/**",
+    "packages/snapshot-themes/rootfs/usr/share/qt6ct/**",
+]
+precedence = "override"
+SPDX-FileCopyrightText = [
+    "2015-2019 Offensive Security",
+    "Daniel Ruiz de Alegria <daniel@drasite.com> (Flat Remix)",
+    "2026 Blackbird Cyber, LLC",
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# live-build's grub-pc/config.cfg with one line changed.
+[[annotations]]
+path = "config/bootloaders/grub-pc/config.cfg"
+precedence = "override"
+SPDX-FileCopyrightText = [
+    "2016-2020 The Debian Live team",
+    "2016-2017 Raphael Hertzog <hertzog@debian.org>",
+    "2006-2015 Daniel Baumann <mail@daniel-baumann.ch>",
+    "2026 Blackbird Cyber, LLC",
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Xfce defaults that SnapshOT's copies are derived from (Debian trixie packages).
+# helpers.rc: xfce4-helpers, source xfce4-settings 4.20.1.
+[[annotations]]
+path = "packages/snapshot-wiki/rootfs/usr/share/snapshot-wiki/xfce4-helpers.rc"
+precedence = "override"
+SPDX-FileCopyrightText = ["2005-2006 Benedikt Meurer <benny@xfce.org>", "2026 Blackbird Cyber, LLC"]
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+# xfce-applications.menu: libgarcon-common, source garcon 4.20.0.
+[[annotations]]
+path = "packages/snapshot-menu/rootfs/etc/xdg/menus/xfce-applications.menu"
+precedence = "override"
+SPDX-FileCopyrightText = [
+    "2006-2010 Jannis Pohlmann <jannis@xfce.org>",
+    "2009-2010 Nick Schermer <nick@xfce.org>",
+    "2026 Blackbird Cyber, LLC",
+]
+SPDX-License-Identifier = "LGPL-2.0-or-later"
+
+# xfce4-keyboard-shortcuts.xml: libxfce4ui-common, source libxfce4ui 4.20.1.
+[[annotations]]
+path = "packages/snapshot-themes/rootfs/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml"
+precedence = "override"
+SPDX-FileCopyrightText = ["The Xfce Development Team", "2026 Blackbird Cyber, LLC"]
+SPDX-License-Identifier = "LGPL-2.0-or-later"
+
+# Vendored JavaScript for the wiki; see packages/snapshot-wiki/assets/vendor/ORIGIN.md.
+# vis-network bundles core-js and Hammer.JS, both MIT.
+[[annotations]]
+path = "packages/snapshot-wiki/assets/vendor/vis-network.min.js"
+precedence = "override"
+SPDX-FileCopyrightText = [
+    "2011-2017 Almende B.V.",
+    "2017-2019 visjs contributors",
+    "2013-2025 Denis Pushkarev (zloirock.ru)",
+    "2025-2026 CoreJS Company (core-js.io)",
+    "hammerjs contributors",
+]
+SPDX-License-Identifier = "(Apache-2.0 OR MIT) AND MIT"
+
+[[annotations]]
+path = "packages/snapshot-wiki/assets/vendor/iframe-worker-shim.js"
+precedence = "override"
+SPDX-FileCopyrightText = "2020-2022 Martin Donath <martin.donath@squidfunk.com>"
+SPDX-License-Identifier = "MIT"

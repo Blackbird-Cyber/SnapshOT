@@ -19,9 +19,8 @@ strings:
     versionedName:       SnapshOT 0.1
     shortVersionedName:  SnapshOT 0.1
     bootloaderEntryName: SnapshOT
-    # TODO(release): real product and support URLs.
-    productUrl:          "https://example.invalid/snapshot"
-    supportUrl:          "https://example.invalid/snapshot"
+    productUrl:          "https://github.com/Blackbird-Cyber/SnapshOT"
+    supportUrl:          "https://github.com/Blackbird-Cyber/SnapshOT/issues"
 
 images:
     productLogo:    "logo.svg"

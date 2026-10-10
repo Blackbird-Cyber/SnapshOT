@@ -1,3 +1,19 @@
+snapshot-wiki (0.1.4) unstable; urgency=low
+
+  * License: Apache-2.0. debian/copyright is rewritten in DEP-5 and replaces
+    the GPL-3+ placeholder.
+    The pages, templates and text data are CC-BY-4.0 and the ATT&CK for
+    ICS data keeps MITRE's terms of use. The vis-network stanza now credits
+    the core-js and Hammer.JS code it bundles (Expat), and new stanzas cover
+    xfce4-helpers.rc (xfce4-settings, GPL-2+) and the Material for MkDocs,
+    lunr and lunr-languages files the built site carries.
+  * Maintainer: Blackbird Cyber, LLC at its GitHub address; Homepage,
+    Vcs-Browser and Vcs-Git point at the repository.
+  * mkdocs.yml: the footer reads "Blackbird Cyber, LLC. Text licensed CC
+    BY 4.0."
+
+ -- Blackbird Cyber, LLC <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Fri, 09 Oct 2026 22:45:00 -0400
+
 snapshot-wiki (0.1.3) unstable; urgency=low
 
   * Remove the Autopsy page (docs/tools/forensics/autopsy.md). The wiki

@@ -1,0 +1,25 @@
+Blackbird Cyber, LLC brand assets
+
+Copyright 2026 Blackbird Cyber, LLC. All rights reserved.
+
+This license covers the SnapshOT and Blackbird Cyber brand assets in the
+SnapshOT repository: the SnapshOT mark, lockups, icons, splash and title card,
+wallpaper, boot and installer artwork, the wiki logo and favicon, and the
+screenshots of SnapshOT. REUSE.toml lists the paths. These files are not
+licensed under the Apache License 2.0 or under CC BY 4.0.
+
+You may use, copy and redistribute these files only:
+
+1. as part of an unmodified official SnapshOT build, which includes building
+   and running an unmodified copy of the SnapshOT repository; and
+2. for nominative reference to SnapshOT or Blackbird Cyber, as TRADEMARKS.md
+   describes.
+
+Any other use, including use in a modified build or in a derived distribution,
+needs written permission from Blackbird Cyber, LLC. TRADEMARKS.md lists the
+files to replace when you rebrand a fork and says how to ask for permission:
+https://github.com/Blackbird-Cyber/SnapshOT/blob/main/TRADEMARKS.md
+
+THE FILES ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL BLACKBIRD CYBER, LLC BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM THE FILES OR THEIR USE.

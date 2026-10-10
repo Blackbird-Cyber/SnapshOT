@@ -44,3 +44,6 @@ Layout
     linux\user-supplied\     optional static tools (listed, not run)
     docs\              fieldkit-guide.txt, ot-safety.txt, chain-of-custody.txt
     results\           one folder per collection: <HOST>_<UTC time>
+
+Scripts are licensed Apache-2.0 and these documents CC BY 4.0, both
+Copyright 2026 Blackbird Cyber, LLC (github.com/Blackbird-Cyber/SnapshOT).
