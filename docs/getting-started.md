@@ -63,7 +63,9 @@ Writing the image erases the whole stick.
 
 Enable UEFI firmware and give the VM 4 GB of RAM and a 20 GB disk. Use the arm64
 image for UTM, Parallels or VMware Fusion on Apple Silicon. To try the offline
-install path, remove the VM's network adapter.
+install path, remove the VM's network adapter. Secure Boot can stay on, in a VM
+or on a laptop: the ISO and the installed system both boot through shim signed by
+Microsoft ([offline-install.md](offline-install.md#secure-boot)).
 
 ## 5. The live session
 
@@ -73,8 +75,11 @@ needed to unlock the screen: `sudo` and the installer do not ask for it in the
 live session. The live user is in group `wireshark`, so Wireshark, tshark and
 termshark capture without `sudo`; `tcpdump` still needs it.
 
-Nothing on the image sends traffic until you bring an interface up. The tools are
-in the eight numbered folders of the Whisker menu, at the top left of the panel.
+Nothing on the image sends traffic until you bring an interface up. Wi-Fi is
+switched off, so the laptop sends no probe requests: turn it on from the network
+icon in the panel (right-click, **Enable Wi-Fi**) or with `nmcli radio wifi on`,
+and off again with `nmcli radio wifi off`. The tools are in the eight numbered
+folders of the Whisker menu, at the top left of the panel.
 
 ## 6. Install to disk
 
@@ -89,6 +94,9 @@ a disk passphrase.
   remembered for 60 minutes across terminals. Root stays locked.
 - The installer removes the live-session packages (`live-boot`, `live-config`,
   `user-setup`) and Calamares itself, so the installed desktop has no Install icon.
+- On UEFI the bootloader is shim and Debian-signed GRUB, in `EFI/SnapshOT` and
+  again at the removable media path `EFI/BOOT`, so the installed system boots with
+  Secure Boot on, also on firmware that has lost its boot entry.
 
 [offline-install.md](offline-install.md) has every step, the disk layout, the
 module configuration and the QA checklist.

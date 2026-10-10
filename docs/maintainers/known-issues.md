@@ -13,6 +13,16 @@ the ones that apply to that release.
   promoted from pre-release after that run.
 - v0.2.1 was built from 8a5ba28; every item under "Current tree" below applies
   to it too.
+- **No Wi-Fi client.** v0.2.1 carries no `wpasupplicant` (NetworkManager only
+  recommends it), so NetworkManager can neither scan for nor join a Wi-Fi
+  network, nor do wired 802.1X. Ethernet and airodump-ng surveys work. Fixed
+  after v0.2.1: `wpasupplicant` is in the desktop list, and NetworkManager's
+  Wi-Fi switch ships off.
+- **Installed systems do not boot with Secure Boot on.** The v0.2.1 live ISO
+  boots through shim, but the image has neither `shim-signed` nor
+  `grub-efi-<arch>-signed`, so the installer lays down an unsigned GRUB (also
+  copied to `EFI/boot/bootx64.efi`). Turn Secure Boot off before installing
+  v0.2.1. Fixed after v0.2.1 ([offline-install.md](../offline-install.md#secure-boot)).
 - Fixed in v0.2.1: the brand images inside the withdrawn v0.2.0 and v0.1.0
   images (the icons, the boot splash lockup, the installer welcome image and the
   wiki favicon) carried embedded content-credential manifests. v0.2.1 was built

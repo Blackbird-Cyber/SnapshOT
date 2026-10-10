@@ -22,6 +22,14 @@ balenaEtcher works as is; with Rufus choose DD Image mode, not ISO mode; with
 Ventoy copy the ISO onto the stick. For a VM, enable UEFI, give it 4 GB of RAM
 and a 20 GB disk; remove the network adapter to test the offline install path.
 
+Secure Boot can stay on. The ISO starts through shim, signed by Microsoft, then
+GRUB and the kernel signed by Debian, and an installed system boots the same way.
+With Secure Boot on, the kernel runs in lockdown: it loads only signed modules and
+blocks raw access to memory and I/O ports, which stops
+[flashrom](../tools/firmware/flashrom.md)'s `internal` programmer (the laptop's
+own firmware) but not its external SPI programmers. `mokutil --sb-state` shows
+whether Secure Boot is on.
+
 ## The live session
 
 The live session logs in automatically as user `snapshot`. The password `live`
@@ -30,7 +38,9 @@ in the live session. The live user already has the groups needed for the work,
 including `wireshark` for capture and `dialout` for serial; see
 [administration and capture](admin-and-capture.md). The
 [desktop page](desktop.md) shows where the tools are in the menu and the
-keyboard shortcuts.
+keyboard shortcuts. Wi-Fi is switched off until you turn it on from the network
+icon or with `nmcli radio wifi on`; see
+[quiet network defaults](network-defaults.md#wi-fi).
 
 ## Installing to disk
 
@@ -47,6 +57,12 @@ The account created in the installer administers the system through `sudo`; root
 stays locked. The installer removes the live-session packages (`live-boot`,
 `live-config`, `user-setup`) and Calamares itself, so the installed desktop has
 no Install icon.
+
+On UEFI the installer puts shim, signed GRUB and MokManager in the EFI system
+partition twice: under `EFI/SnapshOT`, which the firmware's `SnapshOT` boot
+entry starts, and at the removable media path `EFI/BOOT`, which the firmware
+starts when it has no boot entry (after an NVRAM reset, or in a VM given a fresh
+variable store). Either way the installed system boots with Secure Boot on.
 
 ## First boot
 

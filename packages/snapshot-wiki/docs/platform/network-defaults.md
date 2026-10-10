@@ -43,6 +43,31 @@ NetworkManager (`/etc/NetworkManager/conf.d/snapshot-quiet.conf`) is set so that
 - it runs **no connectivity check** (`connectivity.enabled=false`), so it never
   reaches out to test for internet access.
 
+## Wi-Fi
+
+NetworkManager joins Wi-Fi networks, and wired networks that use 802.1X, through
+wpa_supplicant. The image ships with NetworkManager's
+**Wi-Fi switch off** (`WirelessEnabled=false` in
+`/var/lib/NetworkManager/NetworkManager.state`, written at build time), on the
+live system and on every installed system:
+
+- While the switch is off, NetworkManager leaves every Wi-Fi adapter
+  `unavailable`: it does not scan, so the laptop sends no probe requests and
+  joins nothing when it is carried onto a site.
+- Turn Wi-Fi on deliberately, from the network icon in the panel (right-click,
+  **Enable Wi-Fi**) or with `nmcli radio wifi on`, and off again with
+  `nmcli radio wifi off`. An installed system remembers the choice across
+  reboots; the live system starts with the switch off at every boot.
+- The switch is also a soft block: switching Wi-Fi off blocks every Wi-Fi radio
+  through rfkill and switching it on unblocks them (`sudo rfkill` lists the
+  state). A monitor-mode survey therefore starts with an `rfkill unblock` of the
+  survey adapter alone; the [airodump-ng](../tools/wireless/airodump-ng.md) page
+  has the steps.
+- Once the switch is on, NetworkManager scans in the background with every
+  adapter it manages, and each scan sends probe requests. It uses a random MAC
+  address for them (NetworkManager's default, `wifi.scan-rand-mac-address`); a
+  connection uses the adapter's own address unless the profile sets another.
+
 ## IPv6
 
 IPv6 stateless autoconfiguration and router-advertisement acceptance are turned

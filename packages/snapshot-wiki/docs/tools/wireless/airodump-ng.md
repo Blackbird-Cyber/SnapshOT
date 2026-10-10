@@ -56,9 +56,20 @@ outside Wi-Fi.
       driver that support monitor mode; many built-in laptop adapters do not.
       `airmon-ng` changes the adapter's mode, the laptop's own state, not the
       network's.
-    - `sudo airmon-ng check` lists processes, such as NetworkManager, that can
-      interfere; stopping them (`airmon-ng check kill`) also drops the laptop's
-      other connections.
+    - SnapshOT ships NetworkManager's Wi-Fi switch off, and the switch is also
+      an rfkill soft block: `sudo airmon-ng start` on a blocked adapter stops
+      with "soft blocked, please run rfkill unblock" and offers to do it.
+      Unblock only the survey adapter (`sudo rfkill` lists the IDs) and leave
+      the switch off: NetworkManager does not use any Wi-Fi adapter while it is
+      off, so the laptop sends no probe requests during the survey. Switching
+      Wi-Fi on instead (`nmcli radio wifi on`) unblocks every radio, and
+      NetworkManager starts scanning with each adapter it manages
+      ([quiet network defaults](../../platform/network-defaults.md)).
+    - `sudo airmon-ng check` lists NetworkManager and wpa_supplicant as
+      processes that can interfere. With the Wi-Fi switch off they leave the
+      adapters alone, so there is no need to stop them; `airmon-ng check kill`
+      stops NetworkManager and kills wpa_supplicant, which also drops the
+      laptop's wired connections.
     - The `aircrack-ng` package also installs tools that transmit
       (deauthentication, injection, fake access points). They have no launcher
       and are not part of the survey: knocking a wireless instrument, telemetry
@@ -114,11 +125,15 @@ up as possible Wireless Compromise (T0860).
 ## Quick start
 
 The capture commands need `sudo` and a monitor-mode-capable adapter, shown here
-as `wlan0`; the help does not.
+as `wlan0` with rfkill ID `1`; the help does not.
 
 ```sh
 # What the menu launcher runs
 airodump-ng --help
+# The radios and their rfkill state: blocked while NetworkManager's Wi-Fi switch is off
+sudo rfkill
+# Unblock the survey adapter alone (its ID from the list); the switch stays off
+sudo rfkill unblock 1
 # List processes that can interfere with monitor mode
 sudo airmon-ng check
 # Put the adapter into monitor mode (creates e.g. wlan0mon)
@@ -129,8 +144,9 @@ sudo airodump-ng --manufacturer --write ~/cases/site-a/wifi/survey wlan0mon
 sudo airodump-ng --band a wlan0mon
 # Stay on one channel, showing the WPS information access points advertise
 sudo airodump-ng --channel 6 --wps wlan0mon
-# Stop monitor mode when finished
+# Stop monitor mode when finished, and block the adapter again
 sudo airmon-ng stop wlan0mon
+sudo rfkill block 1
 ```
 
 `airodump-ng` hops the 2.4 GHz channels by default; `--band a` or `-C` with a

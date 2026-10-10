@@ -119,6 +119,16 @@ Tools in *italics* are not packaged by Debian: the vendor layer pins them in
   not installed, LLMNR, mDNS, connectivity checks, automatic wired profiles and
   IPv6 autoconfiguration are off, and Firefox ESR runs under a policy that stops
   it calling home. Interfaces come up only when the operator brings them up.
+- **Wi-Fi off until you turn it on.** NetworkManager can join Wi-Fi and wired 802.1X
+  networks, but its Wi-Fi switch ships off (live and installed), which also
+  soft-blocks the radios through rfkill: the laptop sends no probe requests at a
+  site. Turn Wi-Fi on from the network icon (**Enable Wi-Fi**) or with
+  `nmcli radio wifi on`; it then scans in the background, with a random MAC address
+  for its probes.
+- **Secure Boot.** The live ISO and installed systems boot with Secure Boot on:
+  shim signed by Microsoft, GRUB and the kernel signed by Debian. The kernel then
+  runs in lockdown, which blocks unsigned modules and raw memory access (flashrom's
+  `internal` programmer; external programmers work).
 - **Receive-only radio.** RTL-SDR and gqrx can only listen, and airodump-ng is the
   only 802.11 tool: enough to spot a transmitter the asset inventory does not explain.
 - **Encryption at rest.** The installer puts the root filesystem in LUKS2.

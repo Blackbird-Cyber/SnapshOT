@@ -27,9 +27,12 @@ off the air.
 
 ## Procedure
 
-1. **Set up to receive.** Put the Wi-Fi adapter in monitor mode with `airmon-ng`
-   and check the dongle with the [rtl-sdr](../../tools/wireless/rtl-sdr.md)
-   dongle check (`rtl_eeprom`). Receive only.
+1. **Set up to receive.** Leave NetworkManager's Wi-Fi switch off, so the laptop
+   itself sends no probe requests; unblock only the survey adapter
+   (`sudo rfkill unblock <ID>`) and put it in monitor mode with `airmon-ng`
+   ([airodump-ng](../../tools/wireless/airodump-ng.md) has the steps). Check the
+   dongle with the [rtl-sdr](../../tools/wireless/rtl-sdr.md) dongle check
+   (`rtl_eeprom`). Receive only.
    - *Record:* the adapter, the dongle (its serial from the dongle check) and the
      antennas used.
 

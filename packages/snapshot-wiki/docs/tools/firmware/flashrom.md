@@ -72,7 +72,10 @@ done over the network.
     - The supported SPI programmers run as your own user through the udev rules
       the image ships (group `plugdev`); the `internal` programmer, which writes
       the host's own BIOS, needs `sudo` and is not what you want on an
-      engagement. Clip onto the target's chip with an external programmer.
+      engagement. With Secure Boot on, the kernel's lockdown blocks the raw
+      memory and I/O port access it needs, so it does not work at all; external
+      programmers are unaffected. Clip onto the target's chip with an external
+      programmer.
 
 ## PICERL mapping
 
