@@ -25,15 +25,6 @@ calamares-settings-snapshot (0.1.4) unstable; urgency=low
 
 calamares-settings-snapshot (0.1.3) unstable; urgency=low
 
-  * Welcome page: show the lockup as the page banner (productBanner, 520 px
-    wide) and collapse the "Welcome to the Calamares installer" label with the
-    branding stylesheet, instead of text on top and the logo further down.
-    productWelcome is dropped so the logo is not repeated under the checks.
-
- -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
-
-calamares-settings-snapshot (0.1.3) unstable; urgency=low
-
   * partition.conf: add a partitionLayout with a 1 GiB unencrypted ext4
     /boot ahead of the root partition. Calamares formats LUKS2 with Argon2id,
     which Debian's GRUB 2.12 cannot unlock, so with /boot inside LUKS the
@@ -57,6 +48,10 @@ calamares-settings-snapshot (0.1.3) unstable; urgency=low
     which every installed user inherited.
   * bootloader.conf: drop the legacy kernel and img keys. Calamares 3.3
     does not read them for GRUB and its schema rejects them.
+  * Welcome page: show the lockup as the page banner (productBanner, 520 px
+    wide) and collapse the "Welcome to the Calamares installer" label with the
+    branding stylesheet, instead of text on top and the logo further down.
+    productWelcome is dropped so the logo is not repeated under the checks.
 
  -- Blackbird Cyber <snapshot@example.invalid>  Thu, 01 Oct 2026 00:00:00 +0000
 
