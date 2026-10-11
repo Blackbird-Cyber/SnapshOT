@@ -31,7 +31,7 @@ interface into a pcapng file, or reads an existing capture, and decodes every
 packet with the same dissectors as Wireshark, including Modbus, S7comm,
 EtherNet/IP and CIP, OPC UA, BACnet, DNP3, IEC 60870-5-104, IEC 61850 MMS and
 GOOSE, and PROFINET. Display filters select packets by any decoded field, and
-the statistics options summarise a capture by protocol, conversation or endpoint.
+the statistics options summarize a capture by protocol, conversation or endpoint.
 Output can be the familiar one-line summary, full packet detail, or chosen fields
 as CSV.
 
@@ -66,7 +66,7 @@ The SnapshOT user is in group `wireshark`, so tshark captures without `sudo`.
 
 Capture each conduit for a period that covers the normal process cycle (polls,
 shift changes, historian uploads) and store it as the baseline. Later captures
-are compared with it to tell normal engineering traffic from new behaviour.
+are compared with it to tell normal engineering traffic from new behavior.
 
 ### Identification
 

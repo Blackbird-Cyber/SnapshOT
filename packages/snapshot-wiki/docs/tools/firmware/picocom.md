@@ -27,13 +27,13 @@ picocom is a minimal serial terminal. It opens a serial port at a chosen baud
 rate and line setting and connects it to your terminal, with a small set of
 escape commands (prefixed by Ctrl-A) for things like toggling the DTR line,
 sending files through external helpers, and logging. It does little beyond being
-a clean, dependable pipe to a serial device, which is why it is a favourite for
+a clean, dependable pipe to a serial device, which is why it is a favorite for
 console work on embedded hardware.
 
 ## Why it is on SnapshOT
 
 When you want the simplest possible connection to a device's serial console,
-with no menus and no modem behaviour, picocom is it. It is the quick way to read
+with no menus and no modem behavior, picocom is it. It is the quick way to read
 a bootloader, a firmware banner or a login prompt on a header, and its control
 over the DTR and RTS lines is useful when a device resets or enters a bootloader
 on those signals. It does the same job as [minicom](minicom.md) and
@@ -47,7 +47,7 @@ on those signals. It does the same job as [minicom](minicom.md) and
     typing both reach the device.
 
     - On most systems opening the port raises the DTR and RTS lines, and by
-      default picocom lowers them again on exit, signalling a modem hangup; on
+      default picocom lowers them again on exit, signaling a modem hangup; on
       many devices either change asserts a reset or interrupts the running
       program. `--noreset` (or quitting with `Ctrl-A Ctrl-Q`) leaves the lines
       as they are on exit; `--lower-dtr` and `--lower-rts` drop them just after

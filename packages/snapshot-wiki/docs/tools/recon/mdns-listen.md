@@ -91,7 +91,7 @@ of the [passive baseline](../../lifecycle/playbooks/passive-baseline.md), listen
 on the affected segment and compare with the baseline: a new name, a new service
 type (a web or remote-access service on a controller segment), or a host
 announcing itself that the inventory does not list. A transient laptop that
-announces itself is often the first sign of an unauthorised device on a control
+announces itself is often the first sign of an unauthorized device on a control
 network.
 
 ### Lessons Learned
@@ -110,7 +110,7 @@ DNS-SD sends multicast queries to 224.0.0.251 or ff02::fb, which every host on
 the link receives, the listener included: that is what Remote System Discovery:
 Multicast Discovery (T0846.003) looks like. A burst of
 `_services._dns-sd._udp.local` queries from a host that does not normally
-browse, or from an address nobody recognises, is worth following up. The
+browse, or from an address nobody recognizes, is worth following up. The
 listener itself sends nothing and resembles nothing. What it records is also what
 any host on the segment learns by listening (Network Sniffing, T0842), so the
 list of announcing devices measures that exposure as well as describing the

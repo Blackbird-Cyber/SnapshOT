@@ -78,7 +78,7 @@ During [identification](../../lifecycle/phases/identification.md), nmap
 confirms what passive capture suggested. Pick one host seen on the wire, check
 only the ports its traffic implies, and use an ICS script to read its identity
 (vendor, model, firmware) instead of guessing from banners. Stop if the host's
-behaviour changes or the operators report anything unusual.
+behavior changes or the operators report anything unusual.
 
 ### Containment
 

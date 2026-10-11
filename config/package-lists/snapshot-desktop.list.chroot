@@ -33,7 +33,7 @@ xfce4-power-manager-plugins
 xfce4-screensaver
 # Dark Qt for the Qt tools (Wireshark, gqrx, PulseView, KeePassXC). qt5ct
 # ships /etc/X11/Xsession.d/99qt5ct which exports QT_QPA_PLATFORMTHEME=qt5ct;
-# qt6ct honours the same key.
+# qt6ct honors the same key.
 qt5ct
 qt6ct
 # Sound server: nothing else in the lists provides PulseAudio, so the panel's

@@ -81,7 +81,7 @@ the trixie package or the upstream manual:
 
 1. **Open and connect or load.** Where it is in the menu, and the first dialog.
 2. **The key panes.** What each shows and where to look.
-3. **Filter, decode or analyse.** The one or two actions that answer the
+3. **Filter, decode or analyze.** The one or two actions that answer the
    question.
 4. **Save or export.** Into `~/cases/<case>/`, never over the original.
 

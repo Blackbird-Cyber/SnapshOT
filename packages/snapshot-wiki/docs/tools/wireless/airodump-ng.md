@@ -116,7 +116,7 @@ against a plant's Wi-Fi before choosing a way in. Both are Wireless Sniffing
 Because a receive-only survey leaves no trace on the air, an adversary's sniffing
 cannot be detected; what the survey gives the responder is the exposure it
 measured. As evidence, the CSV and pcap document the wireless attack surface,
-authorised and rogue, at a point in time: which networks and clients an
+authorized and rogue, at a point in time: which networks and clients an
 adversary in range could have seen, and how each was protected. An access point
 nobody can account for may be a way in, which the
 [wireless survey](../../lifecycle/playbooks/wireless-survey.md) playbook follows

@@ -11,13 +11,14 @@ windowExpanding: normal
 windowSize: 960px,640px
 windowPlacement: center
 
+# No version number: the partition and summary pages show shortVersionedName
+# ("Erase disk and install SnapshOT") and the finished page versionedName, and
+# a number here would go stale. The release is in /etc/snapshot-release.
 strings:
     productName:         SnapshOT
     shortProductName:    SnapshOT
-    version:             0.1
-    shortVersion:        0.1
-    versionedName:       SnapshOT 0.1
-    shortVersionedName:  SnapshOT 0.1
+    versionedName:       SnapshOT
+    shortVersionedName:  SnapshOT
     bootloaderEntryName: SnapshOT
     productUrl:          "https://github.com/Blackbird-Cyber/SnapshOT"
     supportUrl:          "https://github.com/Blackbird-Cyber/SnapshOT/issues"

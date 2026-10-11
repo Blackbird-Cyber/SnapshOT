@@ -1,6 +1,6 @@
 ---
 title: The desktop, menu and shortcuts
-summary: The Xfce desktop, the eight tool folders, the Whisker menu and its favourites, the keyboard shortcuts and the field kit.
+summary: The Xfce desktop, the eight tool folders, the Whisker menu and its favorites, the keyboard shortcuts and the field kit.
 ---
 
 SnapshOT boots to an Xfce desktop with a dark theme, one panel along the top of
@@ -48,7 +48,7 @@ not installed: the vendor-layer tools when the image was built without the
 disabled placeholders in the vendor layer (Ghidra, Zeek, GRASSMARLIN, s7scan,
 firmware-mod-kit and searchsploit).
 
-## The panel and the favourites
+## The panel and the favorites
 
 The top panel carries, from the left: the Whisker menu, show desktop, a folder
 menu, launchers for the terminal (its arrow also offers the Root Terminal), the
@@ -56,12 +56,12 @@ file manager, Mousepad, Flameshot and Wireshark, then the workspaces, the open
 windows, the tray, sound, notifications, power, the clock and the log-out
 menu.
 
-The Whisker menu opens on its favourites: the terminal, the Root Terminal, the
+The Whisker menu opens on its favorites: the terminal, the Root Terminal, the
 **SnapshOT Wiki**, the file manager, Mousepad, Wireshark, nmap, CherryTree,
 Flameshot and, in the live session, **Install SnapshOT**. Right-click any
-launcher in the menu to add it to the favourites or remove it.
+launcher in the menu to add it to the favorites or remove it.
 
-The Root Terminal asks for authorisation and opens a root shell; prefer `sudo`
+The Root Terminal asks for authorization and opens a root shell; prefer `sudo`
 for single commands (see [administration and capture](admin-and-capture.md)).
 
 ## Keyboard shortcuts
@@ -96,7 +96,7 @@ tool page has the commands and the evidence trail.
 ## Related pages
 
 - [Using this wiki](using-this-wiki.md): opening the wiki from 08 Reference or
-  the favourites.
+  the favorites.
 - [Administration and capture](admin-and-capture.md): the Root Terminal, `sudo`
   and the groups that let tools run without root.
 - [Firefox ESR, locked down](browser.md): the browser the wiki and the device

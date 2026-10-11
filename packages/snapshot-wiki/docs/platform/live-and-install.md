@@ -76,7 +76,7 @@ install.
 ## Related pages
 
 - [The desktop, menu and shortcuts](desktop.md): the tool folders, the
-  favourites and the field kit.
+  favorites and the field kit.
 - [Administration and capture](admin-and-capture.md): the sudo model, root
   terminal, and packet capture without root.
 - [Quiet network defaults](network-defaults.md): how the image stays silent on a

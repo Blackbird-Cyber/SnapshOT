@@ -7,7 +7,7 @@ on an OT engagement: processes, network connections, services, autostart
 entries, users, installed software, devices, serial ports, OPC servers and
 ICS project files. They write only to results\ on this stick.
 
-Use it only on hosts you are authorised to examine, and read
+Use it only on hosts you are authorized to examine, and read
 docs\ot-safety.txt before running anything on a control system.
 
 Quick start
@@ -56,5 +56,5 @@ NO WARRANTY. The kit is provided "AS IS", without warranty of any kind, and
 Blackbird Cyber, LLC accepts no liability for its use, to the extent the law
 allows (Apache License 2.0, sections 7 and 8). Running a collector on a host
 that supervises a process is your decision and your responsibility: have
-written authorisation, read docs\ot-safety.txt first, and prefer a
+written authorization, read docs\ot-safety.txt first, and prefer a
 maintenance window.

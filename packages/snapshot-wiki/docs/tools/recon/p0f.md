@@ -34,7 +34,7 @@ tell it is being watched.
 ## Why it is on SnapshOT
 
 Passive-first is the house doctrine, and p0f is passive identification in its
-purest form: it characterises hosts from traffic they already send, with no
+purest form: it characterizes hosts from traffic they already send, with no
 packet of its own. On an OT segment that should contain only known controllers
 and workstations, a stack fingerprint that does not fit, a general-purpose laptop
 OS where every other host is an embedded device, is a lead worth following. p0f
@@ -87,7 +87,7 @@ captures (`-r`) so the analysis is reproducible from the evidence.
 
 p0f has no direct relationship to an ATT&CK for ICS tactic. It neither emits
 traffic that could resemble a technique nor decodes the industrial commands an
-adversary would send; it passively characterises the hosts on the wire. Its value
+adversary would send; it passively characterizes the hosts on the wire. Its value
 is in asset and host identification that supports the other tools, not in
 detecting a specific adversary tactic.
 

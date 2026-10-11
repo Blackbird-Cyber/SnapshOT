@@ -9,7 +9,7 @@ Recovery returns the affected systems and the process to normal operation. In
 IT it ends when the services are back and the hosts are clean. On a plant floor
 recovery is complete when **the process owner says the process is safe and
 producing**, not when the hosts are clean. NIST SP 800-82r3 is explicit about the
-order: recovery prioritises human and environmental safety before the OT
+order: recovery prioritizes human and environmental safety before the OT
 operation is restarted, and restoration can follow the plant's own start-up
 order, for example the systems that support critical utilities before those that
 support manufacturing.

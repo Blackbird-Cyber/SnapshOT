@@ -80,7 +80,7 @@ as a disk image, with `qemu-img` and the [Sleuth Kit](../forensics/sleuthkit.md)
 ### Identification
 
 During [identification](../../lifecycle/phases/identification.md), QEMU boots a
-firmware image or a vendor VM in an isolated sandbox so its behaviour can be
+firmware image or a vendor VM in an isolated sandbox so its behavior can be
 observed safely: what it starts, what it would reach for on a network (watched
 with a host capture, not a real link), what it writes. This turns a static image
 found during triage into something you can watch run, without risking the
@@ -97,7 +97,7 @@ image is caught on the bench rather than on the controller.
 
 QEMU has no direct relationship to an ATT&CK for ICS tactic. It is an offline
 sandbox: it runs firmware and VMs for analysis and confirmation, and any
-adversary behaviour it helps reveal is attributed from what is seen inside the
+adversary behavior it helps reveal is attributed from what is seen inside the
 sandbox, not from QEMU itself. Keep the sandbox disconnected from the plant so
 nothing it runs can reach a real device.
 

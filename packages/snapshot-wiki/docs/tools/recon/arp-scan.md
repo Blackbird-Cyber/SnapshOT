@@ -74,7 +74,7 @@ During [identification](../../lifecycle/phases/identification.md), an approved,
 rate-limited sweep confirms which hosts are live on the local segment and gives a
 first vendor hint from each MAC. Use it to decide which hosts, already seen in
 passive capture, deserve a protocol-level look; do not treat the sweep itself as
-a licence to probe services.
+a license to probe services.
 
 ### Recovery
 

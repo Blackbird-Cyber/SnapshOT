@@ -79,7 +79,7 @@ file), and keep the output with the case.
 During [identification](../../lifecycle/phases/identification.md), plcscan
 confirms that a host seen talking in a capture is a PLC and reads its identity,
 one host at a time, with approval, instead of guessing from a port number. Stop
-if the host's behaviour changes.
+if the host's behavior changes.
 
 ### Containment
 

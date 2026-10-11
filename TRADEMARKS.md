@@ -3,7 +3,7 @@
 SnapshOT's code is licensed under the Apache License 2.0 and its documentation
 under CC BY 4.0. Those licenses cover copyright. They do not grant any right to
 use the names and logos below (Apache License 2.0, section 6). This page says
-how you may use them. It is modelled on the Kali Linux trademark policy and is
+how you may use them. It is modeled on the Kali Linux trademark policy and is
 shorter.
 
 ## The marks

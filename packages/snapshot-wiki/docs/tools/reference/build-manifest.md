@@ -65,7 +65,7 @@ if needed, reproduce it. The build commit and the pin make that unambiguous.
 ## MITRE ATT&CK for ICS mapping
 
 The build manifest has no relationship to an ATT&CK for ICS tactic. It is a
-record of the image's contents, not a tool that touches the network or analyses
+record of the image's contents, not a tool that touches the network or analyzes
 adversary activity.
 
 ## Quick start
@@ -85,7 +85,7 @@ grep '^tshark ' /usr/share/snapshot/reference/BUILD-MANIFEST.txt
 
 ## Output and evidence
 
-The manifest is itself an evidence artefact: the record of the toolset behind
+The manifest is itself an evidence artifact: the record of the toolset behind
 every finding. Copy it into the case folder and hash it so the report is tied to
 a specific build:
 

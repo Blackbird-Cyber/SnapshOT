@@ -10,7 +10,7 @@ status: not-shipped
 wire: passive
 phases:
   identification: Where shipped, disassemble and decompile a firmware binary or a sample to understand what it does.
-  eradication: Where shipped, analyse an implant found in firmware to confirm its behaviour and what to remove.
+  eradication: Where shipped, analyze an implant found in firmware to confirm its behavior and what to remove.
 csf: [identify, respond]
 attack_ics: [persistence, impair-process-control]
 attack_role: investigates
@@ -44,8 +44,8 @@ disabled tools are handled and how one would be enabled.
   firmware image, which is the first and most common step; much triage needs no
   full disassembler.
 - [QEMU](qemu.md) runs an extracted image or a sample in an offline sandbox to
-  observe its behaviour dynamically instead of statically.
-- [sdcc](sdcc.md)'s `makebin` normalises firmware between Intel HEX and raw
+  observe its behavior dynamically instead of statically.
+- [sdcc](sdcc.md)'s `makebin` normalizes firmware between Intel HEX and raw
   binary for hashing and comparison.
 - For deep static analysis of a binary, do the work on a separate,
   properly-resourced analysis machine with a reverse-engineering toolchain;

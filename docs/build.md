@@ -105,19 +105,47 @@ scripts/check-firefox-quiet.sh    # optional, slow: Firefox ESR sends nothing on
 See [`docs/wiki.md`](wiki.md).
 
 ## Releasing
-`scripts/release.sh <tag> [--prerelease]` publishes the ISOs in the repo root as
-a GitHub release (it needs `gh` authenticated with write access):
+`scripts/release.sh <tag> [--prerelease] [--draft]` publishes the ISOs in the
+repo root as a GitHub release (it needs `gh` authenticated with write access):
 
 1. It refuses a tag other than `v$SNAPSHOT_VERSION`, and warns when fewer than
-   two `snapshot-*.hybrid.iso` are present.
+   two `snapshot-*.hybrid.iso` are present. The release title is "SnapshOT" and
+   the version with hyphens as spaces (`v0.3.0-alpha`: "SnapshOT 0.3.0 alpha").
 2. It writes `SHA256SUMS`, splits any ISO over 2,000,000,000 bytes into 1900 MiB
    parts, and rewrites the README's release table, download links and badges.
    If that changed `README.md`, it stops: review and commit the README, then run
    it again.
-3. On the second run it tags HEAD, pushes the tag, creates a draft release with
-   `docs/release-notes/<tag>.md` as its notes (a generic text when that file does
-   not exist), uploads the assets one at a time with retries, checks every
-   asset's size, and publishes. It does not push the branch.
+3. On the second run it creates an annotated tag at HEAD, pushes the tag,
+   creates a draft release with `docs/release-notes/<tag>.md` as its notes (a
+   generic text when that file does not exist), uploads the assets one at a time
+   with retries, checks every asset's size and SHA-256 against what GitHub
+   reports, and publishes. It does not push the branch.
+
+With `--draft`, the second run stops before publishing and prints the draft's
+URL, for a review:
+
+- It creates and pushes no tag. The draft names the tag and points at HEAD's
+  commit, so push the branch that carries the README commit first; the script
+  stops if GitHub does not have that commit.
+- To publish, run it again with the same options minus `--draft`. That run
+  creates and pushes the tag, refreshes the draft's title, notes and pre-release
+  flag, skips the assets GitHub already holds with the same SHA-256, verifies
+  every asset and publishes the draft.
+- A draft published from the GitHub web page instead gets a lightweight tag,
+  which GitHub creates at the commit the draft points at.
+
+Every run refreshes a draft's notes from `docs/release-notes/<tag>.md`, so edit
+that file rather than the draft on GitHub. A published release keeps its notes
+and only gets its assets replaced. The script does not publish when an asset is
+missing or differs, or when the release carries an asset this run did not
+produce (it prints the `gh release delete-asset` command); it stops when an
+existing tag names a commit whose README does not list these images.
+
+```
+scripts/release.sh v0.3.0-alpha --prerelease --draft   # rewrites README.md: commit it, push the branch
+scripts/release.sh v0.3.0-alpha --prerelease --draft   # the draft, for review
+scripts/release.sh v0.3.0-alpha --prerelease           # after the review: tag and publish
+```
 
 ## How offline works
 - All apt mirrors point at the snapshot timestamp; the live squashfs holds the

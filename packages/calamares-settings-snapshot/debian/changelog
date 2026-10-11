@@ -1,3 +1,12 @@
+calamares-settings-snapshot (0.1.11) unstable; urgency=medium
+
+  * branding.desc: versionedName and shortVersionedName are "SnapshOT", and
+    version and shortVersion are gone. They said 0.1 since the first build,
+    and the partition, summary and finished pages print them ("Erase disk
+    and install SnapshOT 0.1"). The release is in /etc/snapshot-release.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sun, 11 Oct 2026 17:34:15 -0400
+
 calamares-settings-snapshot (0.1.10) unstable; urgency=medium
 
   * users.conf: user.forbidden_names lists every user and group name in the

@@ -51,7 +51,7 @@ host. It pairs with passive capture: [tshark](../traffic/tshark.md) shows a
 session, the collector's connection table shows which process on the host owns
 it.
 
-SnapshOT ships only its own scripts. The Sysinternals and KAPE licences do not
+SnapshOT ships only its own scripts. The Sysinternals and KAPE licenses do not
 allow redistribution, so the operator downloads them on a trusted machine and
 drops them into `windows/user-supplied/` on the stick. The full profile runs
 Sysinternals `autorunsc` and `sigcheck` when they are there; KAPE is only

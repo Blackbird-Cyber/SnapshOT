@@ -102,7 +102,7 @@ flameshot gui -c
 Taking an annotated screenshot by hand:
 
 1. **Start Flameshot** from 07 Reporting & Documentation or the Whisker
-   favourites; its icon appears in the panel's tray.
+   favorites; its icon appears in the panel's tray.
 2. **Get the screen ready.** Bring the window that shows the evidence to the
    front: the device page in Firefox, the packet in Wireshark, the terminal.
 3. **Select.** Click the tray icon (or run `flameshot gui`): the screen dims.

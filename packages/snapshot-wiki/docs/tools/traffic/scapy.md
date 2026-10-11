@@ -10,7 +10,7 @@ status: shipped
 wire: writes
 phases:
   identification: Dissect a capture packet by packet in Python, reaching fields and industrial layers that are awkward to express as a display filter.
-  lessons-learned: Script the extraction, counting and summarising of the exact frames behind a finding for the report.
+  lessons-learned: Script the extraction, counting and summarizing of the exact frames behind a finding for the report.
 csf: [identify, detect]
 attack_ics: [discovery, collection, impair-process-control]
 attack_role: resembles
@@ -25,7 +25,7 @@ upstream: https://scapy.readthedocs.io/
 
 Scapy is a Python library and interactive shell for reading, dissecting and
 building network packets. It parses a pcap into Python objects whose every field
-you can read, filter and summarise, and it builds arbitrary packets layer by
+you can read, filter and summarize, and it builds arbitrary packets layer by
 layer. Beyond the core protocols it carries contributed layers for industrial
 and link protocols, including Modbus (`scapy.contrib.modbus`), EtherNet/IP
 (`enipTCP`), PROFINET (`pnio`, `pnio_dcp`), IEC 60870-5-104
@@ -56,7 +56,7 @@ ICS dissectors whether you are reading a file or constructing a frame.
       cannot tell from a real command. If a crafted frame must be tested, send it
       only on an isolated lab segment, with the engineer for the device present,
       exactly as for any write.
-    - A crafted ICS request is an unauthorised command on a live network. Treat
+    - A crafted ICS request is an unauthorized command on a live network. Treat
       building one with the same care as using a write-capable protocol tool.
 
 ## PICERL mapping
@@ -96,7 +96,7 @@ follow from what it can do:
 
 On SnapshOT the safe, default use, dissecting a capture that is already on disk,
 produces no traffic at all and resembles none of these. The same dissection
-helps the team recognise these techniques when they appear in the evidence.
+helps the team recognize these techniques when they appear in the evidence.
 
 ## Quick start
 

@@ -71,7 +71,7 @@ so the report can be reproduced from the same release.
 ## MITRE ATT&CK for ICS mapping
 
 The reference folder has no relationship to an ATT&CK for ICS tactic. It is
-static reference material, not a tool that acts on the network or analyses
+static reference material, not a tool that acts on the network or analyzes
 adversary activity. An offline ATT&CK for ICS copy, one of the references the
 folder is meant to hold, would help map findings to tactics, but the folder
 itself detects, investigates and resembles nothing. On this image, the

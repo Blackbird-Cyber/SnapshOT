@@ -28,7 +28,7 @@ subnet.
   and the tag list.
 - **Writes** change tag values and object attributes a controller acts on.
 - **Program and configuration changes** are carried as vendor-specific CIP
-  services; a connection to the right object can alter controller behaviour.
+  services; a connection to the right object can alter controller behavior.
 
 A write or configuration change is the [writes](../../lifecycle/wire-classes.md)
 class: the engineer present, the exact tag or attribute and value agreed,

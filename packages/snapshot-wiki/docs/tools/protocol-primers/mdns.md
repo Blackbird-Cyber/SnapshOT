@@ -39,7 +39,7 @@ mDNS would itself be the anomaly.
 - Hosts advertising services (`_services._dns-sd._udp.local`,
   `_http._tcp.local`, `_workstation._tcp.local`) on a segment meant to be quiet.
 - `.local` name lookups that reveal host and vendor names.
-- A new transient device announcing itself, which can mark an unauthorised
+- A new transient device announcing itself, which can mark an unauthorized
   laptop on the control network.
 
 ## Wireshark display filters

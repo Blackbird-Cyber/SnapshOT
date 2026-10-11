@@ -25,7 +25,7 @@ upstream: https://gqrx.dk/
 
 Gqrx is a graphical SDR receiver built on the GNU Radio libraries. It shows a
 live spectrum and waterfall for the band you tune to, lets you click a signal to
-centre and demodulate it (AM, FM, SSB and more), plays the audio, and records
+center and demodulate it (AM, FM, SSB and more), plays the audio, and records
 either the demodulated audio or the raw I/Q to a file; its I/Q tool also plays a
 recording back through the same display. It is receive-only. It reaches the
 radio through the gr-osmosdr library that comes with it; on SnapshOT that radio
@@ -60,7 +60,7 @@ the sweep says where to look, and Gqrx shows what is there.
       user is in, so no `sudo` is needed. Gqrx asks which device to use on
       startup; pick the attached dongle.
     - The waterfall shows energy and modulation, not meaning. Use it to find and
-      characterise a signal and to record it; decoding a data protocol needs a
+      characterize a signal and to record it; decoding a data protocol needs a
       dedicated decoder, which SnapshOT does not carry.
 
 ## PICERL mapping
@@ -127,7 +127,7 @@ A first session, finding and recording a signal:
 3. **Start the receiver.** Click the start button at the left of the toolbar
    (Ctrl+D starts and stops the DSP). The spectrum and the waterfall begin to
    fill.
-4. **Tune.** Type the centre frequency into the large frequency display, or
+4. **Tune.** Type the center frequency into the large frequency display, or
    scroll its digits. A transmitter shows as a line or a band on the waterfall;
    click it to tune the receiver to it.
 5. **Demodulate.** In the **Receiver Options** panel, pick the **Mode** that

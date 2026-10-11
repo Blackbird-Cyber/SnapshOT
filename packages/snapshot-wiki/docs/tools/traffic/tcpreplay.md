@@ -94,7 +94,7 @@ none of its own. Two tactics matter for the captures an OT team replays:
   detections meant to catch it.
 
 That is exactly why it is a lab tool: on a live network its output would be a
-real unauthorised command, not a test. Used in the lab, it drives the detections
+real unauthorized command, not a test. Used in the lab, it drives the detections
 that catch those techniques for real, and the lab capture of the replay shows
 which ones fired.
 

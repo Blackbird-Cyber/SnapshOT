@@ -11,7 +11,7 @@ plant, with no network. This page shows how to get around it.
 
 Open it from **08 - Reference > SnapshOT Wiki**, which launches Firefox ESR on
 `file:///usr/share/snapshot/wiki/index.html`. It is also the browser's home page
-and a Whisker favourite. Everything works from `file://` with no network: search,
+and a Whisker favorite. Everything works from `file://` with no network: search,
 tags and the interactive graphs all run offline. The [browser](browser.md) is
 locked down so it never calls out while you read.
 
@@ -94,9 +94,9 @@ Four interactive graphs draw the relationships the tables list:
 
 - the **lifecycle** graph, on the home page and the
   [Lifecycle](../lifecycle/index.md) page: the six phases and the tools that
-  serve each, coloured by menu folder;
+  serve each, colored by menu folder;
 - the **ATT&CK** graph, on the [ATT&CK for ICS](../lifecycle/attack-ics/index.md)
-  page: the tactics and the tools, coloured by their role;
+  page: the tactics and the tools, colored by their role;
 - the **crosswalk** graph, on the [crosswalk](../lifecycle/crosswalk.md) page:
   PICERL against the CSF 2.0 functions and the tactics;
 - the **Purdue** graph, on the [Identification](../lifecycle/phases/identification.md)

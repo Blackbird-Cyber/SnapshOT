@@ -52,7 +52,7 @@ credentials are archived or destroyed together with the rest of the case.
     - **Auto-Type types into whatever window has focus.** Check the window
       before using it, especially with a device's login page or a remote session
       open: a password typed into the wrong field is disclosed.
-    - **A credential is not an authorisation.** Holding an account for a
+    - **A credential is not an authorization.** Holding an account for a
       controller or HMI does not mean you may log in now; the [rules of
       engagement](../../lifecycle/rules-of-engagement.md) and the engineer for
       that device decide.

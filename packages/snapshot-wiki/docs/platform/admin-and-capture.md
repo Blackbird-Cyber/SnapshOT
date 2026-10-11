@@ -60,9 +60,9 @@ the same groups except `sudo`.
 ## The root terminal
 
 For the occasional task that genuinely needs root, the top panel and the Whisker
-favourites carry a **Root Terminal** launcher (it is also under Usual
+favorites carry a **Root Terminal** launcher (it is also under Usual
 Applications > System). It runs `pkexec xfce4-terminal --disable-server`, so
-polkit asks for authorisation and then opens a root shell. Prefer `sudo` for
+polkit asks for authorization and then opens a root shell. Prefer `sudo` for
 single commands and keep the root terminal for the few operations that need a
 sustained root session.
 

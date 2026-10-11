@@ -3,7 +3,7 @@ title: Crosswalk
 summary: How the PICERL phases line up with NIST CSF 2.0 and SP 800-61r3, NIST SP 800-82r3, the SANS Five ICS Critical Controls, the ICS Cyber Kill Chain and the ATT&CK for ICS tactics.
 ---
 
-SnapshOT organises an engagement around the six PICERL phases. The other
+SnapshOT organizes an engagement around the six PICERL phases. The other
 frameworks are not competing lifecycles: each answers a different question about
 the same work, and the wiki uses each one for something specific.
 
@@ -94,7 +94,7 @@ saved for the last one.
 **What it is.** [NIST SP 800-82r3](https://csrc.nist.gov/pubs/sp/800/82/r3/final),
 *Guide to Operational Technology (OT) Security* (September 2023), is NIST's
 guidance on securing OT while respecting its performance, reliability and safety
-requirements. Its incident-response guidance is spread across the programme
+requirements. Its incident-response guidance is spread across the program
 sections (3.3.8, an incident response capability; 3.3.9, a recovery and
 restoration capability) and the sections that apply the Cybersecurity Framework to
 OT (section 6). Section 6 was written against CSF 1.1, before CSF 2.0, so its
@@ -126,7 +126,7 @@ report groups the control gaps.
 
 | Control | Phases it anchors | What it means for a field team |
 |---|---|---|
-| 1. ICS Incident Response | Preparation, Containment, Eradication, Recovery, Lessons Learned | An ICS-specific plan, with the process owner's authority, safe states and pre-authorised containment, exercised before it is needed |
+| 1. ICS Incident Response | Preparation, Containment, Eradication, Recovery, Lessons Learned | An ICS-specific plan, with the process owner's authority, safe states and pre-authorized containment, exercised before it is needed |
 | 2. Defensible Architecture | Preparation, Containment, Lessons Learned | Zones and conduits that can be isolated without stopping the process, and captures that prove the segmentation holds |
 | 3. ICS Network Visibility and Monitoring | Preparation, Identification, Recovery, Lessons Learned | SPAN or TAP points, a baseline, and monitoring that decodes the industrial protocols |
 | 4. Secure Remote Access | Containment, Lessons Learned | Remote access paths known, controlled and cut cleanly when needed |
