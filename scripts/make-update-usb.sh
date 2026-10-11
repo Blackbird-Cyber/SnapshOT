@@ -154,8 +154,8 @@ Give each laptop the public key once, by a channel other than this stick:
   gpg --export ${FPR} > snapshot-update.gpg      (here)
   sudo install -D -m 0644 snapshot-update.gpg /etc/apt/keyrings/snapshot-update.gpg      (on the laptop)
 
-On the laptop, with the stick mounted (the desktop mounts it at /media/<user>/<stick label>):
-  echo 'deb [signed-by=/etc/apt/keyrings/snapshot-update.gpg] file:/media/<user>/<stick label>/snapshot-cache ${SNAPSHOT_DIST} main' \\
+On the laptop, with the stick mounted (the desktop mounts it at /media/<user>/<label>):
+  echo 'deb [signed-by=/etc/apt/keyrings/snapshot-update.gpg] file:/media/<user>/<label>/snapshot-cache ${SNAPSHOT_DIST} main' \\
     | sudo tee /etc/apt/sources.list.d/snapshot-update.list
   sudo apt-get update
   sudo apt-get install <package> ...
