@@ -34,6 +34,14 @@ tools, documents each one in an offline wiki, and installs to an encrypted disk
 with no network. It is built like Kali, with `live-build`, from one fixed
 snapshot of the Debian archive.
 
+> [!NOTE]
+> **SnapshOT is alpha software.** The image is usable for evaluation and lab
+> work. Menus, scripts, file locations and the package selection may change
+> between releases. Installer QA on real hardware is in progress: until it is
+> done, do not rely on an installed system for client work. Report problems in
+> [GitHub issues](https://github.com/Blackbird-Cyber/SnapshOT/issues) and
+> vulnerabilities as [SECURITY.md](SECURITY.md) describes.
+
 ## Why SnapshOT
 
 - **Offline and reproducible.** Every build takes its packages from one snapshot.debian.org
