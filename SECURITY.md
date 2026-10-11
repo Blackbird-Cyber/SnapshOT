@@ -11,6 +11,13 @@ Do not open a public issue for a vulnerability.
 Include the image version and architecture (`cat /etc/snapshot-release`), whether
 the system was live or installed, and the steps that show the problem. The
 maintainers reply in the advisory and coordinate any fix and disclosure there.
+GitHub is the only contact channel; there is no security mailbox.
+
+## Supported versions
+
+SnapshOT is in alpha. A fix lands on `main` and ships in the next release:
+only the latest published release is supported, and withdrawn releases are not.
+An installed system gets the fix by re-imaging ([docs/updates.md](docs/updates.md)).
 
 ## Scope
 

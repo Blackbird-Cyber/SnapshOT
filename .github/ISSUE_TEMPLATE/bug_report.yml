@@ -5,7 +5,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Report security vulnerabilities privately, as SECURITY.md describes, not here.
+        Report security vulnerabilities privately, through GitHub's [private vulnerability reporting](https://github.com/Blackbird-Cyber/SnapshOT/security/advisories/new)
+        as [SECURITY.md](https://github.com/Blackbird-Cyber/SnapshOT/blob/main/SECURITY.md) describes, not here.
   - type: textarea
     id: release
     attributes:
