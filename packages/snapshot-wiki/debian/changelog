@@ -1,3 +1,11 @@
+snapshot-wiki (0.1.8) unstable; urgency=low
+
+  * Live session and install: the installer refuses a login that already
+    exists on the system, such as operator, daemon or wireshark
+    (calamares-settings-snapshot 0.1.10).
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sat, 10 Oct 2026 19:49:27 -0400
+
 snapshot-wiki (0.1.7) unstable; urgency=low
 
   * Quiet network defaults: a Wi-Fi section. wpasupplicant is now on the

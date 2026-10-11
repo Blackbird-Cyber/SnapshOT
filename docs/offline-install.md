@@ -35,7 +35,9 @@ network at any point, so it works the same at an air-gapped site.
 5. Users: name, login and password. The password must be at least six characters
    and must not be a dictionary word or contain the login name (libpwquality with
    the cracklib dictionary). This account administers the system through `sudo`;
-   there is no root password.
+   there is no root password. The login must not already exist on the system:
+   names such as `operator`, `daemon` or `wireshark` are refused on this page,
+   because the install would otherwise fail at its last step.
 6. Summary, then **Install**. When the progress bar completes, the installer shows
    "Restarting in 5 seconds" and reboots on its own; remove the USB stick as the
    screen goes dark. The Finished page only appears if that reboot fails.
@@ -148,7 +150,7 @@ without one.
 |---|---|
 | `welcome.conf` | storage (10 GiB), RAM (3 GiB, for the LUKS2 format) and root checks; no internet check. Also publishes `requiredStorageGiB`, without which the partition page offers neither "replace" nor "alongside". |
 | `partition.conf` | erase by default, LUKS2, ext4 default, swap off; the layout above (`partitionLayout` with a 1 GiB unencrypted `/boot`). |
-| `users.conf` | the groups above, `sudoersGroup: sudo`, root locked. Without it Calamares falls back to lp/video/network/storage/wheel/audio and the user has no sudo. |
+| `users.conf` | the groups above, `sudoersGroup: sudo`, root locked. Without it Calamares falls back to lp/video/network/storage/wheel/audio and the user has no sudo. `user.forbidden_names` lists every user and group name in the image plus `autologin`: Calamares creates the user with `useradd -m -U`, which fails at the end of the install when the name is taken, and itself refuses only `root` and `nobody`. Hook `0950-snapshot-installer-reserved-names` rewrites the list between its BEGIN and END lines at image build, from the image's `/etc/passwd` and `/etc/group`. |
 | `mount.conf` | binds `/dev`, `/dev/pts`, `/proc`, `/sys`, `/run`, `/run/udev` and `efivarfs` into the target so `grub-install`, `update-initramfs` and apt work in the chroot. |
 | `unpackfs.conf` | copies `/run/live/medium/live/filesystem.squashfs` to the target. |
 | `machineid.conf` | a fresh machine-id for systemd and D-Bus. |
@@ -194,3 +196,5 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
     Then power off, reset the VM's NVRAM (VMware: delete the `.nvram` file; QEMU: a
     fresh copy of the variable store) and boot again: the removable media path
     starts the same system.
+15. On the users page, the login `operator` shows "'operator' is not allowed as
+    username." and **Next** stays disabled; `operator1` is accepted.

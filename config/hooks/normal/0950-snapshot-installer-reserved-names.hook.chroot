@@ -1,0 +1,47 @@
+#!/bin/sh
+# Installer: refuse login names that already exist in the image. Calamares
+# creates the installed user with "useradd -m -U", which fails at the very end
+# of the install when a user or a group of that name exists in the target, and
+# the target is a copy of this image. Calamares itself refuses only root and
+# nobody, so this rewrites user.forbidden_names in calamares-settings-snapshot's
+# users.conf, between its BEGIN and END lines, with every user and group name in
+# /etc/passwd and /etc/group plus autologin (the group Calamares creates when
+# automatic login is ticked). It runs after every package and earlier hook, so
+# accounts that packages add are covered. The live user (snapshot) is created
+# at boot by live-config and is not in the image, so it is not listed.
+#
+# users.conf is a conffile of calamares-settings-snapshot; the image is never
+# upgraded in place and the installer removes that package from the target, so
+# editing it here is safe. scripts/check-installer.sh runs this hook.
+set -e
+
+conf=/etc/calamares/modules/users.conf
+begin='# BEGIN snapshot-reserved-login-names'
+end='# END snapshot-reserved-login-names'
+
+if [ ! -f "$conf" ]; then
+    echo "SnapshOT: $conf is missing; cannot set the reserved login names." >&2
+    exit 1
+fi
+if ! grep -qF "$begin" "$conf" || ! grep -qF "$end" "$conf"; then
+    echo "SnapshOT: $conf lacks the reserved-login-name BEGIN and END lines." >&2
+    exit 1
+fi
+
+names="$(mktemp)"
+new="$(mktemp)"
+trap 'rm -f "$names" "$new"' EXIT
+{ cut -d: -f1 /etc/passwd; cut -d: -f1 /etc/group; echo autologin; } |
+    grep -v '^$' | LC_ALL=C sort -u > "$names"
+
+# Keep the BEGIN line's indentation for the list items.
+indent="$(grep -F "$begin" "$conf" | sed 's/#.*//')"
+awk -v b="$begin" -v e="$end" -v ind="$indent" -v list="$names" '
+    index($0, b) { print; while ((getline n < list) > 0) print ind "- " n; close(list); skip = 1; next }
+    index($0, e) { skip = 0 }
+    !skip
+' "$conf" > "$new"
+# Write in place so the file keeps its owner and mode.
+cat "$new" > "$conf"
+
+echo "SnapshOT: the installer refuses $(wc -l < "$names") login names that exist in the image."
