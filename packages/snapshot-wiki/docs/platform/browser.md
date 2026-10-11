@@ -42,7 +42,7 @@ leaves the machine while Firefox shows the wiki.
 ## Using it on an engagement
 
 Firefox ESR is in the menu under **Usual Applications > Internet**; the
-**SnapshOT Wiki** launcher in 08 Reference and the Whisker favourites opens it
+**SnapshOT Wiki** launcher in 08 Reference and the Whisker favorites opens it
 on this wiki, which is also its home page. For a PLC, HMI, switch or gateway
 web interface, type the device's address (for example `https://192.0.2.10`)
 once the laptop is on the right segment and the work is approved:

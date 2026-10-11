@@ -10,7 +10,7 @@ incident, at the start of every engagement and again after every lessons-learned
 review. In IT it is mostly tooling and runbooks. On a plant floor it is about
 **authority**. The process owner, not the responder, decides what may be
 touched, and preparation writes that down: the safe states of the process, the
-actions that are pre-authorised, the engineer who must be present for any write,
+actions that are pre-authorized, the engineer who must be present for any write,
 the maintenance windows and the people to call. NIST SP 800-61r3 treats this as
 continuous governance and risk management (Govern, Identify and Protect) rather
 than a one-off step, and NIST SP 800-82r3 asks for an OT incident response plan
@@ -108,7 +108,7 @@ and explained:
   ([admin and capture](../../platform/admin-and-capture.md)).
 - **The field kit.** Prepare the USB stick with
   [`snapshot-fieldkit-prep`](../../tools/forensics/fieldkit.md) before
-  travelling. Tools the client allows that SnapshOT may not redistribute
+  traveling. Tools the client allows that SnapshOT may not redistribute
   (Sysinternals) go in `windows/user-supplied/`; `snapshot-fieldkit-prep --refresh`
   then rewrites the stick's `MANIFEST.sha256` to cover them.
 - **Credentials and the case.** Credentials the client provides go into
@@ -136,7 +136,7 @@ and explained:
   process owner;
 - every device in scope has a named engineer, and the wire class allowed for
   each zone is written down;
-- the pre-authorised containment options and the safe states are recorded;
+- the pre-authorized containment options and the safe states are recorded;
 - a known-good baseline exists, or its absence is recorded with what that means
   for later phases;
 - the kit is verified: image hash, build manifest, architecture, vendor layer,
@@ -148,7 +148,7 @@ and explained:
 
 - **The engagement and its scope** are the asset owner's, in writing. Nothing
   outside the written scope is touched, whatever is found.
-- **Safe states and pre-authorised containment actions** are the process
+- **Safe states and pre-authorized containment actions** are the process
   owner's. These are the only actions containment may take without a fresh
   decision.
 - **Any active query** is approved per host or per device class, by the asset
@@ -163,7 +163,7 @@ and explained:
 - **Evidence and data handling**: who holds custody, where evidence goes at the
   end, how long it is kept, and that the laptop is wiped and re-imaged afterwards.
 - **Radio**: wireless work is receive-only, which is all SnapshOT's radio tools
-  do; any transmission is out of scope unless a licence and the owner's
+  do; any transmission is out of scope unless a license and the owner's
   agreement cover it.
 
 ## ATT&CK for ICS tactics in play
@@ -203,7 +203,7 @@ safely.
 
 | Control | In place before an incident | Where SnapshOT helps |
 |---|---|---|
-| 1. ICS Incident Response | An ICS-specific response plan with roles, the process owner's authority, safe states and pre-authorised containment options, exercised in a tabletop with operations and engineering | The phase pages and playbooks of this wiki, the rules of engagement, the field kit and evidence handling |
+| 1. ICS Incident Response | An ICS-specific response plan with roles, the process owner's authority, safe states and pre-authorized containment options, exercised in a tabletop with operations and engineering | The phase pages and playbooks of this wiki, the rules of engagement, the field kit and evidence handling |
 | 2. Defensible Architecture | Zones and conduits documented and enforced, so a conduit can be isolated without stopping the process | Passive captures confirm that each conduit carries only what the architecture expects |
 | 3. ICS Network Visibility and Monitoring | Agreed SPAN or TAP points, a baseline, and monitoring that decodes the industrial protocols | [tshark](../../tools/traffic/tshark.md), [Wireshark](../../tools/traffic/wireshark.md) and [Suricata](../../tools/traffic/suricata.md) for baseline captures and IDS checks |
 | 4. Secure Remote Access | An inventory of remote access paths and vendor connections: who may use them, when and how | Captures at the boundary show which remote sessions really exist, to compare with the inventory |
@@ -223,7 +223,7 @@ safely.
 - An unannounced laptop: the site's monitoring sees a transient device running
   discovery, which is exactly what an intruder looks like.
 - Assuming a tool is on the image: check the architecture and the vendor layer
-  before travelling, not on site.
+  before traveling, not on site.
 - Carrying anything from the previous client: re-image, and prepare the field
   kit stick fresh.
 

@@ -1,3 +1,12 @@
+snapshot-wiki (0.1.9) unstable; urgency=low
+
+  * American spelling throughout the pages, the data files and the page
+    template: authorized, behavior, favorites, colored, organizes, analyze,
+    center, license (the noun) and the rest. TestDisk's own Analyse menu
+    entry keeps its name. The vendored-assets table says License.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sun, 11 Oct 2026 17:31:55 -0400
+
 snapshot-wiki (0.1.8) unstable; urgency=low
 
   * Live session and install: the installer refuses a login that already

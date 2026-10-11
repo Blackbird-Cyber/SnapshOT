@@ -61,7 +61,7 @@ sorted, filtered tables; the command-line converter turns the
 ### Preparation
 
 During [preparation](../../lifecycle/phases/preparation.md), Writer holds the
-signed rules of engagement, the authorisation and the test plan, and Calc the
+signed rules of engagement, the authorization and the test plan, and Calc the
 asset owner's lists: hosts, controllers, the engineer responsible for each, the
 safe states and the agreed windows. They are the reference every later phase
 checks against; see [rules of

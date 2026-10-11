@@ -12,7 +12,7 @@ Three things open it:
 - the launcher **08 - Reference > SnapshOT Wiki**, `snapshot-wiki.desktop` in
   `packages/snapshot-menu` (0.2.7), which runs
   `exo-open --launch WebBrowser file:///usr/share/snapshot/wiki/index.html`;
-- the same launcher in the Whisker favourites, after the two terminals
+- the same launcher in the Whisker favorites, after the two terminals
   (`favorites=` in `packages/snapshot-themes`' `whiskermenu/defaults.rc`,
   snapshot-themes 0.2.1);
 - Firefox's home page, set by `Homepage` in `policies.json`.
@@ -42,7 +42,7 @@ packages/snapshot-wiki/
   overrides/            Material template overrides (the footer)
   assets/css/snapshot.css       the dark SnapshOT theme
   assets/js/snapshot-graphs.js  mounts vis-network on graph placeholders
-  assets/vendor/        vis-network and the iframe-worker shim (ORIGIN.md, licences)
+  assets/vendor/        vis-network and the iframe-worker shim (ORIGIN.md, licenses)
   assets/img/           the SnapshOT mark and favicon (from branding/exports)
   templates/            page skeletons to copy (not built)
   scripts/import-vendor-js.sh   refreshes assets/vendor (network, run by hand)
@@ -249,7 +249,7 @@ another author has not written yet.
 ## Data files
 
 - `data/folders.yaml`: slug, number, name, `.directory` file, X-SnapshOT
-  category, graph colour and one-line summary of each menu folder.
+  category, graph color and one-line summary of each menu folder.
   `check-wiki.sh` compares it with `packages/snapshot-menu`.
 - `data/lifecycle.yaml`: the phases (id, number, name, summary, OT reading, CSF
   functions, tactics in play with a note each, crosswalk anchors), the CSF 2.0
@@ -274,8 +274,8 @@ browsers without JavaScript:
 </div>
 ```
 
-`lifecycle` (phases and tools, tools coloured by menu folder) and `attack`
-(tactics and tools, coloured by ATT&CK role) are generated from the tool pages.
+`lifecycle` (phases and tools, tools colored by menu folder) and `attack`
+(tactics and tools, colored by ATT&CK role) are generated from the tool pages.
 Any other name is `docs/graphs/<name>.yaml`; today those are `crosswalk`
 (PICERL, CSF 2.0 and tactics) and `purdue` (levels, zones and where SnapshOT
 attaches). The pages that place them: `index.md` and `lifecycle/index.md`
@@ -297,7 +297,7 @@ edges:
   - {from: l2, to: l1, dashes: true, label: "conduit"}
 ```
 
-Colours are palette names (`red`, `light`, `muted`, `surface`, `teal`,
+Colors are palette names (`red`, `light`, `muted`, `surface`, `teal`,
 `green`, `amber`, `blue`, `purple`, `cobalt`, `coral`, `sand`) or `#RRGGBB`.
 Shapes: `dot`, `box`, `ellipse`, `circle`, `diamond`, `square`, `triangle`,
 `hexagon`, `database`, `text`. A hierarchical graph needs a `level` on every
@@ -422,7 +422,7 @@ LibreOffice Writer. See [desktop.md](desktop.md) for the divert.
 ## Vendored JavaScript
 
 `assets/vendor/` holds vis-network (the graphs) and the iframe-worker shim
-(offline search on `file://`), with their licences and `ORIGIN.md`. To refresh:
+(offline search on `file://`), with their licenses and `ORIGIN.md`. To refresh:
 edit the version, URL and npm `dist.integrity` at the top of
 `packages/snapshot-wiki/scripts/import-vendor-js.sh`, run it (network needed),
 review the diff, run `scripts/check-wiki.sh` and commit. The package build never

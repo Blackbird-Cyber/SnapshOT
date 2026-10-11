@@ -45,7 +45,7 @@ never clipped or halted.
    - *Go/no-go:* if two reads disagree, the acquisition is not stable; fix the
      connection before relying on the image.
 
-4. **Analyse and compare.** Use [binwalk](../../tools/firmware/binwalk.md) to
+4. **Analyze and compare.** Use [binwalk](../../tools/firmware/binwalk.md) to
    identify and extract the image's contents, and compare it against the
    known-good image: changed boot code, added services, unexpected files.
    - *Record:* every difference from known-good, with offsets.

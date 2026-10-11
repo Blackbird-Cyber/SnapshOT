@@ -94,7 +94,7 @@ of four tactics, packet by packet, on a machine with no desktop.
 - **Impair Process Control**: Modbus, S7 or DNP3 writes the operators did not
   make (Unauthorized Message, T1692).
 
-It analyses a capture; it produces no traffic of its own. Each finding carries a
+It analyzes a capture; it produces no traffic of its own. Each finding carries a
 packet number in the capture file, which is the evidence to cite.
 
 ## Quick start

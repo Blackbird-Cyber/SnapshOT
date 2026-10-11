@@ -95,7 +95,7 @@ During [identification](../../lifecycle/phases/identification.md), once passive
 capture has shown a device speaking a protocol Redpoint covers, run the matching
 script against that one host to confirm its vendor, model and firmware. Read the
 identity, then stop; this is confirmation, not exploration. If the device's
-behaviour changes or the operators report anything unusual, stop and hand
+behavior changes or the operators report anything unusual, stop and hand
 control back to the process owner.
 
 ### Recovery

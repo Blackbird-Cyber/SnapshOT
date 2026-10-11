@@ -7,7 +7,7 @@ Every SnapshOT tool carries a **wire class** that says what it does on the wire:
 whether it only listens, whether it sends packets but only reads, or whether it
 can change a device, its configuration, firmware or media. The class is the first
 thing to check before pointing a tool at anything on a plant floor, and it is
-shown as a coloured badge at the top of each tool page. The three classes and the
+shown as a colored badge at the top of each tool page. The three classes and the
 doctrine that orders them are below.
 
 ## Passive first
@@ -40,13 +40,13 @@ several menu folders:
   [termshark](../tools/traffic/termshark.md),
   [tcpdump](../tools/traffic/tcpdump.md),
   [tcpflow](../tools/traffic/tcpflow.md) and
-  [Suricata](../tools/traffic/suricata.md) capture, decode and analyse without
+  [Suricata](../tools/traffic/suricata.md) capture, decode and analyze without
   transmitting.
 - **Recon & Discovery (01):** [p0f](../tools/recon/p0f.md) fingerprints hosts
   from traffic it only observes, and
   [mDNS listen](../tools/recon/mdns-listen.md) prints the mDNS announcements
   hosts send.
-- **Firmware & Hardware (04):** [binwalk](../tools/firmware/binwalk.md) analyses
+- **Firmware & Hardware (04):** [binwalk](../tools/firmware/binwalk.md) analyzes
   a firmware image on disk; [sigrok-cli](../tools/firmware/sigrok-cli.md) and
   [PulseView](../tools/firmware/pulseview.md) record signals from a bench probe;
   [sdcc](../tools/firmware/sdcc.md) and [QEMU](../tools/firmware/qemu.md) work
@@ -157,7 +157,7 @@ with the people who own the device.
 ## Reading the badge
 
 Each tool page shows its wire class as a badge in the facts box: **green** for
-passive, **amber** for active, **red** for writes. The same colours mark the
+passive, **amber** for active, **red** for writes. The same colors mark the
 wire badges in the tool tables, on the phase pages and in the
 [matrix](matrix.md). When you are deciding how to answer a question,
 start at the greenest tool that can answer it and move up a class only when it

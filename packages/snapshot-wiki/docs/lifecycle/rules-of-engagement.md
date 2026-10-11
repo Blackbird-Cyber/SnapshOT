@@ -171,7 +171,7 @@ The team stops active work, and hands control back to the process owner, when:
 
 - a device stops responding, faults, resets or changes operating mode after any
   query or write;
-- operators report unexpected process behaviour, alarms or a safety action while
+- operators report unexpected process behavior, alarms or a safety action while
   the work is under way;
 - the evidence suggests a safety instrumented system or protection function is
   involved;

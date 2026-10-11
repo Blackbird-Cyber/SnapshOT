@@ -80,7 +80,7 @@ capture, so a reader can trace every quoted byte back to the evidence.
 
 ## MITRE ATT&CK for ICS mapping
 
-tcpflow *investigates*: it analyses a capture after the fact and produces no
+tcpflow *investigates*: it analyzes a capture after the fact and produces no
 traffic of its own. Where a packet view shows that a session happened, tcpflow
 shows what it carried, for three tactics:
 

@@ -1,7 +1,7 @@
 user-supplied (Windows)
 =======================
 
-SnapshOT ships no third-party collectors: the Sysinternals and KAPE licences
+SnapshOT ships no third-party collectors: the Sysinternals and KAPE licenses
 do not allow redistribution. Download them yourself from Microsoft and Kroll
 on a trusted machine, check their signatures, and copy them here.
 

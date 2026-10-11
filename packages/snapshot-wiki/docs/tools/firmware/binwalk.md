@@ -122,7 +122,7 @@ binwalk dump.bin
 binwalk -E -N dump.bin
 # Guess the CPU architecture from opcode signatures
 binwalk -A dump.bin
-# Extract what it recognises into a working folder, as your own user
+# Extract what it recognizes into a working folder, as your own user
 binwalk -e -C work dump.bin
 # Recurse into what it extracted, at most 3 levels deep
 binwalk -e -M -d 3 -C work dump.bin

@@ -18,13 +18,13 @@ nodes:
   - {id: govern, level: 0, group: csf, label: "Govern", title: "Strategy, roles, policy and oversight of cybersecurity risk."}
   - {id: identify, level: 0, group: csf, label: "Identify", title: "Understanding the assets, the risks and what to improve."}
   - {id: protect, level: 0, group: csf, label: "Protect", title: "Safeguards that manage the risks."}
-  - {id: detect, level: 0, group: csf, label: "Detect", title: "Finding and analysing possible attacks and compromises."}
+  - {id: detect, level: 0, group: csf, label: "Detect", title: "Finding and analyzing possible attacks and compromises."}
   - {id: respond, level: 0, group: csf, label: "Respond", title: "Actions taken on a detected incident."}
   - {id: recover, level: 0, group: csf, label: "Recover", title: "Restoring the assets and operations an incident affected."}
 
   - {id: preparation, level: 1, group: phase, label: "1. Preparation", url: lifecycle/phases/preparation.md, title: "Know the process, the assets and who may touch what; stage the kit and agree the rules of engagement before anything is connected."}
   - {id: identification, level: 1, group: phase, label: "2. Identification", url: lifecycle/phases/identification.md, title: "Detect and scope the incident from passive evidence first, confirm assets and sessions, and triage by cyber-physical impact."}
-  - {id: containment, level: 1, group: phase, label: "3. Containment", url: lifecycle/phases/containment.md, title: "Take the pre-authorised actions that stop the spread without endangering the process, and preserve evidence while doing it."}
+  - {id: containment, level: 1, group: phase, label: "3. Containment", url: lifecycle/phases/containment.md, title: "Take the pre-authorized actions that stop the spread without endangering the process, and preserve evidence while doing it."}
   - {id: eradication, level: 1, group: phase, label: "4. Eradication", url: lifecycle/phases/eradication.md, title: "Remove the adversary's footholds from hosts, logic and firmware, comparing everything against a verified known-good state."}
   - {id: recovery, level: 1, group: phase, label: "5. Recovery", url: lifecycle/phases/recovery.md, title: "Restore from verified images, validate the process communications with the process owner and watch for recurrence."}
   - {id: lessons-learned, level: 1, group: phase, label: "6. Lessons Learned", url: lifecycle/phases/lessons-learned.md, title: "Build the timeline, write the report, name the control gaps and hand over. Maps the incident to all twelve tactics."}

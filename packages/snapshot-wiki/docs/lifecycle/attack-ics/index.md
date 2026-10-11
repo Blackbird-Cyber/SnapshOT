@@ -76,10 +76,10 @@ be in and how fast to move.
 | What the evidence shows | Kill chain stage | First move | Phase |
 |---|---|---|---|
 | Discovery or Collection from an unexpected host | Stage 1 | Rule out the team's own and the site's sanctioned tools; scope passively; tell the incident commander | [Identification](../phases/identification.md) |
-| Command and Control or Lateral Movement across a conduit | Stage 1, foothold established | Scope the channel and the hosts; prepare the pre-authorised containment options with the process owner | Identification, then [Containment](../phases/containment.md) |
+| Command and Control or Lateral Movement across a conduit | Stage 1, foothold established | Scope the channel and the hosts; prepare the pre-authorized containment options with the process owner | Identification, then [Containment](../phases/containment.md) |
 | Initial Access, Execution, Persistence or Privilege Escalation on a host | Stage 1 | Preserve the host evidence; record the foothold for removal | Identification, then [Eradication](../phases/eradication.md) |
 | Evasion: missing logs, changed modes, imitation traffic | Either | Assume more is hidden; widen the scope | Identification |
-| Inhibit Response Function, Impair Process Control or Impact | Stage 2 | Tell the process owner at once; the site's safety procedures come first; contain from the pre-authorised list | Containment |
+| Inhibit Response Function, Impair Process Control or Impact | Stage 2 | Tell the process owner at once; the site's safety procedures come first; contain from the pre-authorized list | Containment |
 | Any of these after containment, eradication or recovery | Either | The last phase did not finish | Back to identification |
 
 Two more rules:
@@ -96,7 +96,7 @@ own work is never mistaken for an adversary's or hides one.
 
 ## Tactics and tools
 
-Tactics in red; tools coloured by their role. Click a node to open its page.
+Tactics in red; tools colored by their role. Click a node to open its page.
 
 <div class="snapshot-graph" data-graph="attack" data-height="700">
 <p class="snapshot-graph__fallback">This graph needs JavaScript; the same links are in the matrix.</p>

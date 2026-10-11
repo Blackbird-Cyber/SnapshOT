@@ -1,6 +1,6 @@
 ---
 title: Containment
-summary: Take the pre-authorised actions that stop the spread without endangering the process, and preserve evidence while doing it.
+summary: Take the pre-authorized actions that stop the spread without endangering the process, and preserve evidence while doing it.
 ---
 
 ## Definition and OT reading
@@ -20,7 +20,7 @@ safety.
 
 So containment on SnapshOT engagements follows three rules:
 
-- **Only pre-authorised actions.** The options agreed in
+- **Only pre-authorized actions.** The options agreed in
   [preparation](preparation.md) (which conduits may be isolated, which systems may
   be disconnected, when the process goes to manual or local control) are the only
   ones taken without a fresh decision by the process owner.
@@ -44,7 +44,7 @@ to manual, and the laptop shows whether it worked.
 
 - identification has declared the incident, with its scope and the evidence for
   each affected zone, host and controller; and
-- the process owner has agreed which of the pre-authorised containment options
+- the process owner has agreed which of the pre-authorized containment options
   to use; or
 - people, the environment or equipment are in immediate danger, in which case the
   site's own safety and emergency procedures run first and the team supports them.
@@ -66,7 +66,7 @@ to manual, and the laptop shows whether it worked.
 ## Decisions and authorizations
 
 - **Which containment action**: the process owner, with the incident commander,
-  chooses from the pre-authorised list. Anything not on the list needs a new
+  chooses from the pre-authorized list. Anything not on the list needs a new
   decision by the process owner, informed by a focused risk assessment.
 - **Who acts**: the network owner changes firewall rules, switch ports and
   cabling; operators move to manual or local control; the team does not
@@ -138,6 +138,6 @@ Stage 2 is about protecting the process first. See the
 
 - a containment step causes an unexpected process response, alarm or trip;
 - a safety, alarm or protection function does not respond as expected;
-- an action not on the pre-authorised list seems necessary;
+- an action not on the pre-authorized list seems necessary;
 - the evidence shows a second path, or activity in the safety system; or
 - anyone on site is at physical risk.

@@ -3,7 +3,7 @@ title: Lifecycle
 summary: The SANS PICERL incident-response lifecycle, read for OT field work, cross-walked to NIST CSF 2.0 and mapped to MITRE ATT&CK for ICS.
 ---
 
-SnapshOT organises an engagement around the six phases of **PICERL**:
+SnapshOT organizes an engagement around the six phases of **PICERL**:
 Preparation, Identification, Containment, Eradication, Recovery and Lessons
 Learned. It is the incident-response model SANS teaches, and its ICS courses
 adapt it to industrial control systems. Each phase page says what the phase
@@ -22,7 +22,7 @@ equipment, and the person who decides is the process owner, not the responder.
 PICERL puts that decision in the right place:
 
 - **Preparation** carries most of the weight. The safe states, the actions that
-  are pre-authorised, the engineer who must be present for any write and the
+  are pre-authorized, the engineer who must be present for any write and the
   known-good baseline are all agreed before an incident, so that later phases can
   act quickly without improvising on live equipment.
 - **Identification** is passive first. Captures, protocol decoding and operator
@@ -59,7 +59,7 @@ The [crosswalk](crosswalk.md) lines the six phases up against all of them.
 ## Phases and tools
 
 The graph links every phase to the tools whose pages describe a use in it.
-Tools are coloured by their menu folder. Click a node to open its page.
+Tools are colored by their menu folder. Click a node to open its page.
 
 <div class="snapshot-graph" data-graph="lifecycle" data-height="700">
 <p class="snapshot-graph__fallback">This graph needs JavaScript; the same links are in the matrix.</p>

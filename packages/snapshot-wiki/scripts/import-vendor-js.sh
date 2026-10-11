@@ -122,7 +122,7 @@ script and run it again.
 | Extracted from | \`${VIS_SRC}\` | \`${SHIM_SRC}\` |
 | Shipped as | \`${VIS_DST}\` | \`${SHIM_DST}\` |
 | sha256 of shipped file | \`${VIS_SHA}\` | \`${SHIM_SHA}\` |
-| Licence | ${VIS_LICENSE}; texts in \`LICENSE-vis-network\` | ${SHIM_LICENSE}; text in \`LICENSE-iframe-worker\` |
+| License | ${VIS_LICENSE}; texts in \`LICENSE-vis-network\` | ${SHIM_LICENSE}; text in \`LICENSE-iframe-worker\` |
 
 ## Why each file is here
 

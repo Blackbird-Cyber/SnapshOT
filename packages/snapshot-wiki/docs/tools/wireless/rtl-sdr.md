@@ -163,7 +163,7 @@ sha256sum "$CASE"/rf/uhf-survey-*.csv >> "$CASE/SHA256SUMS"
 ```
 
 Raw I/Q files are large (2 bytes per sample, so about 4 MB a second at
-2.048 MS/s); record only the spans you need and put the centre frequency and
+2.048 MS/s); record only the spans you need and put the center frequency and
 sample rate in the file name, as above, since a raw `.iq` file does not carry
 them. Note the dongle, antenna and position in the case notes.
 

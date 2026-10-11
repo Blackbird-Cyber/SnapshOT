@@ -40,7 +40,7 @@ Its sources are the case folder and the site's own records:
 
 Record the clock offset of every source, starting with the laptop's own (checked
 in [preparation](preparation.md)). Controllers and HMIs often keep local time with
-no synchronisation. Mark the team's own actions in the timeline, so that a scan
+no synchronization. Mark the team's own actions in the timeline, so that a scan
 SnapshOT ran is never read later as the adversary's Discovery.
 
 ### Mapping the incident to ATT&CK for ICS

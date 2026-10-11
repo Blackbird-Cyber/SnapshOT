@@ -6,7 +6,7 @@
 # directory   the .directory file in packages/snapshot-menu (checked by
 #             scripts/check-wiki.sh against its Name=)
 # category    the X-SnapshOT-* category the folder's launchers carry
-# color       node colour of the folder's tools in the generated graphs
+# color       node color of the folder's tools in the generated graphs
 #             (the SnapshOT terminal palette, readable on the ink background)
 # summary     one line shown on the generated folder page
 folders:

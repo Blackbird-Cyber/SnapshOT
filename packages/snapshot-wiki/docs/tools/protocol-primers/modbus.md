@@ -34,7 +34,7 @@ slave address, which still matters behind a serial-to-TCP gateway).
   through it, though: Schneider Electric's UMAS programs Modicon controllers
   over function code 90, so that code is engineering traffic, not polling.
 - Otherwise the risk is in writes to live values, and in the fact that the
-  device cannot tell an authorised master from an adversary.
+  device cannot tell an authorized master from an adversary.
 
 Treat any write as the [writes](../../lifecycle/wire-classes.md) class: the
 engineer present, the exact register and value agreed, announced to the site.
@@ -89,7 +89,7 @@ modbus.func_code == 90
   Unauthorized Message: Command Message (T1692.001), Modify Parameter (T0836),
   Brute Force I/O (T0806).
 - [Initial Access](../../lifecycle/attack-ics/initial-access.md): Rogue Master
-  (T0848), a host acting as an unauthorised Modbus master.
+  (T0848), a host acting as an unauthorized Modbus master.
 
 ## Upstream specification
 

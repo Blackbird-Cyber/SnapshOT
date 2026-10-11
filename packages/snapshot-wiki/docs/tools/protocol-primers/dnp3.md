@@ -10,7 +10,7 @@ water and wastewater utilities. A master polls outstations (RTUs and IEDs) for
 points grouped into classes, outstations send unsolicited responses when values
 change, and the master issues control commands (select-before-operate, direct
 operate) to actuate outputs. It carries a time model and an internal-indications
-word that reports outstation status. DNP3 sits between a control-centre master at
+word that reports outstation status. DNP3 sits between a control-center master at
 level 2 or 3 and field RTUs at levels 1 and 2, often over wide-area links, which
 is why its security extensions (Secure Authentication) matter and its absence is
 a common finding.
@@ -87,7 +87,7 @@ on the vendor layer page. **Decoding DNP3 in a capture is the shipped path:**
 - [Inhibit Response Function](../../lifecycle/attack-ics/inhibit-response-function.md):
   Device Restart/Shutdown (T0816), through Cold and Warm Restart.
 - [Initial Access](../../lifecycle/attack-ics/initial-access.md): Rogue Master
-  (T0848), a host acting as an unauthorised DNP3 master.
+  (T0848), a host acting as an unauthorized DNP3 master.
 
 ## Upstream specification
 

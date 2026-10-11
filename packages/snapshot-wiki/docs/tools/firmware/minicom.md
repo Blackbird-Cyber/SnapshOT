@@ -55,7 +55,7 @@ for the same job.
       TTL (3.3 V or 5 V); a TTL header driven by an RS-232 adapter is damaged.
       Use the right adapter, and confirm the pinout and baud rate, with
       [sigrok-cli](sigrok-cli.md) if need be.
-    - Start minicom with `-o` (no initialisation) so it does not send its
+    - Start minicom with `-o` (no initialization) so it does not send its
       compiled-in modem init string (`AT S7=45 ...`) to the device, which a
       non-modem console would see as stray input. Leave with `Ctrl-A Q`, not
       `Ctrl-A X`, which resets the "modem" on the way out.

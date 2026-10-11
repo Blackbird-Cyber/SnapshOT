@@ -146,7 +146,7 @@ cmp "$F.bin" "$F-b.bin"
 sha256sum "$F.bin" "$F-b.bin" >> "$CASE/SHA256SUMS"
 ```
 
-Keep the first dump untouched as the pre-reflash reference and analyse a copy.
+Keep the first dump untouched as the pre-reflash reference and analyze a copy.
 
 ## Related tools
 

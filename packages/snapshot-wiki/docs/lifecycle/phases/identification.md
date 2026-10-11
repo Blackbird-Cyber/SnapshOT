@@ -29,7 +29,7 @@ links. Click a SnapshOT node to open the tool used there.
 **Enter when**
 
 - an alarm, an operator report, a monitoring alert or a third-party
-  notification suggests unauthorised activity in the control system, or
+  notification suggests unauthorized activity in the control system, or
 - an assessment finds evidence of compromise.
 
 **Leave when**
@@ -89,6 +89,6 @@ with the passive tools; use the active ones to confirm, not to explore.
 **Stop and hand control back to the process owner when**
 
 - a device stops responding, faults or changes mode after any query;
-- operators report unexpected process behaviour during the work;
+- operators report unexpected process behavior during the work;
 - the evidence points to a safety system being affected; or
 - the scope reaches systems the authorization does not cover.

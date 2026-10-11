@@ -50,7 +50,7 @@ of engagement.
 
     - Prefer a TAP or an agreed SPAN port. Use `-n` so tcpdump makes no DNS
       lookups for the addresses it sees.
-    - A capture filter keeps the capture to what you are authorised to record:
+    - A capture filter keeps the capture to what you are authorized to record:
       `tcp port 502`, `host 192.0.2.10`. Narrow is both quieter and smaller.
     - On this image tcpdump needs `sudo`: unlike Wireshark and tshark, it is not
       reached through the `wireshark` group's `dumpcap`. Run it with `sudo`, and

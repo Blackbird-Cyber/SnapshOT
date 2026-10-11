@@ -33,15 +33,15 @@ dissectors as [tshark](tshark.md) decode the industrial protocols, including
 Modbus/TCP, S7comm, EtherNet/IP and CIP, OPC UA, BACnet, DNP3, IEC 60870-5-104,
 IEC 61850 MMS and GOOSE, and PROFINET. Display filters select packets by any
 field, "Follow stream" reassembles a conversation, and the Statistics menu
-summarises a capture by protocol, conversation or endpoint.
+summarizes a capture by protocol, conversation or endpoint.
 
 ## Why it is on SnapshOT
 
 Wireshark is the tool an OT responder reaches for to understand a capture in
 depth. Where tshark is for capturing and scripting, Wireshark is for working
-through a file by eye: colouring rules highlight the protocols of interest, the
+through a file by eye: coloring rules highlight the protocols of interest, the
 protocol hierarchy shows what the network carries, and the field tree makes the
-exact function code or register behind a finding visible without memorising the
+exact function code or register behind a finding visible without memorizing the
 specification. The SnapshOT user is in group `wireshark`, so Wireshark captures
 without `sudo`.
 
@@ -69,7 +69,7 @@ without `sudo`.
 
 Open the baseline captures recorded for each conduit and learn what normal looks
 like: which hosts poll which controllers, at what rate, and with which function
-codes. A labelled baseline is what makes an anomaly obvious during
+codes. A labeled baseline is what makes an anomaly obvious during
 [identification](../../lifecycle/phases/identification.md).
 
 ### Identification
@@ -183,7 +183,7 @@ The Modbus filter is the write function codes (5, 6, 15, 16, 22, 23); the S7
 filter is the download, upload, PI-service and PLC-stop functions; the
 EtherNet/IP filter is List Identity, the discovery request; the CIP filter is
 the Reset, Start and Stop services; the DNP3 filter is Operate, Direct Operate
-(with and without acknowledgement) and the cold and warm restarts; the BACnet
+(with and without acknowledgment) and the cold and warm restarts; the BACnet
 filter is WriteProperty and WritePropertyMultiple; the IEC 60870-5-104 filter is
 the C_* control ASDU types; the OPC UA filter is the Write and Call service node
 ids. Replace `eth1` with the capture interface.

@@ -13,7 +13,7 @@ script and run it again.
 | Extracted from | `package/standalone/umd/vis-network.min.cjs` | `package/shim/index.js` |
 | Shipped as | `vis-network.min.js` | `iframe-worker-shim.js` |
 | sha256 of shipped file | `e7653a735c9014c5a1c22e9dac5733c2d94e97fab0a4f8dabe0ed9170ac5e512` | `e8e412dbcfea9b7e31b5ffa288d7b6035915e714c542f4176a0cdbe262fc9609` |
-| Licence | (Apache-2.0 OR MIT); texts in `LICENSE-vis-network` | MIT; text in `LICENSE-iframe-worker` |
+| License | (Apache-2.0 OR MIT); texts in `LICENSE-vis-network` | MIT; text in `LICENSE-iframe-worker` |
 
 ## Why each file is here
 

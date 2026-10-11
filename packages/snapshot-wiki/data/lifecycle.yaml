@@ -33,7 +33,7 @@ phases:
       so that later phases can act quickly without risking the process.
     csf: [govern, identify, protect]
     tactics:
-      initial-access: Know the remote access paths, vendor connections and transient devices an intruder could use, so their sessions are recognisable later.
+      initial-access: Know the remote access paths, vendor connections and transient devices an intruder could use, so their sessions are recognizable later.
       lateral-movement: Record the zones, the conduits between them and the sessions that normally cross them; that baseline is what makes movement stand out.
     anchors:
       sp800_82r3: An OT incident response plan with roles, the process owner's authority, safe states and the communications plan.
@@ -65,7 +65,7 @@ phases:
   - id: containment
     number: 3
     name: Containment
-    summary: Take the pre-authorised actions that stop the spread without endangering the process, and preserve evidence while doing it.
+    summary: Take the pre-authorized actions that stop the spread without endangering the process, and preserve evidence while doing it.
     ot_reading: >-
       Containment in OT is a negotiation with physics. Pulling a cable can trip a
       process; isolating a conduit may force manual operation. Only actions agreed
@@ -161,7 +161,7 @@ csf_functions:
     summary: Safeguards that manage the risks.
   - id: detect
     name: Detect
-    summary: Finding and analysing possible attacks and compromises.
+    summary: Finding and analyzing possible attacks and compromises.
   - id: respond
     name: Respond
     summary: Actions taken on a detected incident.
