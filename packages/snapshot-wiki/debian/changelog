@@ -1,3 +1,13 @@
+snapshot-wiki (0.1.9) unstable; urgency=low
+
+  * Field updates: the offline update stick builds with trixie's aptly
+    (scripts/make-update-usb.sh publishes through an aptly filesystem
+    endpoint). The page gives the laptop-side commands: the public key in
+    /etc/apt/keyrings, a signed-by source for the stick, and removing that
+    source afterwards.
+
+ -- "Blackbird Cyber, LLC" <293711495+matthew-blackbird-cyber@users.noreply.github.com>  Sun, 11 Oct 2026 17:45:00 -0400
+
 snapshot-wiki (0.1.8) unstable; urgency=low
 
   * Live session and install: the installer refuses a login that already
