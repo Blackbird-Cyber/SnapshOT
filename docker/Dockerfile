@@ -1,7 +1,12 @@
 # SnapshOT build container. The base is pinned by digest for a reproducible
-# builder: debian:trixie-slim as of 2026-10-10 (the multi-arch index digest, so
-# linux/amd64 and linux/arm64 both resolve). To move the pin, pull the tag and
-# take `docker image inspect debian:trixie-slim --format '{{index .RepoDigests 0}}'`.
+# builder: the multi-arch index digest, so linux/amd64 and linux/arm64 both
+# resolve.
+# Tag debian:trixie-slim, the images built 2026-09-18; pinned 2026-10-10 from
+# the locally cached tag. Checked 2026-10-11 with `docker buildx imagetools
+# inspect`: an OCI image index for linux/amd64, linux/arm64/v8 and six other
+# platforms, every image labeled trixie-slim. Docker Hub's tag has moved to a
+# newer build since. To move the pin, read the index digest from the registry,
+# not from a cached pull: `docker buildx imagetools inspect debian:trixie-slim`.
 FROM debian@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 
 ENV DEBIAN_FRONTEND=noninteractive
