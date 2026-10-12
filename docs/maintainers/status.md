@@ -90,7 +90,11 @@ The update stick is fixed (item 7).
    2026-10-10 03:06 UTC). The README carries the workflow badge since the
    repository went public on 2026-10-12.
 9. Going public: done on 2026-10-12 except the social preview, which only the
-   web interface can set (the owner uploads it). The steps were: make it public,
+   web interface can set (the owner uploads it). GitHub secret scanning and
+   push protection were enabled the same day (generic patterns and validity
+   checks are not available on this plan); with them on, GitHub reported no
+   alerts, and gitleaks and trufflehog again found nothing in the full history
+   or the tracked files. The steps were: make it public,
    enable private vulnerability reporting
    (`gh api -X PUT repos/Blackbird-Cyber/SnapshOT/private-vulnerability-reporting`;
    GitHub offers it only on public repositories and the call returned 404 while
