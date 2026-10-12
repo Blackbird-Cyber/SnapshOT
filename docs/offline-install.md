@@ -38,9 +38,12 @@ network at any point, so it works the same at an air-gapped site.
    there is no root password. The login must not already exist on the system:
    names such as `operator`, `daemon` or `wireshark` are refused on this page,
    because the install would otherwise fail at its last step.
-6. Summary, then **Install**. When the progress bar completes, the installer shows
-   "Restarting in 5 seconds" and reboots on its own; remove the USB stick as the
-   screen goes dark. The Finished page only appears if that reboot fails.
+6. Summary, then **Install**. The restart is the last step: the line under the
+   progress bar reads "Restarting in 5 seconds" while the bar still stands at about
+   96% (the bar advances as each step finishes, and the machine restarts before
+   this one does), and five seconds later the machine reboots on its own; remove
+   the USB stick as the screen goes dark. The Finished page only appears if that
+   reboot fails.
 
 ## 3. Disk layout
 
@@ -191,8 +194,9 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 
 1. Create a VM with UEFI firmware and no network adapter; boot the ISO.
 2. Install with **Erase disk** and **Encrypt system**; the install completes.
-3. The installer reboots on its own five seconds after the progress bar completes;
-   the themed GRUB menu appears with no text passphrase prompt.
+3. "Restarting in 5 seconds" appears under the progress bar while the bar stands at
+   about 96%, and the installer reboots on its own five seconds later; the themed
+   GRUB menu appears with no text passphrase prompt.
 4. Plymouth asks for the passphrase once, on screen, with a blinking caret, the hint
    line and one red square per keystroke (BackSpace removes one), also on arm64 VMs
    whose firmware names a serial console; LightDM shows the login screen; log in.
@@ -221,6 +225,26 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
     system boots and unlocks; `mokutil --sb-state` prints `SecureBoot enabled`.
     Then power off, reset the VM's NVRAM (VMware: delete the `.nvram` file; QEMU: a
     fresh copy of the variable store) and boot again: the removable media path
-    starts the same system.
+    starts the same system, and shim's fallback recreates the `SnapshOT` boot entry.
+    The image has no `efibootmgr` (install it from the
+    [update stick](updates.md) if you want it); read the boot entries from the
+    firmware variables instead:
+
+    ```sh
+    cd /sys/firmware/efi/efivars
+    g=8be4df61-93ca-11d2-aa0d-00e098032b8c
+    od -An -tx2 -j4 BootCurrent-$g   # the entry that started this boot
+    od -An -tx2 -j4 BootOrder-$g
+    for f in Boot0*-$g; do          # each entry: its name and loader path
+        printf '%s:' "${f%%-*}"
+        tail -c +11 "$f" | iconv -f UTF-16LE -t UTF-8 -c 2>/dev/null | tr -c '[:print:]' ' ' | tr -s ' '
+        echo
+    done
+    ```
+
+    After the NVRAM reset, `BootCurrent` names the firmware's removable-media entry
+    (QEMU: `UEFI Misc Device`) and a new `SnapshOT` entry starts
+    `\EFI\SnapshOT\shimx64.efi` (`shimaa64.efi` on arm64); on the next boot from
+    the variable store the installer wrote, `BootCurrent` is the `SnapshOT` entry.
 15. On the users page, the login `operator` shows "'operator' is not allowed as
     username." and **Next** stays disabled; `operator1` is accepted.
