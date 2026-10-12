@@ -4,7 +4,7 @@ Problems that affect a published image or the current tree, kept here so the
 README stays a description of the product. Each release's notes on GitHub repeat
 the ones that apply to that release.
 
-## v0.3.0-alpha (draft, not yet published)
+## v0.3.0-alpha (pre-release, published 2026-10-12)
 
 - **Installer QA is not finished.** The installer configuration passes
   `scripts/check-installer.sh`, and the release build was installed end to end
@@ -50,9 +50,9 @@ Fixed in v0.3.0-alpha (each of these affects v0.2.1):
   over a serial console instead, see
   [offline-install.md](../offline-install.md#arm64-the-prompt-on-screen-or-on-a-serial-console).
 
-## v0.2.1 (pre-release, published 2026-10-10)
+## v0.2.1 (pre-release published 2026-10-10, withdrawn 2026-10-12)
 
-To be withdrawn when v0.3.0-alpha is published.
+Withdrawn on 2026-10-12, when v0.3.0-alpha was published.
 
 - **Installer QA is not finished.** The installer configuration passes
   `scripts/check-installer.sh` and the live session passed smoke checks in QEMU,

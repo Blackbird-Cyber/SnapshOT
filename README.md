@@ -10,9 +10,10 @@
   Made by <a href="https://github.com/Blackbird-Cyber">Blackbird Cyber, LLC</a>.
 </p>
 
-<!-- Static badges: shields.io cannot read the releases of a private repository.
-     scripts/release.sh rewrites the release badge, the pin badge and the download links. -->
+<!-- Static badges: scripts/release.sh rewrites the release badge, the pin badge and the
+     download links. The checks badge is GitHub's own workflow badge. -->
 <p align="center">
+  <a href="https://github.com/Blackbird-Cyber/SnapshOT/actions/workflows/checks.yml"><img src="https://github.com/Blackbird-Cyber/SnapshOT/actions/workflows/checks.yml/badge.svg?branch=main" alt="checks"></a>
   <img src="https://img.shields.io/badge/Debian-13_trixie-A81D33?logo=debian&amp;logoColor=white" alt="Debian 13 trixie">
   <img src="https://img.shields.io/badge/arch-amd64_%7C_arm64-2A2C2F" alt="amd64 | arm64">
   <a href="https://github.com/Blackbird-Cyber/SnapshOT/releases/tag/v0.3.0-alpha"><img src="https://img.shields.io/badge/pre--release-v0.3.0--alpha-F1000E" alt="release"></a>
