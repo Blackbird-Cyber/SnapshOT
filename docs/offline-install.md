@@ -67,6 +67,29 @@ for the passphrase twice. There is no hibernation.
    then unlocks the root volume.
 3. LightDM shows the login screen; sign in with the account created during the install.
 
+### arm64: the prompt on screen, or on a serial console
+
+On arm64 the installed system's kernel command line ends in
+`plymouth.ignore-serial-consoles`. It comes from `snapshot-boot`'s
+`/etc/default/grub.d/61-snapshot-arm64-console.cfg`, which `update-grub` applies
+after `/etc/default/grub` and which adds the word on arm64 only; amd64 installs
+carry the same file, and their command line does not change.
+
+arm64 firmware often names a serial port as the console: QEMU's `virt` machine,
+which UTM uses, names its PL011 port in the device tree, and ACPI firmware can do the
+same with an SPCR table. The kernel console is then that serial port, and Plymouth,
+when it finds a serial console, shows only a text prompt there and nothing on the
+screen: the boot stops at a black screen on which typing does nothing, while the
+passphrase prompt waits on the serial port. With the parameter, Plymouth leaves
+serial consoles alone and the splash asks for the passphrase on the display.
+
+To unlock over a serial console instead (a headless board, or a VM whose serial
+port is the only console you use): at the GRUB menu press `e`, delete
+`plymouth.ignore-serial-consoles` from the end of the `linux` line and press Ctrl-x;
+the passphrase prompt then appears on the serial console. To do that on every boot,
+delete `/etc/default/grub.d/61-snapshot-arm64-console.cfg` and run `sudo
+update-grub`; dpkg does not bring back a configuration file that was deleted.
+
 ## 5. Administration
 
 - The user is in group `sudo` (plus `plugdev`, `dialout`, `kvm`, `netdev`, `wireshark`,
@@ -170,8 +193,9 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 2. Install with **Erase disk** and **Encrypt system**; the install completes.
 3. The installer reboots on its own five seconds after the progress bar completes;
    the themed GRUB menu appears with no text passphrase prompt.
-4. Plymouth asks for the passphrase once, with a blinking caret, the hint line and one
-   red square per keystroke (BackSpace removes one); LightDM shows the login screen; log in.
+4. Plymouth asks for the passphrase once, on screen, with a blinking caret, the hint
+   line and one red square per keystroke (BackSpace removes one), also on arm64 VMs
+   whose firmware names a serial console; LightDM shows the login screen; log in.
 5. `lsblk -f` shows the ESP (vfat), `/boot` (ext4) and the root on a `luks-*`
    mapping.
 6. `groups` lists `sudo`, `dialout`, `kvm`, `plugdev`, `netdev` and `wireshark`;
@@ -182,6 +206,8 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 8. `dpkg -l 'live-*' 'calamares*' user-setup` reports no installed packages.
 9. There is no Install SnapshOT icon on the desktop.
 10. `cat /etc/default/grub` and `cat /proc/cmdline` each show `splash` exactly once.
+    On arm64 `/proc/cmdline` ends in `plymouth.ignore-serial-consoles`; on amd64 it
+    does not contain it.
 11. A VM with 2 GB of RAM stops at the welcome page: Calamares reports that it needs
     at least 3 GiB and Next stays disabled.
 12. `nmcli radio wifi` prints `disabled`. On a machine with a Wi-Fi adapter,

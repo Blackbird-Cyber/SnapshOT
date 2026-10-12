@@ -91,7 +91,11 @@ exec sequence in `settings.conf` runs `packages` before `initramfscfg`. Finally 
 checks the Secure Boot setup: `bootloader.conf` runs `snapshot-boot`'s
 `grub-install` wrapper with `installEFIFallback` off, and the wrapper, run against
 a stub `grub-install`, adds `--uefi-secure-boot --force-extra-removable` for EFI
-targets, copies `grub.cfg` to `EFI/BOOT` and leaves BIOS calls unchanged.
+targets, copies `grub.cfg` to `EFI/BOOT` and leaves BIOS calls unchanged. It
+also sources `snapshot-boot`'s `/etc/default/grub.d/*.cfg` the way
+`grub-mkconfig` does, with the architecture stubbed: on arm64 the installed
+system's kernel command line gains `plymouth.ignore-serial-consoles` once, on
+amd64 it is unchanged, and `splash` appears exactly once on both.
 
 ## Checking the wiki
 `packages/snapshot-wiki` builds the SnapshOT Wiki with MkDocs during

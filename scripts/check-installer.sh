@@ -37,6 +37,12 @@
 #      (mode 755, valid sh), run on a copy after adding a system user and
 #      group, lists exactly this container's user and group names plus
 #      autologin and changes nothing else in users.conf.
+#   9. Checks the kernel command line of the installed system: sources
+#      snapshot-boot's /etc/default/grub.d/*.cfg the way grub-mkconfig does,
+#      after a GRUB_CMDLINE_LINUX_DEFAULT like the one Calamares' grubcfg
+#      writes, with dpkg --print-architecture stubbed. On arm64 the line gains
+#      plymouth.ignore-serial-consoles once (also when it is already there),
+#      on amd64 it is unchanged, and splash appears exactly once on both.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 IMAGE="${SNAPSHOT_TRIXIE_IMAGE:-debian:trixie}"
@@ -259,6 +265,40 @@ else
     echo "FAIL BIOS call: grub-install got '$(cat /tmp/grub-install.args 2>/dev/null)'"; fail=1
 fi
 rm -f /usr/sbin/grub-install
+
+echo "== GRUB defaults: kernel command line of the installed system =="
+grubd=/snapshot/packages/snapshot-boot/rootfs/etc/default/grub.d
+for f in "$grubd"/*.cfg; do
+    if sh -n "$f"; then echo "ok   ${f#/snapshot/} (sh syntax)"
+    else echo "FAIL ${f#/snapshot/}: not valid sh"; fail=1; fi
+done
+# grub-mkconfig (set -e) sources /etc/default/grub, then grub.d/*.cfg in order.
+# A stub dpkg answers --print-architecture with the architecture under test.
+mkdir -p /tmp/arch-stub
+cmdline_for() {  # ARCH INITIAL-GRUB_CMDLINE_LINUX_DEFAULT
+    printf '#!/bin/sh\necho %s\n' "$1" > /tmp/arch-stub/dpkg
+    chmod 755 /tmp/arch-stub/dpkg
+    PATH="/tmp/arch-stub:$PATH" GRUB_CMDLINE_LINUX_DEFAULT="$2" sh -ec '
+        for x in "$1"/*.cfg; do . "$x"; done
+        printf "%s\n" "$GRUB_CMDLINE_LINUX_DEFAULT"' sh "$grubd"
+}
+count() { printf '%s\n' $2 | grep -cx -- "$1" || true; }
+param=plymouth.ignore-serial-consoles
+calamares='quiet cryptdevice=UUID=0f0f:luks-0f0f root=/dev/mapper/luks-0f0f splash'
+check_cmdline() {  # ARCH INITIAL EXPECTED
+    got="$(cmdline_for "$1" "$2")" || got="<the snippets failed>"
+    if [ "$got" = "$3" ] && [ "$(count splash "$got")" = 1 ]; then
+        echo "ok   $1, from '${2:-<empty>}': '$got'"
+    else
+        echo "FAIL $1, from '${2:-<empty>}': got '$got', expected '$3' with splash once"; fail=1
+    fi
+}
+check_cmdline arm64 "$calamares" "$calamares $param"
+check_cmdline arm64 "$calamares $param" "$calamares $param"
+check_cmdline arm64 "" "quiet splash $param"
+check_cmdline amd64 "$calamares" "$calamares"
+check_cmdline amd64 "" "quiet splash"
+rm -rf /tmp/arch-stub
 
 echo "== reserved login names =="
 hook=/snapshot/config/hooks/normal/0950-snapshot-installer-reserved-names.hook.chroot
