@@ -7,7 +7,7 @@
 
 <p align="center">
   <b>The offline, reproducible Debian image for OT incident response and assessment.</b><br>
-  Made by <a href="https://github.com/Blackbird-Cyber">Blackbird Cyber, LLC</a>.
+  Made by <a href="https://blackbirdcyber.com/">Blackbird Cyber, LLC</a>.
 </p>
 
 <!-- Static badges: scripts/release.sh rewrites the release badge, the pin badge and the
@@ -232,7 +232,8 @@ and [CONTRIBUTING.md](CONTRIBUTING.md) says how to propose a change.
   derived from Kali, live-build and Xfce keep their GPL or LGPL license;
   [`REUSE.toml`](REUSE.toml) lists every exception.
 - MITRE ATT&CK for ICS data: [MITRE's terms of use](LICENSES/LicenseRef-MITRE-ATTACK-Terms.txt).
-- The SnapshOT name, mark and lockups are trademarks of Blackbird Cyber, LLC:
+- The SnapshOT name, mark and lockups are trademarks of
+  [Blackbird Cyber, LLC](https://blackbirdcyber.com/):
   [TRADEMARKS.md](TRADEMARKS.md) says how to use them and how to rebrand a fork.
 - **No warranty.** SnapshOT is provided as is, without warranty of any kind, and
   Blackbird Cyber, LLC accepts no liability for its use, to the extent the law allows
@@ -242,5 +243,5 @@ and [CONTRIBUTING.md](CONTRIBUTING.md) says how to propose a change.
 
 <p align="center">
   SnapshOT is for authorized OT engagements only.<br>
-  <a href="https://github.com/Blackbird-Cyber">Blackbird Cyber on GitHub</a> · <a href="https://github.com/Blackbird-Cyber/SnapshOT/issues">Issues</a> · <a href="SECURITY.md">Security policy</a>
+  <a href="https://blackbirdcyber.com/">Blackbird Cyber</a> · <a href="https://github.com/Blackbird-Cyber/SnapshOT/issues">Issues</a> · <a href="SECURITY.md">Security policy</a>
 </p>
