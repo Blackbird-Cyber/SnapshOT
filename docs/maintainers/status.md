@@ -10,7 +10,7 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 |---|---|---|---|---|
 | Built from | 2fba3d1 (now 88ba816), published 2026-09-30 | 3a77bad (now 5150f10, see [history-rewrite.md](history-rewrite.md)), published 2026-10-10 | 8a5ba28, published 2026-10-10; the tag also carries the README release-table commit | 26cd8d7, built 2026-10-12 (UTC), after the first build (63e1680, 2026-10-11) showed the arm64 passphrase prompt on the serial port only; published on 2026-10-12 (02:37 UTC) as the pre-release "SnapshOT 0.3.0 alpha"; its annotated tag `v0.3.0-alpha` points at the README release-table commit 8342c93 |
 | Images | amd64 1,731,487,744 bytes (1.61 GiB), arm64 1,751,322,624 bytes (1.63 GiB) | amd64 1,879,412,736 bytes (1.75 GiB), arm64 1,837,701,120 bytes (1.71 GiB) | amd64 1,879,400,448 bytes (1.75 GiB), arm64 1,837,686,784 bytes (1.71 GiB), neither split | amd64 1,887,596,544 bytes (1.76 GiB), arm64 1,845,569,536 bytes (1.72 GiB), neither split |
-| Withdrawn | 2026-10-10: release, assets and tag deleted | 2026-10-10: release, assets and tag deleted | 2026-10-12, when v0.3.0-alpha was published: release made a hidden draft (its assets stay until the owner deletes the draft), tag removed | |
+| Withdrawn | 2026-10-10: release, assets and tag deleted | 2026-10-10: release, assets and tag deleted | 2026-10-12, when v0.3.0-alpha was published: tag removed, release made a hidden draft and then deleted with its assets by the owner | |
 | Verified | live boot | both images booted in QEMU to the live desktop with smoke checks; the installer was not run | both images booted in QEMU to the live desktop with smoke checks of the menu, `/etc/snapshot-release`, capture without sudo, the vendor layer, package versions, the wiki and the brand files (no embedded chunks); the installer was not run | QEMU: both live ISOs with smoke checks of `/etc/snapshot-release`, the Wi-Fi switch, capture without sudo, the vendor layer and the package list (no Autopsy; the menu, the wiki and `about:policies` were checked on the 63e1680 build); arm64 without Secure Boot on the `virt` machine with its serial port: a full install (Erase disk, Encrypt system) that restarted on its own, then the splash asked for the passphrase on screen with no GRUB edit, keyboard unlock and login, `plymouth.ignore-serial-consoles` on the command line, checklist items 1 to 10, 12 and 13, and the serial-console unlock with the word removed at GRUB; amd64 with Secure Boot enforced (OVMF, Microsoft's keys): `operator` refused, a full install that restarted on its own, then the installed system booted from a fresh variable store (removable path) and from the `SnapshOT` entry, splash prompt, unlock and login, no arm64 parameter, checklist items 1 to 10 and 12 to 14; not run on VMware Fusion, Parallels, UTM or real hardware |
 | Brand images | carry embedded content-credential manifests | carry embedded content-credential manifests | no embedded content-credential or EXIF chunks | the same files as v0.2.1 |
 | Desktop | light Xfce desktop with the SnapshOT wallpaper and a SnapshOT menu with a category per tool group | SnapshOT-Dark theme, Papirus-Dark icons, one top panel, the Whisker menu with eight numbered folders | same as v0.2.0 | same as v0.2.0 |
@@ -28,9 +28,9 @@ from it. Known problems are in [known-issues.md](known-issues.md).
   The README describes main; `scripts/release.sh` rewrites its release table
   for v0.3.0-alpha when the draft is staged.
 - v0.3.0-alpha is the only published release (a pre-release, published
-  2026-10-12). v0.2.1 was withdrawn the same day: its release is a hidden draft,
-  kept until the owner deletes it, and its tag (object 680a026 on commit 687f2ab,
-  "SnapshOT v0.2.1") was removed from GitHub and the build Mac.
+  2026-10-12). v0.2.1 was withdrawn the same day: its tag (object 680a026 on
+  commit 687f2ab, "SnapshOT v0.2.1") was removed from GitHub and the build Mac,
+  and the owner deleted its release and assets.
   v0.2.0 and v0.1.0 were withdrawn on 2026-10-10 when v0.2.1 was published,
   because their brand images still carried embedded content-credential
   manifests: their releases, assets and tags were deleted from GitHub. The
@@ -69,8 +69,7 @@ The update stick is fixed (item 7).
    arm64 (the splash prompt on screen, item 4).
 4. Publish and withdraw v0.2.1: done on 2026-10-12. `scripts/release.sh
    v0.3.0-alpha --prerelease` published the draft and pushed the tag; v0.2.1's
-   release is a hidden draft and its tag is gone. The owner deletes the v0.2.1
-   draft when it is no longer wanted.
+   tag is gone, and the owner deleted its release and assets.
 5. Promotion, once the Fusion run passes: either
    `gh release edit v0.3.0-alpha --repo Blackbird-Cyber/SnapshOT --prerelease=false`
    with the README's release badge and release-table label changed from
@@ -118,8 +117,8 @@ The update stick is fixed (item 7).
   were pushed, and both releases were re-uploaded with their original notes and
   verified assets. Both releases and their tags were withdrawn later the same day,
   when v0.2.1 was published. The previous repository was renamed `SnapshOT-old`,
-  stays private, and is deleted by the owner; nothing else needs to come over
-  from it. This repository has been public since 2026-10-12.
+  has since been deleted; nothing needed to come over from it. This repository
+  has been public since 2026-10-12.
 - The work mailbox that GitHub web-editor commits once carried is still in the
   history, in the `.mailmap` added on 2026-10-10 (d56ce66) and removed for
   v0.3.0-alpha; no commit carries it as an author or committer. Only another
