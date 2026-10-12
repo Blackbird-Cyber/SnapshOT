@@ -40,10 +40,10 @@ network at any point, so it works the same at an air-gapped site.
    because the install would otherwise fail at its last step.
 6. Summary, then **Install**. The restart is the last step: the line under the
    progress bar reads "Restarting in 5 seconds" while the bar still stands at about
-   96% (the bar advances as each step finishes, and the machine restarts before
-   this one does), and five seconds later the machine reboots on its own; remove
-   the USB stick as the screen goes dark. The Finished page only appears if that
-   reboot fails.
+   96% (the bar advances as each step finishes, and this one finishes only as the
+   machine goes down, so 100% shows for a moment at most), and five seconds later
+   the machine reboots on its own; remove the USB stick as the screen goes dark.
+   The Finished page only appears if that reboot fails.
 
 ## 3. Disk layout
 
@@ -84,7 +84,9 @@ same with an SPCR table. The kernel console is then that serial port, and Plymou
 when it finds a serial console, shows only a text prompt there and nothing on the
 screen: the boot stops at a black screen on which typing does nothing, while the
 passphrase prompt waits on the serial port. With the parameter, Plymouth leaves
-serial consoles alone and the splash asks for the passphrase on the display.
+serial consoles alone and the splash asks for the passphrase on the display. The
+live ISO's boot entries do not carry it: the live session asks for nothing, so on
+such firmware its boot only shows a black screen until the desktop appears.
 
 To unlock over a serial console instead (a headless board, or a VM whose serial
 port is the only console you use): at the GRUB menu press `e`, delete
@@ -195,8 +197,9 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
 1. Create a VM with UEFI firmware and no network adapter; boot the ISO.
 2. Install with **Erase disk** and **Encrypt system**; the install completes.
 3. "Restarting in 5 seconds" appears under the progress bar while the bar stands at
-   about 96%, and the installer reboots on its own five seconds later; the themed
-   GRUB menu appears with no text passphrase prompt.
+   about 96%, and the installer reboots on its own five seconds later (the bar may
+   flick to 100% as the screen goes dark); the themed GRUB menu appears with no
+   text passphrase prompt.
 4. Plymouth asks for the passphrase once, on screen, with a blinking caret, the hint
    line and one red square per keystroke (BackSpace removes one), also on arm64 VMs
    whose firmware names a serial console; LightDM shows the login screen; log in.
@@ -228,7 +231,8 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
     starts the same system, and shim's fallback recreates the `SnapshOT` boot entry.
     The image has no `efibootmgr` (install it from the
     [update stick](updates.md) if you want it); read the boot entries from the
-    firmware variables instead:
+    firmware variables instead (`tail` cannot seek in efivarfs files, hence the
+    `cat`):
 
     ```sh
     cd /sys/firmware/efi/efivars
@@ -237,7 +241,8 @@ against the schema of the Calamares release the image ships (see `docs/build.md`
     od -An -tx2 -j4 BootOrder-$g
     for f in Boot0*-$g; do          # each entry: its name and loader path
         printf '%s:' "${f%%-*}"
-        tail -c +11 "$f" | iconv -f UTF-16LE -t UTF-8 -c 2>/dev/null | tr -c '[:print:]' ' ' | tr -s ' '
+        cat "$f" | tail -c +11 | iconv -f UTF-16LE -t UTF-8 -c 2>/dev/null |
+            tr -c '[:print:]' ' ' | tr -s ' '
         echo
     done
     ```
