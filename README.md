@@ -67,8 +67,8 @@ snapshot of the Debian archive.
 
 | Image | Hardware | Boot | Size | SHA-256 |
 |---|---|---|---|---|
-| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.3.0-alpha/snapshot-amd64.hybrid.iso) | x86-64 laptops and VMs | BIOS + UEFI | 1.76 GiB | `74cb0949793ac7fe1eb2d0cdbd0327b25560d844ee1e39c8f3b11ced43547d10` |
-| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.3.0-alpha/snapshot-arm64.hybrid.iso) | arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware | UEFI | 1.72 GiB | `8e1d0e57d39a0a5d796e071fec9c0487f54396a6d8892bff8fb3c6accc19725d` |
+| [snapshot-amd64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.3.0-alpha/snapshot-amd64.hybrid.iso) | x86-64 laptops and VMs | BIOS + UEFI | 1.76 GiB | `18f53964eb0c69021c325b6cd45b5ada3fca3ff361a80b2393f435d9e1f9b2b4` |
+| [snapshot-arm64.hybrid.iso](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.3.0-alpha/snapshot-arm64.hybrid.iso) | arm64 VMs (UTM, Parallels, VMware Fusion on Apple Silicon) and UEFI arm64 hardware | UEFI | 1.72 GiB | `b4e37cdae81b69afc2ce188d3572156a51d7f13ee7519cb8299a93839db020a3` |
 
 Checksums: [`SHA256SUMS`](https://github.com/Blackbird-Cyber/SnapshOT/releases/download/v0.3.0-alpha/SHA256SUMS)
 <!-- release-table:end -->
