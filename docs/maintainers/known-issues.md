@@ -7,12 +7,13 @@ the ones that apply to that release.
 ## v0.3.0-alpha (draft, not yet published)
 
 - **Installer QA is not finished.** The installer configuration passes
-  `scripts/check-installer.sh` and its new parts were tested one at a time
-  during development, but an end-to-end install of the release build on VMware
-  Fusion and on real hardware has not been run. Do not rely on a 0.3.0-alpha
-  install for client work until it has.
-- v0.3.0-alpha is built from main at [filled in after the release build]; every
-  item under "Current tree" below that is not marked fixed applies to it.
+  `scripts/check-installer.sh`, and the release build was installed end to end
+  in QEMU (amd64 with Secure Boot enforced, arm64 without Secure Boot; see the
+  release notes), but an install on VMware Fusion, Parallels, UTM and real
+  hardware has not been run. Do not rely on a 0.3.0-alpha install for client
+  work until it has.
+- v0.3.0-alpha is built from main at 26cd8d7; every item under "Current tree"
+  below that is not marked fixed applies to it.
 
 Fixed in v0.3.0-alpha (each of these affects v0.2.1):
 
@@ -38,6 +39,16 @@ Fixed in v0.3.0-alpha (each of these affects v0.2.1):
   example `operator`. Fixed in v0.3.0-alpha: the users page refuses it.
 - **The installer names "SnapshOT 0.1"** on its partition and summary pages.
   Fixed in v0.3.0-alpha.
+- **arm64 on QEMU: the passphrase prompt goes to the serial port.** QEMU's
+  arm64 `virt` machine, which UTM uses, names its serial port as the console,
+  so Plymouth asked for the disk passphrase on that port only: the installed
+  system booted to a black screen on which typing did nothing. Found in the
+  first v0.3.0-alpha build (63e1680, not published); v0.2.1 lacks the same
+  parameter. Fixed in v0.3.0-alpha (`snapshot-boot` 0.1.7): arm64 installs boot
+  with `plymouth.ignore-serial-consoles`, and the splash asks on screen
+  (verified in QEMU; UTM, Parallels and VMware Fusion untested). To unlock
+  over a serial console instead, see
+  [offline-install.md](../offline-install.md#arm64-the-prompt-on-screen-or-on-a-serial-console).
 
 ## v0.2.1 (pre-release, published 2026-10-10)
 
@@ -57,6 +68,11 @@ To be withdrawn when v0.3.0-alpha is published.
 
 ## Current tree
 
+- **arm64 live boot on QEMU shows no splash.** The live ISO's boot entries do
+  not carry `plymouth.ignore-serial-consoles`: the live session asks for
+  nothing, so on firmware that names a serial console (QEMU's `virt` machine)
+  the screen only stays black until the desktop appears (about a minute and a
+  half in QEMU without acceleration). Installed systems are not affected.
 - **arm64 installs with Secure Boot on are untested.** The arm64 live ISO boots
   with Secure Boot enforced (QEMU, AAVMF with Microsoft's keys), and arm64
   installs get the same shim, signed GRUB and `grub-install` wrapper as amd64,

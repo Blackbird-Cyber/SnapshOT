@@ -8,13 +8,13 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 
 | | v0.1.0 (withdrawn) | v0.2.0 (withdrawn) | v0.2.1 (published pre-release) | v0.3.0-alpha (draft, not yet published) |
 |---|---|---|---|---|
-| Built from | 2fba3d1 (now 88ba816), published 2026-09-30 | 3a77bad (now 5150f10, see [history-rewrite.md](history-rewrite.md)), published 2026-10-10 | 8a5ba28, published 2026-10-10; the tag also carries the README release-table commit | 63e1680, built 2026-10-11; staged as a draft of the pre-release "SnapshOT 0.3.0 alpha" that points at the README release-table commit |
+| Built from | 2fba3d1 (now 88ba816), published 2026-09-30 | 3a77bad (now 5150f10, see [history-rewrite.md](history-rewrite.md)), published 2026-10-10 | 8a5ba28, published 2026-10-10; the tag also carries the README release-table commit | 26cd8d7, built 2026-10-12 (UTC), after the first build (63e1680, 2026-10-11) showed the arm64 passphrase prompt on the serial port only; staged as a draft of the pre-release "SnapshOT 0.3.0 alpha" that points at the README release-table commit |
 | Images | amd64 1,731,487,744 bytes (1.61 GiB), arm64 1,751,322,624 bytes (1.63 GiB) | amd64 1,879,412,736 bytes (1.75 GiB), arm64 1,837,701,120 bytes (1.71 GiB) | amd64 1,879,400,448 bytes (1.75 GiB), arm64 1,837,686,784 bytes (1.71 GiB), neither split | amd64 1,887,596,544 bytes (1.76 GiB), arm64 1,845,569,536 bytes (1.72 GiB), neither split |
 | Withdrawn | 2026-10-10: release, assets and tag deleted | 2026-10-10: release, assets and tag deleted | to be withdrawn when v0.3.0-alpha is published: release made a hidden draft, tag removed | |
-| Verified | live boot | both images booted in QEMU to the live desktop with smoke checks; the installer was not run | both images booted in QEMU to the live desktop with smoke checks of the menu, `/etc/snapshot-release`, capture without sudo, the vendor layer, package versions, the wiki and the brand files (no embedded chunks); the installer was not run | QEMU: both live ISOs with smoke checks of `/etc/snapshot-release`, the Wi-Fi switch, capture without sudo, the vendor layer, the menu (no Autopsy), the wiki and `about:policies`; amd64 with Secure Boot enforced (OVMF, Microsoft's keys): `operator` refused, a full install (Erase disk, Encrypt system) that restarted on its own, then the installed system booted from a fresh variable store (removable path) and from the `SnapshOT` entry, splash prompt, unlock and login, checklist items 1 to 10 and 12 to 14; arm64 without Secure Boot: install, restart, unlock and login, but the passphrase prompt went to the serial port (release notes, Caveats); not run on VMware Fusion or real hardware |
+| Verified | live boot | both images booted in QEMU to the live desktop with smoke checks; the installer was not run | both images booted in QEMU to the live desktop with smoke checks of the menu, `/etc/snapshot-release`, capture without sudo, the vendor layer, package versions, the wiki and the brand files (no embedded chunks); the installer was not run | QEMU: both live ISOs with smoke checks of `/etc/snapshot-release`, the Wi-Fi switch, capture without sudo, the vendor layer and the package list (no Autopsy; the menu, the wiki and `about:policies` were checked on the 63e1680 build); arm64 without Secure Boot on the `virt` machine with its serial port: a full install (Erase disk, Encrypt system) that restarted on its own, then the splash asked for the passphrase on screen with no GRUB edit, keyboard unlock and login, `plymouth.ignore-serial-consoles` on the command line, checklist items 1 to 10, 12 and 13, and the serial-console unlock with the word removed at GRUB; amd64 with Secure Boot enforced (OVMF, Microsoft's keys): `operator` refused, a full install that restarted on its own, then the installed system booted from a fresh variable store (removable path) and from the `SnapshOT` entry, splash prompt, unlock and login, no arm64 parameter, checklist items 1 to 10 and 12 to 14; not run on VMware Fusion, Parallels, UTM or real hardware |
 | Brand images | carry embedded content-credential manifests | carry embedded content-credential manifests | no embedded content-credential or EXIF chunks | the same files as v0.2.1 |
 | Desktop | light Xfce desktop with the SnapshOT wallpaper and a SnapshOT menu with a category per tool group | SnapshOT-Dark theme, Papirus-Dark icons, one top panel, the Whisker menu with eight numbered folders | same as v0.2.0 | same as v0.2.0 |
-| Installer | stops at the display-manager step; its encrypted layout does not boot | fixed (`calamares-settings-snapshot` 0.1.5, `snapshot-boot` 0.1.2); not run end to end on VMware Fusion | fixed (`calamares-settings-snapshot` 0.1.6, `snapshot-boot` 0.1.3); not yet run end to end on VMware Fusion | `calamares-settings-snapshot` 0.1.11, `snapshot-boot` 0.1.6: Secure Boot installs (shim, signed GRUB, removable path), 3 GiB RAM check, existing logins refused, automatic restart, visible passphrase prompt; not yet run end to end on VMware Fusion |
+| Installer | stops at the display-manager step; its encrypted layout does not boot | fixed (`calamares-settings-snapshot` 0.1.5, `snapshot-boot` 0.1.2); not run end to end on VMware Fusion | fixed (`calamares-settings-snapshot` 0.1.6, `snapshot-boot` 0.1.3); not yet run end to end on VMware Fusion | `calamares-settings-snapshot` 0.1.11, `snapshot-boot` 0.1.7: Secure Boot installs (shim, signed GRUB, removable path), 3 GiB RAM check, existing logins refused, automatic restart, visible passphrase prompt, on arm64 also with a serial console (`plymouth.ignore-serial-consoles`); not yet run end to end on VMware Fusion |
 | SnapshOT Wiki, field kit, Firefox ESR | not included | included (`snapshot-wiki` 0.1.5, `snapshot-fieldkit` 0.1.3) | included (`snapshot-wiki` 0.1.6, `snapshot-fieldkit` 0.1.3) | included (`snapshot-wiki` 0.1.10, `snapshot-fieldkit` 0.1.4) |
 | The Sleuth Kit, TestDisk/PhotoRec | not included | included | included | included |
 | Vendor layer | not included | included: CPython 3.11.16, ics-python, plcscan, Redpoint NSE, and opcua-client on amd64 | same as v0.2.0 | same as v0.2.0 |
@@ -22,7 +22,7 @@ from it. Known problems are in [known-issues.md](known-issues.md).
 | Wi-Fi client, Secure Boot | not recorded | no `wpasupplicant`; Secure Boot for the live ISO only | same as v0.2.0 | `wpasupplicant` with NetworkManager's Wi-Fi switch off; Secure Boot for the live ISO and installed systems (arm64 installs untested with it on) |
 
 - main is v0.3.0-alpha: `SNAPSHOT_VERSION` in `config/snapshot.env` is
-  `0.3.0-alpha`, both images were built from 63e1680 on 2026-10-11, and
+  `0.3.0-alpha`, both images were built from 26cd8d7 on 2026-10-12 (UTC), and
   [`docs/release-notes/v0.3.0-alpha.md`](../release-notes/v0.3.0-alpha.md)
   carries the build commit, the verification and the image sizes and SHA-256.
   The README describes main; `scripts/release.sh` rewrites its release table
@@ -56,13 +56,15 @@ The update stick is fixed (item 7).
 2. Build both images from main, fill in the release notes and the table above,
    and stage the release for review with
    `scripts/release.sh v0.3.0-alpha --prerelease --draft`: built from 63e1680
-   and verified in QEMU on 2026-10-11 (the table above and the release notes),
-   then staged as a draft.
+   and verified in QEMU on 2026-10-11, then staged as a draft; rebuilt from
+   26cd8d7 with the arm64 prompt fix (item 10), verified in QEMU on 2026-10-12
+   (the table above and the release notes), and the draft's assets replaced.
 3. VMware Fusion installer QA on the v0.3.0-alpha build, and an install on real
    hardware: install end to end (LUKS2 root, unencrypted `/boot`), reboot,
    unlock, log in, and work through the QA checklist in
    [offline-install.md](../offline-install.md), including Secure Boot (item 14),
-   also on arm64 where the hypervisor offers it.
+   also on arm64 where the hypervisor offers it, and on UTM and Parallels for
+   arm64 (the splash prompt on screen, item 4).
 4. After the review, publish: `scripts/release.sh v0.3.0-alpha --prerelease`.
    Then withdraw v0.2.1: `gh release edit v0.2.1 --repo Blackbird-Cyber/SnapshOT
    --draft=true`, and delete its tag on GitHub and locally.
@@ -96,13 +98,16 @@ The update stick is fixed (item 7).
    (Settings > General), and check that GitHub reports the license as Apache
    License 2.0. `SECURITY.md`, `CONTRIBUTING.md`, the code of conduct and the
    issue forms already point at private vulnerability reporting.
-10. arm64 passphrase prompt on QEMU: on QEMU's arm64 `virt` machine the kernel
-    console is the serial port, so Plymouth asks for the disk passphrase only
-    there and the screen stays black (release notes, Caveats). Booting with
-    `plymouth.ignore-serial-consoles` brought the splash prompt back on screen
-    in QEMU; decide whether the installer should add it to
-    `GRUB_CMDLINE_LINUX_DEFAULT` on arm64, check UTM, Parallels and VMware
-    Fusion, and add the issue to [known-issues.md](known-issues.md).
+10. arm64 passphrase prompt on QEMU: done. On QEMU's arm64 `virt` machine the
+    kernel console is the serial port, so Plymouth asked for the disk passphrase
+    only there and the screen stayed black. `snapshot-boot` 0.1.7 (e4f390f)
+    ships `/etc/default/grub.d/61-snapshot-arm64-console.cfg`, which adds
+    `plymouth.ignore-serial-consoles` to `GRUB_CMDLINE_LINUX_DEFAULT` on arm64
+    only; `scripts/check-installer.sh` checks both architectures, and the 26cd8d7
+    build was verified in QEMU (release notes). UTM, Parallels and VMware Fusion
+    are still to be checked (item 3). The arm64 live ISO keeps its boot entries,
+    so its boot shows a black screen until the desktop on such firmware
+    ([known-issues.md](known-issues.md)).
 
 ## Before going public
 
